@@ -1,0 +1,73 @@
+.checkout-pos-left-cntr{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 70%;
+    height: 100%;
+
+    
+}
+
+.checkout-pos-right-cntr{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30%;
+    height: 100%;
+
+}
+
+.header-cntr{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: auto;
+}
+
+.checkout-left-btm-cntr{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    padding: 20px 25px;
+    margin: 10px 0px;
+  
+}
+
+.checkout-left-btm-prdct-cntr{
+    
+    background-color: white;
+    width: 100%;
+}
+
+.product-info-cntr {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.checkout-right-sub-cntr{
+    height: auto;
+    width: 384px;
+}
+
+.checkout-right-sub-cntr input[type="text"] , .checkout-right-sub-cntr input[type="number"]{
+    border: 1px solid #d1d6dd;
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    width: 100%;
+    margin-top: 8px;
+
+}
+
+.checkout-right-sub-cntr input[type='text']:focus, .checkout-right-sub-cntr input[type='number']:focus{
+    margin-top: 8px;
+    margin-bottom: 12px;
+    border: 1px solid #e94560;
+}
+.checkout-right-sub-cntr input[type='text']:hover, .checkout-right-sub-cntr input[type='number']:hover{
+    border: 1px solid gray;
+}

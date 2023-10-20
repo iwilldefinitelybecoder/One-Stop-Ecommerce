@@ -1,0 +1,49 @@
+.main-info-container{
+    display: flex; 
+  justify-content: center; 
+  align-items: center;
+}
+
+.sub-info-container{
+    width: 100%; 
+    max-width: 1250px; 
+    text-align: center; 
+}
+
+.phone-icon,.email-icon,.downarrow-icon{
+    filter: brightness(0) invert(1);
+    height: 17px;
+    width: 17px;
+  
+}
+
+.phone-icon{
+    margin-left: -10px;
+}
+
+.phone-icon,.email-icon{
+    margin-right: 10px;
+}
+
+
+.downarrow-icon{
+    margin-left: 5px;
+}
+
+.lang-icon,.country-icon{
+    height: 20px;
+    width: 20px;
+    margin-right: 5px;
+}
+
+.language-container,.country-container{
+    cursor: pointer;
+}
+
+/* .margins{
+    margin-left: 8px;
+} */
+
+.margin{
+    margin-left: 25px;
+}

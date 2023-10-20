@@ -1,0 +1,99 @@
+.cntr1-sub {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+  padding: 20px 25px;
+  margin: 10px 0px;
+
+  background-color: white;
+}
+
+.name-email-div,
+.phone-company-div,
+.zip-country-div,
+.adrs1-adrs2-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  margin-bottom: 12px;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.label-input {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0px 20px;
+  font-weight: 600;
+  position: relative;
+}
+
+.cntr1-sub input[type="text"],
+.cntr1-sub input[type="number"] {
+  border: 1px solid #d1d6dd;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.cntr1-sub input[type="text"]:focus,
+.cntr1-sub input[type="number"]:focus {
+  margin-top: 8px;
+  margin-bottom: 12px;
+  border: 1px solid #e94560;
+}
+.cntr1-sub input[type="text"]:hover,
+.cntr1-sub input[type="number"]:hover {
+  border: 1px solid gray;
+}
+
+.cntr1-sub input[type="checkbox"] {
+  margin-right: 10px;
+  margin-top: 8px;
+  width: 15px;
+  height: 15px;
+}
+
+.cntr1-sub input[type="checkbox"]:hover {
+  cursor: pointer;
+  width: 15px;
+  height: 15px;
+}
+
+.cntr1-sub input[type="checkbox"]:focus {
+  outline: none;
+  width: 15px;
+  height: 15px;
+  border: 1px solid #e94560;
+}
+
+.cntr1-sub input[type="checkbox"]:checked {
+  outline: none;
+  width: 15px;
+  height: 15px;
+  background-color: #e9456000;
+}
+
+.error{
+  display: flex;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  color: red;
+  font-size: 15px;
+  border: 1px solid red;
+  border-radius: 5px;
+  padding: 2px 5px;
+  background-color: rgba(255, 0, 0, 0.158);
+  top: 90px;
+  left: 170px;
+}
+
+.right-arrow {
+  filter: invert(1);
+}

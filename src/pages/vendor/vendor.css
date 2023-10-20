@@ -1,0 +1,17 @@
+
+.vendor-left-sub-cntr {
+display: flex;
+flex-direction: column;
+justify-content: flex-start;
+padding: 15px 0px;
+align-items:space-between;
+width: 282px;
+height: 280px;
+background-color: white;
+position: sticky;
+top: 110px;
+border-radius: 8px;
+z-index: 0;
+--tw-text-opacity: 1;
+color: rgb(100 116 139 / var(--tw-text-opacity));
+}

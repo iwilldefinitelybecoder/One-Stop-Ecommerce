@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { categoryIcon } from "../../../assets/icons/png/toolbar1/data";
 import {
   downArrowIcon,
@@ -24,10 +24,15 @@ const NavBar = () => {
   const handelUserListBtnOpen = () => {
     setUserListBtn(true);
     setVendorListBtn(false);
+
     
   };
 
+  console.log("userListBtn",userListBtn);
+
+
   const handelUserListBtnClose = () => {
+    console.log("close");
     setUserListBtn(false);
   };
 
@@ -39,6 +44,7 @@ const NavBar = () => {
 
   const handelVendorListBtnClose = () => {
     setVendorListBtn(false);
+  
   };
 
   const handelToggle = () => {
@@ -161,23 +167,23 @@ const NavBar = () => {
           </div>
           <div className="nb-links " onMouseLeave={(e)=>{handelUserListBtnClose();handelVendorListBtnClose()}} >
             <Link to="/home">
-            <span>home</span>
+            <span className="nav-bar-span">home</span>
             </Link>
             <div className="user-acc-li hover:shadow-lg" onClick={handelUserListBtnOpen}>
-              <span className="flex">
+              <span className="flex nav-bar-span">
                 Account
                 <img src={downArrowIcon} alt="" className="h-5 mt-1 ml-1 " />
               </span>
               { userListBtn &&
               <div className="user-acc-li-dpdn-cntr" >
                 <div className="user-acc-li-dpdn-body">
-                  <UserList  lists = {userList}/>
+                  <UserList  lists = {userList} handelClose={handelUserListBtnClose}/>
                 </div>
               </div>
               }
             </div>
             <div className="vendor-acc-li hover:shadow-lg" onClick={handelVendorListBtnOpen}>
-              <span className="flex">
+              <span className="flex nav-bar-span">
                 Vendor
                 <img src={downArrowIcon} alt="" className="h-5 mt-1 ml-1" />
               </span>
@@ -185,14 +191,14 @@ const NavBar = () => {
               { vendorListBtn &&
               <div className="user-acc-li-dpdn-cntr"  >
                 <div className="user-acc-li-dpdn-body">
-                  <UserList  lists = {vendorList}/>
+                  <UserList  lists = {vendorList} handelClose={handelVendorListBtnClose}/>
                 </div>
               </div>
               }
               </div>
             </div>
             <Link to="/user/orders">
-            <span>Track Orders</span>
+            <span className="nav-bar-span">Track Orders</span>
             </Link>
           </div>
         </div>
@@ -201,7 +207,7 @@ const NavBar = () => {
   );
 };
 
-const UserList = ({handelClose, lists}) => {
+const UserList = ({ lists,handelClose,}) => {
 
   const [subToolbarList, setSubToolbarList] = useState(Array(lists.length).fill(false));
   const windowWidth = window.innerWidth;
@@ -221,7 +227,7 @@ const UserList = ({handelClose, lists}) => {
   const List = lists?.map((list, index) => {
     if (list?.hasOwnProperty("subList")) {
       return (
-        <div className="user-acc-dpdn-li" onClick={(e)=>handelMouseEnter(index)} onMouseLeave={(e)=>handelMouseLeave(index)}
+        <div className="user-acc-dpdn-li" onClick={(e)=>{handelMouseEnter(index)}} onMouseLeave={(e)=>handelMouseLeave(index)}
         key={index}
         >
           <div className="acc-li-name">
@@ -237,7 +243,7 @@ const UserList = ({handelClose, lists}) => {
                 <div className="orders-li-ext-body" key={index}>
                   { subToolbarList[index] && list.subList.map((sublis, index) => (
                     <Link to={sublis.link}>
-                      <div className="orders-ext-li" key={index}>
+                      <div className="orders-ext-li" key={index} onClick={(e)=>{handelClose()}}>
                         <div className="acc-li-name">
                           <span className="text-black hover:text-light-pink flex flex-wrap">{sublis.name}</span>
                         </div>
@@ -260,8 +266,9 @@ const UserList = ({handelClose, lists}) => {
     }else{
       return (
         <Link to={list.link}>
-        <div className="user-acc-dpdn-li"
+        <div className="user-acc-dpdn-li "
         key={index}
+        onClick={(e)=>{handelClose()}}
         >
           <div className="acc-li-name">
             <span>{list.name}</span>

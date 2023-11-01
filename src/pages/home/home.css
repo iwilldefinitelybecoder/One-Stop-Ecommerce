@@ -3,7 +3,7 @@
     justify-content: center;
     width: 100%;
     height: auto;
-    padding: 40px 0px;
+    padding-top: 0px;
 
 }
 
@@ -15,9 +15,34 @@
    
 }
 
+.image-slider-height{
+       height: 500px;
+       
+}
+
 .home-header{
     box-shadow:
     inset 0 10px 6px -6px rgba(0, 0, 0, 0.1),
     inset 0 2px 2px -2px rgba(0, 0, 0, 0.1);
   
 }
+
+.image-sliding-container,.flash-Deals-grid{
+    
+    width: 100%;
+    height: 100%;
+    position: relative;
+    
+  
+}
+
+.flash-Deals-grid{
+    margin-top: 50px;
+    height: 475px;
+    margin-bottom: 100px;
+}
+
+
+
+
+  

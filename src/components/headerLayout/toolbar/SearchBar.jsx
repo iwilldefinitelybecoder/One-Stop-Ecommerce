@@ -4,6 +4,7 @@ import "./toolbar.css";
 import { downArrowIcon } from "../../../assets/icons/png/toolbar-icons/data";
 function SearchBar() {
   const [focued, setFocued] = useState(false);
+  const [seacrchResultFocusIndex, setSeacrchResultFocusIndex] = useState(0);
   const [categorybtn, setCategorybtn] = useState(false);
   const [categoryValue, setCategoryValue] = useState("All Categories");
   const [searchValue, setSearchValue] = useState("");
@@ -20,22 +21,22 @@ function SearchBar() {
     {
       id: 1,
       title: "ayush",
-      description: "he is a lowda",
+      description: "he is a goodguy",
     },
     {
       id: 2,
       title: "adddy",
-      description: "he is a gandu",
+      description: "he is a goodguy",
     },
     {
       id: 2,
       title: "aaddy",
-      description: "he is a gandu",
+      description: "he is a goodguy",
     },
     {
       id: 2,
       title: "adddya",
-      description: "he is a gandu",
+      description: "he is a goodguy",
     },
   ]);
 
@@ -80,6 +81,7 @@ function SearchBar() {
   const handelResultClick = (e, result, index) => {
     e.preventDefault();
     setSearchValue(result.title, result.description);
+    setSeacrchResultFocusIndex(index);
     spanRefs[index].current.focus();
   };
 
@@ -114,9 +116,11 @@ function SearchBar() {
     setSearchValue(result.title, result.description);
     setMatchingText(result);
     inputRef.current.focus();
+    setSeacrchResultFocusIndex(null)
   }
 
   const handelFocusBack = (e,index,result) => {
+    setSeacrchResultFocusIndex(null)
     inputRef.current.focus();
   }
 
@@ -211,7 +215,7 @@ function SearchBar() {
           )}
         </div>
 
-        {searchResults.length > 0 && searchValue !== "" && 
+        {searchResults.length > 0 && searchValue !== ""  && 
           <div className="search-results shadow-xl">
             {searchResults &&
               searchResults?.map((result, index) => {

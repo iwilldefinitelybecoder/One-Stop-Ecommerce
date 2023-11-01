@@ -64,13 +64,13 @@
 
 
 
-.nb-links span{
+.nav-bar-span{
     padding: 10px 20px;
     border-radius: 5px;
     transition: all 0.1s ease-in;
 }
 
-.nb-links span:hover{
+.nav-bar-span:hover{
     background-color: rgb(230, 243, 255);
     cursor: pointer;
 }
@@ -165,7 +165,7 @@
     align-items: center;
     justify-content: space-between;
     position: relative;
-    padding: 10px 0px;
+    padding: 10px 20px;
     border-left: 4px solid #e9456000;
 }
 .user-acc-dpdn-li:hover{
@@ -221,6 +221,7 @@
     align-items: center;
     justify-content: space-between;
     border-left: 4px solid #e9456000;
+    padding: 10px 20px;
 }
 
 

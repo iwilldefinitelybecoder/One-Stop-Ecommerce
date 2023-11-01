@@ -6,9 +6,9 @@ import ImageSlider from "./ImageSlider";
 const Home = () => {
   return (
     <>
-    <div className="home-main-cntr home-header bg-white">
-        <div className="home-pos-cntr bg-whitea">
-          <div className="image-sliding-container">
+    <div className="home-main-cntr home-header bg-white mb-8">
+        <div className="home-pos-cntr image-slider-height ">
+          <div className="image-sliding-container ">
             <ImageSlider />
           </div>
          

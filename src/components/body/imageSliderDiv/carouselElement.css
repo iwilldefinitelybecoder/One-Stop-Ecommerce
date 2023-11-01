@@ -1,0 +1,12 @@
+
+.slider-img {
+
+  height: 300px !important;
+  object-fit: fill !important;
+  /* box-shadow: 0 50px 100px 10px rgba(0, 0, 0, 0.4);  */
+}
+
+.slider-info-description,
+.slider-info-header {
+  width: 700px;
+}

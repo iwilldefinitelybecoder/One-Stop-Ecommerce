@@ -4,6 +4,7 @@ import { logoIcon } from "../../../assets/icons/png/toolbar1/data";
 import SearchBar from "./SearchBar";
 import ProfileBtn from "./ProfileBtn";
 import CartBtn from "./CartBtn";
+import { Link } from "react-router-dom";
 
 const Toolbar = () => {
 
@@ -25,9 +26,11 @@ const Toolbar = () => {
     <div className={`${posFixed}`}>
       <div className="sub-toolbar-info-container ">
         <div className="toolbar-content-holder my-3  ">
-          <div className={`logo ${prevScrollpos>100?'sticky-logo':''}`} >
+          <Link to={"/"}>
+          <div className={`logo ${prevScrollpos>100?'sticky-logo':''}`}  >
             <img src={logoIcon} alt="logo" className=" h-16 w-56" />
           </div>
+          </Link>
           <div className="search-bar">
             <SearchBar />
           </div>

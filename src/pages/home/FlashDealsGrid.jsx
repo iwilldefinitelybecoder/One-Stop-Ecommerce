@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Virtual, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -13,12 +13,20 @@ import {
   rightTriangleArrowIcon,
 } from "../../assets/icons/png/Rareicons/data";
 import { Link } from "react-router-dom";
+import FlashDealsGridCards from "../../components/body/productCards/flashDealsCard/flashDealsGridCards";
+
+import { products } from "../../data/products";
 
 
 function FlashDealsGrid() {
   const [swiperRef, setSwiperRef] = useState(null);
-  const appendNumber = useRef(500);
-  const prependNumber = useRef(1);
+  const [productinfo, setProductinfo] = useState(products);
+
+  useEffect(() => {
+    setProductinfo(products);
+  }
+  , [products]);
+  
   // Create array with 500 slides
   const [slides, setSlides] = useState(
     Array.from({ length: 5 }).map((_, index) => `Slide ${index + 1}`)
@@ -49,18 +57,21 @@ function FlashDealsGrid() {
       <Swiper
         modules={[Virtual, Navigation, Pagination]}
         onSwiper={setSwiperRef}
-        slidesPerView={3}
+        slidesPerView={4}
         centeredSlides={true}
         spaceBetween={30}
         pagination={{
+          el: ".swiper-pagination-1", 
           type: "fraction",
+      
         }}
         navigation={true}
+        className="flash-deals-grid-swiper"
         virtual
       >
-        {slides.map((slideContent, index) => (
-          <SwiperSlide key={slideContent} virtualIndex={index} className="flash-grid-cards rounded-xl shadow-lg">
-            {slideContent}
+        {productinfo?.map((product, index) => (
+          <SwiperSlide key={product} virtualIndex={index} className="flash-grid-cards flex-col justify-start items-start px-4 py-4 rounded-xl shadow-lg">
+            <FlashDealsGridCards  productInfo={product}/>
           </SwiperSlide>
         ))}
       </Swiper>

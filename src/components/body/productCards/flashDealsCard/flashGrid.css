@@ -1,0 +1,95 @@
+.flash-grid-body{
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+
+}
+
+.flash-grid-bottom-cntr{
+    height: 103px;
+}
+
+.cart-quantity{
+    display: block;
+    margin-right: 20px;
+    position: relative;
+}
+
+.quantity-checkout{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.quantity{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 20px;
+    
+}
+
+.quantity-icon{
+    height: 15px;
+    width: 17px;
+}
+
+.quantity-icon:hover{
+    filter: brightness(0) invert(1);
+}
+
+.flash-grid-hover-btns{
+    position: absolute;
+  
+    top: 0;   
+    right: 8px;
+    
+}
+
+.flsh-grd-hvr-btns-sub-cntr{
+    position: relative;
+}
+
+
+
+.view-hover-icon,.wishlist-hover-icon{
+    position: absolute;
+    height: 35px;
+    width: 35px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 6px;
+    transition: 0.1s ease-in-out;
+}
+
+.view-hover-icon{
+    top: 0;   
+    right: -30px;
+    transition-property: right;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-in-out;
+    transition-delay: 0ms;
+}
+
+.wishlist-hover-icon{
+    top: 30px;   
+    right: -30px;
+    transition-property: right;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-in-out;
+    transition-delay: 50ms;
+
+}
+
+.flash-grid-body:hover .view-hover-icon,.flash-grid-body:hover .wishlist-hover-icon{
+    right: 8px;
+}
+
+.view-hover-icon:hover,.wishlist-hover-icon:hover{
+    background-color: rgba(230, 229, 229, 0.534);
+    cursor: pointer;
+}

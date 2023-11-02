@@ -2,10 +2,22 @@
     
 }
 
+
+
 .swiper {
-    width: 10%;
-    height: 100%;
+    width: 100%;
+   
   }
+
+  .flash-deals-grid-swiper{
+    height: 85% !important;
+    
+  }
+
+  /* .flash-grid-cards{
+    height: 85%;
+    width: 90%;
+  } */
   
   .swiper-slide {
 
@@ -45,4 +57,51 @@
     border-radius: 4px;
     margin: 0 10px;
     font-size: 13px;
+  }
+
+  .flash-deals-grid-swiper .swiper-button-next,.flash-deals-grid-swiper .swiper-button-prev{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #114175;
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    padding: 20px;
+  }
+
+  .flash-deals-grid-swiper .swiper-button-next{
+      background-image: url('https://img.icons8.com/ios-filled/50/FFFFFF/long-arrow-right.png');
+      background-size: cover;
+      height: 20px;
+  }
+
+  .flash-deals-grid-swiper .swiper-button-next:hover{
+    background-image: url('https://img.icons8.com/sf-regular/48/long-arrow-right.png');
+    background-size: cover;
+    height: 20px;
+}
+
+.flash-deals-grid-swiper .swiper-button-:hover{
+  background-image: url('https://img.icons8.com/sf-regular/48/long-arrow-right.png');
+  background-size: cover;
+  height: 20px;
+}
+
+
+  .flash-deals-grid-swiper .swiper-button-prev{
+    transform: rotate(180deg);
+    background-size: cover;
+    background-image: url('https://img.icons8.com/ios-filled/50/FFFFFF/long-arrow-right.png');
+    
+}
+
+.flash-deals-grid-swiper .swiper-button-disabled{
+    display: inline !important;
+    background-color: #906f90 !important;
+    
+}
+  .flash-deals-grid-swiper .swiper-button-next::after,.flash-deals-grid-swiper .swiper-button-prev::after{
+   content: "";
   }

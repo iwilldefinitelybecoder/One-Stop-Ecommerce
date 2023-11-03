@@ -11,7 +11,6 @@ const items = (state = initialState, action) => {
     case "UPDATE_ITEM":
       return state.map((item, index) => {
         if (index === action.payload.index) {
-          console.log(action.payload.cartItem);
           return { ...action.payload.cartItem };
         }
  

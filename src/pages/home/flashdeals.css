@@ -9,10 +9,9 @@
   height: 85% !important;
 }
 
-/* .flash-grid-cards{
-    height: 85%;
-    width: 90%;
-  } */
+.flash-grid-cards{
+    padding: 0px !important;
+  }
 
 .swiper-slide {
   font-size: 18px;

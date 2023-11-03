@@ -5,7 +5,7 @@ import { TshirtIcon,
 
 export const cartProducts =[
     {
-        id: 1,
+        id: 0,
         name: "silver High Neck ",
         price: 2999.26,
         discountPrice: 1999.26,

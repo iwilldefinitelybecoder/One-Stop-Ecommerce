@@ -16,97 +16,111 @@ import { randomValueGenrator } from "../../../../utils/randomId";
 const FlashDealsGridCards = ({ productInfo, estimateCost, itemDetails }) => {
   const offerPercentage = productInfo.discountPrice
     ? (
-        ((productInfo.price - productInfo.discountPrice) / productInfo.price) *
-        100
-      ).toFixed(0)
+      ((productInfo.price - productInfo.discountPrice) / productInfo.price) *
+      100
+    ).toFixed(0)
     : 0;
 
-let index;
+  let index;
   const item = itemDetails?.filter((item, i) => {
-    if(item.id === productInfo.id){
+    if (item.id === productInfo.id) {
       index = i;
       return item
-      
-  }});
-  console.log(index,itemDetails)
-  
+
+    }
+  });
+
+
   const [itemDetail, setItemDetail] = useState(
     item[0] !== undefined
       ? item[0]
       : {
-        ...productInfo,  
-        itemQuantity:0,
-        itemTotal:0,
-        
+        ...productInfo,
+        itemQuantity: 0,
+        itemTotal: 0,
+
       }
   );
-        
-        useEffect(() => {
+  const [addNewItem, setAddNewItem] = useState(null);
+
+  useEffect(() => {
+    if (addNewItem !== null) {
+
+      dispatch({ type: "ADD_ITEM", payload: addNewItem });
+    }
+  }, [addNewItem]);
+
+  useEffect(() => {
     const item = itemDetails?.filter((item, i) => {
-      if(item.id === productInfo.id){
+      if (item.id === productInfo.id) {
         index = i
         return item;
-    }});
+      }
+    });
 
     setItemDetail(
       item[0] !== undefined
         ? item[0]
         : {
           ...productInfo,
-          itemQuantity:0,
-          itemTotal:0,
-          
+          itemQuantity: 0,
+          itemTotal: 0,
+
         }
     );
   }, [itemDetails]);
 
-  
+
   const dispatch = useDispatch();
-  
+
 
   const buttonDisableRef = useRef(null);
 
   const handelAddQuantity = () => {
-    
+
     const total = itemDetail.itemQuantity + 1;
     const cases = "ADD";
     setItemDetail({
       ...itemDetail,
-      itemQuantity:total
+      itemQuantity: total
     })
-    
+    calulateTotal(total);
+
   };
 
   const handelMinusQuantity = () => {
-    if (itemDetail.itemQuantity > 0) {
+    if (itemDetail.itemQuantity > 1) {
       // buttonDisableRef.current.disabled = true;
       const total = itemDetail.itemQuantity - 1;
-      const cases = "MINUS";calulateTotal(total);
+      const cases = "MINUS";
+      calulateTotal(total);
     } else {
       dispatch({ type: "REMOVE_ITEM", payload: index });
     }
   };
 
   const calulateTotal = (total, cases) => {
-    const existingItem = itemDetails.some((items,i)=>items.id === productInfo.id)
+    const existingItem = itemDetails.some((items, i) => items.id === productInfo.id)
+
     setItemDetail((prevItemDetail) => {
-      const itemTotal = prevItemDetail.price * total;
+      const itemTotal = prevItemDetail.hasOwnProperty("discountPrice") ? prevItemDetail.discountPrice * total : prevItemDetail.price;
       const formattedTotal = parseFloat(itemTotal.toFixed(2));
       const cartItem = {
         ...prevItemDetail,
         itemQuantity: total,
         itemTotal: formattedTotal,
       };
-      
-        if(existingItem){
-          dispatch({
-            type: "UPDATE_ITEM",
-            payload: { index,cartItem },
-          });
-        }else{
-          dispatch({type:"ADD_ITEM",payload:cartItem})
-        }
-      
+
+      if (existingItem) {
+        console.log('working')
+        dispatch({
+          type: "UPDATE_ITEM",
+          payload: { index, cartItem },
+        });
+      } else {
+        setAddNewItem(cartItem)
+      }
+
       return cartItem;
     });
   };
@@ -136,15 +150,15 @@ let index;
       <div className="flash-grid-body  justify-between w-full h-full ">
         <div className="flash-grid-top-cntr">
           <div className=" w-full h-6">
-          <div
-            className={`flsh-grd-ofr-prcnt  bg-light-pink text-white font-normal text-xs rounded-xl px-3 py-1 flex justify-center w-20`}
-            style={{
-              display: `${productInfo?.discountPrice > 0 ? "flex" : " none"}`,
-            }}
+            <div
+              className={`flsh-grd-ofr-prcnt  bg-light-pink text-white font-normal text-xs rounded-xl px-3 py-1 flex justify-center w-20`}
+              style={{
+                display: `${productInfo?.discountPrice > 0 ? "flex" : " none"}`,
+              }}
             >
-            <h5 className=" ">{offerPercentage}% off</h5>
-          </div>
+              <h5 className=" ">{offerPercentage}% off</h5>
             </div>
+          </div>
           <div className="flash-grd-img-cntr w-full flex justify-center mt-4">
             <div className="flash-grid-img h-60 w-60">
               <img

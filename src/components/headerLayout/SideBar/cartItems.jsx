@@ -32,7 +32,7 @@ const cartItems = ({index,updateValue,itemDetails ,setDeleteToggle, setDeleteIte
 
   const calulateTotal = (total, cases) => {
    setItemDetail((prevItemDetail) => {
-      const itemTotal = prevItemDetail.price * total;
+      const itemTotal = prevItemDetail.hasOwnProperty("discountPrice") ? prevItemDetail.discountPrice * total : prevItemDetail.price;
       const formattedTotal = parseFloat(itemTotal.toFixed(2));
       return { ...prevItemDetail, itemQuantity: total, itemTotal: formattedTotal };
     })
@@ -121,7 +121,7 @@ const cartItems = ({index,updateValue,itemDetails ,setDeleteToggle, setDeleteIte
         <div className="item-description">
           <span className=" text-md font-semibold py-1">{itemDetail.name}</span>
           <span className=" text-slate-400 text-sm ">
-            &#8377;{itemDetail.price}&nbsp;x&nbsp;{itemDetail.itemQuantity}
+            &#8377;{itemDetail.discountPrice || itemDetail.price}&nbsp;x&nbsp;{itemDetail.itemQuantity}
           </span>
           <span className=" text-light-pink font-semibold py-1">
             &#8377;{itemDetail.itemTotal}

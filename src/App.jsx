@@ -1,13 +1,16 @@
 import axios from 'axios'
-import React from 'react'
+import React, { Suspense, lazy } from 'react'
 import Layout from './layouts/Layout'
-import Path from './routes/Path'
+import Loader from './components/body/Loader'
+const Path  = lazy(()=> import('./routes/Path'))
 
 function App() {
 
   return (
     <>
-      <Path/>    
+      <Suspense fallback={<Loader/>}>
+        <Path/>
+      </Suspense>    
     </>
   )
 }

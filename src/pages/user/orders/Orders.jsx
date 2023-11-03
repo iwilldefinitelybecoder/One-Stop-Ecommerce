@@ -69,7 +69,7 @@ function Orders() {
           <div className="order-table-rows-cntr">
             {currentOrders.map((order, index) => (
               <Link to={`/user/orders/${order.id}` } key={index}>
-              <div className="order-table-rows shadow-md py-7 pl-5" >
+              <div className="order-table-rows shadow-sm py-7 pl-5" >
                 <div className="order-table-row">
                   <span className="font-semibold text-lg text-slate-600">{order.id}</span>
                 </div>

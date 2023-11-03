@@ -22,11 +22,15 @@ import Cart from "../pages/checkout/cart/Cart";
 import Details from "../pages/checkout/Details/Details";
 import Payment from "../pages/checkout/payment/payment";
 import Review from "../pages/checkout/review/Review";
+import Login from "../pages/Authenticate/login/Login";
+import SignUp from "../pages/Authenticate/Signup/SignUp";
 
 function Path() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="/home" element={<Home />} />

@@ -1,107 +1,100 @@
-.flash-grid-header{
-    
+.flash-grid-header {
 }
 
-
-
 .swiper {
-    width: 100%;
-   
-  }
+  width: 100%;
+}
 
-  .flash-deals-grid-swiper{
-    height: 85% !important;
-    
-  }
+.flash-deals-grid-swiper {
+  height: 85% !important;
+}
 
-  /* .flash-grid-cards{
+/* .flash-grid-cards{
     height: 85%;
     width: 90%;
   } */
-  
-  .swiper-slide {
 
-    font-size: 18px;
-    background: #fff;
-  
-    /* Center slide text vertically */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .swiper-slide img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  .swiper {
-    width: 100%;
-    height: 300px;
-    margin: 20px auto;
-  }
-  .append-buttons {
-    text-align: center;
-    margin-top: 20px;
-  }
-  
-  .append-buttons button {
-    display: inline-block;
-    cursor: pointer;
-    border: 1px solid #007aff;
-    color: #007aff;
-    text-decoration: none;
-    padding: 4px 10px;
-    border-radius: 4px;
-    margin: 0 10px;
-    font-size: 13px;
-  }
+.swiper-slide {
+  font-size: 18px;
+  background: #fff;
 
-  .flash-deals-grid-swiper .swiper-button-next,.flash-deals-grid-swiper .swiper-button-prev{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #114175;
-    color: white;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    padding: 20px;
-  }
-
-  .flash-deals-grid-swiper .swiper-button-next{
-      background-image: url('https://img.icons8.com/ios-filled/50/FFFFFF/long-arrow-right.png');
-      background-size: cover;
-      height: 20px;
-  }
-
-  .flash-deals-grid-swiper .swiper-button-next:hover{
-    background-image: url('https://img.icons8.com/sf-regular/48/long-arrow-right.png');
-    background-size: cover;
-    height: 20px;
+  /* Center slide text vertically */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.flash-deals-grid-swiper .swiper-button-:hover{
-  background-image: url('https://img.icons8.com/sf-regular/48/long-arrow-right.png');
+.swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.swiper {
+  width: 100%;
+  height: 300px;
+  margin: 20px auto;
+}
+.append-buttons {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.append-buttons button {
+  display: inline-block;
+  cursor: pointer;
+  border: 1px solid #007aff;
+  color: #007aff;
+  text-decoration: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin: 0 10px;
+  font-size: 13px;
+}
+
+.flash-deals-grid-swiper .swiper-button-next,
+.flash-deals-grid-swiper .swiper-button-prev {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #114175;
+  color: white;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  padding: 20px;
+}
+
+.flash-deals-grid-swiper .swiper-button-next {
+  background-image: url("https://img.icons8.com/ios-filled/50/FFFFFF/long-arrow-right.png");
   background-size: cover;
   height: 20px;
 }
 
-
-  .flash-deals-grid-swiper .swiper-button-prev{
-    transform: rotate(180deg);
-    background-size: cover;
-    background-image: url('https://img.icons8.com/ios-filled/50/FFFFFF/long-arrow-right.png');
-    
+.flash-deals-grid-swiper .swiper-button-next:hover {
+  background-image: url("https://img.icons8.com/sf-regular/48/long-arrow-right.png");
+  background-size: cover;
+  height: 20px;
 }
 
-.flash-deals-grid-swiper .swiper-button-disabled{
-    display: inline !important;
-    background-color: #906f90 !important;
-    
+.flash-deals-grid-swiper .swiper-button-:hover {
+  background-image: url("https://img.icons8.com/sf-regular/48/long-arrow-right.png");
+  background-size: cover;
+  height: 20px;
 }
-  .flash-deals-grid-swiper .swiper-button-next::after,.flash-deals-grid-swiper .swiper-button-prev::after{
-   content: "";
-  }
+
+.flash-deals-grid-swiper .swiper-button-prev {
+  transform: rotate(180deg);
+  background-size: cover;
+  background-image: url("https://img.icons8.com/ios-filled/50/FFFFFF/long-arrow-right.png");
+}
+
+.flash-deals-grid-swiper .swiper-button-disabled {
+  display: inline !important;
+  background-color: #906f90 !important;
+}
+.flash-deals-grid-swiper .swiper-button-next::after,
+.flash-deals-grid-swiper .swiper-button-prev::after {
+  content: "";
+}

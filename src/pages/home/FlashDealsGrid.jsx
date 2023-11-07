@@ -71,8 +71,8 @@ function FlashDealsGrid() {
         initialSlide={1}
       >
         {productinfo?.map((product, index) => (
-          <SwiperSlide key={product} virtualIndex={index} className="flash-grid-cards flex-col justify-start items-start px-4 py-4 rounded-xl shadow-lg">
-            <FlashDealsGridCards  productInfo={product}/>
+          <SwiperSlide key={product} virtualIndex={index} className="flash-grid-cards flex-col justify-start items-start px-4 py-4 rounded-xl shadow-lg hover:shadow-2xl  transition-all">
+            <FlashDealsGridCards key={index}  productInfo={product}/>
           </SwiperSlide>
         ))}
       </Swiper>

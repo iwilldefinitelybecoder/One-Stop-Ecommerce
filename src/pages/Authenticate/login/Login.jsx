@@ -1,9 +1,11 @@
 import React from 'react'
-import './login.css'
+import LoginUI from '../../../components/body/login/loginUI'
 
 const Login = () => {
   return (
-    <div>Login</div>
+    <div className=" w-full h-[100vh] py-5 bg-main-bg flex justify-center items-center">
+      <LoginUI />
+      </div>
   )
 }
 

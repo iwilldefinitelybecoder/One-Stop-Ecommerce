@@ -1,0 +1,2 @@
+in layout.jsx
+ --deleting or altering the encrypted key causes flickering b/w  /logout and /home while validating token or user data

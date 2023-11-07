@@ -6,6 +6,7 @@ import ProfileBtn from "./ProfileBtn";
 import CartBtn from "./CartBtn";
 import { Link } from "react-router-dom";
 
+
 const Toolbar = () => {
 
   const [prevScrollpos, setPrevScrollpos] = React.useState(pageYOffset)

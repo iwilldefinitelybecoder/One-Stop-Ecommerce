@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import "./flashGrid.css";
 import Rating from "@mui/material/Rating";
 import { connect, useDispatch } from "react-redux";
@@ -12,40 +12,45 @@ import {
   wishListIcon2,
 } from "../../../../assets/icons/png/Rareicons/data";
 import { randomValueGenrator } from "../../../../utils/randomId";
+import { Autoplay, Navigation, Pagination, Virtual } from "swiper/modules";
+import { SwiperSlide,Swiper } from "swiper/react";
+import { AccountContext } from "../../../../context/AccountProvider";
+import Cookies from "js-cookie";
+
 
 const FlashDealsGridCards = ({ productInfo, estimateCost, itemDetails }) => {
+  const {setShowLoginButton,showLoginButton,account} = useContext(AccountContext)
+
   const offerPercentage = productInfo.discountPrice
     ? (
-      ((productInfo.price - productInfo.discountPrice) / productInfo.price) *
-      100
-    ).toFixed(0)
+        ((productInfo.price - productInfo.discountPrice) / productInfo.price) *
+        100
+      ).toFixed(0)
     : 0;
 
   let index;
   const item = itemDetails?.filter((item, i) => {
     if (item.id === productInfo.id) {
       index = i;
-      return item
-
+      return item;
     }
   });
-
 
   const [itemDetail, setItemDetail] = useState(
     item[0] !== undefined
       ? item[0]
       : {
-        ...productInfo,
-        itemQuantity: 0,
-        itemTotal: 0,
-
-      }
+          ...productInfo,
+          images:[...productInfo.image],
+          itemQuantity: 0,
+          itemTotal: 0,
+        }
   );
   const [addNewItem, setAddNewItem] = useState(null);
+  const [mouseHover, setMouseHover] = useState(false);
 
   useEffect(() => {
     if (addNewItem !== null) {
-
       dispatch({ type: "ADD_ITEM", payload: addNewItem });
     }
   }, [addNewItem]);
@@ -53,57 +58,68 @@ const FlashDealsGridCards = ({ productInfo, estimateCost, itemDetails }) => {
   useEffect(() => {
     const item = itemDetails?.filter((item, i) => {
       if (item.id === productInfo.id) {
-        index = i
+        index = i;
         return item;
       }
     });
+
+    // useEffect(() => {
+    //   let timerId; 
+    //   if(mouseHover){
+    //     timerId = setTimeout(() => {
+    //       handelMouseEnter();
+    //     }, 1500);
+    //   }
+    //   return () => {
+    //     clearTimeout(timerId)
+    //   }
+    // }, [mouseHover])
 
     setItemDetail(
       item[0] !== undefined
         ? item[0]
         : {
-          ...productInfo,
-          itemQuantity: 0,
-          itemTotal: 0,
-
-        }
+            ...productInfo,
+            images:[...productInfo.image],
+            itemQuantity: 0,
+            itemTotal: 0,
+          }
     );
   }, [itemDetails]);
 
-
   const dispatch = useDispatch();
-
 
   const buttonDisableRef = useRef(null);
 
   const handelAddQuantity = () => {
-
     const total = itemDetail.itemQuantity + 1;
-    const cases = "ADD";
     setItemDetail({
       ...itemDetail,
-      itemQuantity: total
-    })
+      itemQuantity: total,
+    });
     calulateTotal(total);
-
   };
 
   const handelMinusQuantity = () => {
     if (itemDetail.itemQuantity > 1) {
       // buttonDisableRef.current.disabled = true;
       const total = itemDetail.itemQuantity - 1;
-      const cases = "MINUS";
+
       calulateTotal(total);
     } else {
       dispatch({ type: "REMOVE_ITEM", payload: index });
     }
   };
 
-  const calulateTotal = (total, cases) => {
-    const existingItem = itemDetails.some((items, i) => items.id === productInfo.id)
+  const calulateTotal = (total) => {
+    const existingItem = itemDetails.some(
+      (items, i) => items.id === productInfo.id
+    );
 
     setItemDetail((prevItemDetail) => {
-      const itemTotal = prevItemDetail.hasOwnProperty("discountPrice") ? prevItemDetail.discountPrice * total : prevItemDetail.price;
+      const itemTotal = prevItemDetail.hasOwnProperty("discountPrice")
+        ? prevItemDetail.discountPrice * total
+        : prevItemDetail.price;
       const formattedTotal = parseFloat(itemTotal.toFixed(2));
       const cartItem = {
         ...prevItemDetail,
@@ -111,14 +127,14 @@ const FlashDealsGridCards = ({ productInfo, estimateCost, itemDetails }) => {
         itemTotal: formattedTotal,
       };
 
+      console.log(existingItem);
       if (existingItem) {
-        console.log('working')
         dispatch({
           type: "UPDATE_ITEM",
           payload: { index, cartItem },
         });
       } else {
-        setAddNewItem(cartItem)
+        setAddNewItem(cartItem);
       }
 
       return cartItem;
@@ -145,9 +161,22 @@ const FlashDealsGridCards = ({ productInfo, estimateCost, itemDetails }) => {
     calulateTotal(values, cases);
   };
 
+  const handelMouseEnter = () => {
+    setMouseHover(true);
+  };
+
+  const handelMouseleave = () => {
+    setMouseHover(false);
+  };
+
+
   return (
     <>
-      <div className="flash-grid-body  justify-between w-full h-full ">
+      <div
+        className="flash-grid-body  justify-between w-full h-full  "
+        onMouseEnter={handelMouseEnter}
+        onMouseLeave={handelMouseleave}
+      >
         <div className="flash-grid-top-cntr">
           <div className=" w-full h-6">
             <div
@@ -159,15 +188,10 @@ const FlashDealsGridCards = ({ productInfo, estimateCost, itemDetails }) => {
               <h5 className=" ">{offerPercentage}% off</h5>
             </div>
           </div>
-          <div className="flash-grd-img-cntr w-full flex justify-center mt-4">
-            <div className="flash-grid-img h-60 w-60">
-              <img
-                src={productInfo.image}
-                alt=""
-                style={{ objectFit: "cover" }}
-              />
-            </div>
-          </div>
+          <ItemImageSlider
+            productImages={productInfo.image}
+            mouseHover={mouseHover}
+          />
         </div>
 
         <div className="flash-grid-bottom-cntr flex justify-between space-y-1">
@@ -211,11 +235,11 @@ const FlashDealsGridCards = ({ productInfo, estimateCost, itemDetails }) => {
                 <div className="quantity-checkout flex-col space-y-2  ">
                   {itemDetail?.itemQuantity > 0 ? (
                     <>
-
-                      {/* <span className=" font-semibold ml-2.5 focus:ring-1 focus:ring-light-pink">{itemDetail.itemQuantity}</span> */}
+                  
                       <button
                         className="quantity-btn  ring-1 bg-light-pink ring-light-pink rounded-md p-1 h-5 w-5 hover:bg-dark-pink  transition-colors"
                         onClick={handelAddQuantity}
+                       
                       >
                         <img src={plusIcon} alt="" className="quantity-icon" />
                       </button>
@@ -240,7 +264,8 @@ const FlashDealsGridCards = ({ productInfo, estimateCost, itemDetails }) => {
                   ) : (
                     <button
                       className="quantity-btn  ring-1 ring-light-pink rounded-md p-1 h-5 w-5 hover:bg-light-pink hover:text-white transition-colors"
-                      onClick={handelAddQuantity}
+                      onClick={(e)=>{account?handelAddQuantity(e):setShowLoginButton(true)}}
+                      title="Add to Cart"
                     >
                       <img src={plusIcon} alt="" className="quantity-icon" />
                     </button>
@@ -251,11 +276,15 @@ const FlashDealsGridCards = ({ productInfo, estimateCost, itemDetails }) => {
           </div>
         </div>
 
-        <div className=" space-y-1">
-          <div className="view-hover-icon" role="button">
+        <div className=" space-y-1 z-50" >
+          <div className="view-hover-icon" role="button" title="view-product">
             <img src={viewIcon} className=" h-5" />
           </div>
-          <div className="wishlist-hover-icon" role="button">
+          <div
+            className="wishlist-hover-icon"
+            role="button"
+            title="Add to WishList"
+          >
             <img src={wishListIcon2} className=" h-5" />
           </div>
         </div>
@@ -268,5 +297,54 @@ const reduxCart = (state) => ({
   itemDetails: state.cartItems,
   estimateCost: state.estimate,
 });
+
+const ItemImageSlider = ({ productImages, mouseHover }) => {
+  return !mouseHover ? (
+    <div
+      className="flash-grd-img-cntr-non-hover w-full flex justify-center mt-4"
+    >
+      <div className="flash-grid-img h-60 w-60">
+        <img
+          src={productImages[0]}
+          alt=""
+          style={{ objectFit: "cover" }}
+        />
+      </div>
+    </div>
+  ) : (
+    <Swiper
+      spaceBetween={0}
+      centeredSlides={true}
+      autoplay={{
+        delay: 2500,
+        disableOnInteraction: false,
+      }}
+      pagination={{
+        clickable: true,
+        dynamicBullets: true,
+
+      }}
+     
+      modules={[Autoplay, Pagination, Navigation]}
+      className="mySwiper"
+    >
+      {
+        productImages?.map((image, index) => (
+       
+          <SwiperSlide key={index}  style={{maxHeight:'216px',maxWidth:'252px',padding:'0'}}>
+            <div
+              className="flash-grd-img-cntr w-full flex justify-center mt-4"
+              key={index}
+            >
+              <div className="flash-grid-img h-60 w-60">
+                <img src={image} alt="" style={{ objectFit: "cover" }} />
+              </div>
+            </div>
+          </SwiperSlide>
+        ))
+      }
+    </Swiper>
+  );
+};
 
 export default connect(reduxCart)(FlashDealsGridCards);

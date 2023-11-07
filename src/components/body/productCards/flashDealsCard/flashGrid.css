@@ -94,3 +94,39 @@
     background-color: rgba(230, 229, 229, 0.534);
     cursor: pointer;
 }
+
+.flash-grid-body .swiper-pagination{
+    bottom: 40px !important;
+}
+
+.flash-grid-body .swiper-pagination-bullet {
+    width: 23px;
+    height: 3px;
+    background-color: #ffffff;
+    border: 1px solid #e9456000 !important;
+    opacity: 0.7;
+    background-color: grey;
+    transition: opacity 0.2s;
+    border: 2px solid #fff;
+    border-radius: 0%;
+  }
+
+.flash-grid-body .swiper-pagination-bullet-active{
+    background-color: #e94560;
+    opacity: 1;
+}
+
+.flash-grd-img-cntr-non-hover{
+    opacity: 0;
+    
+    animation: fadein 0.5s ease-in forwards;
+}
+
+@keyframes fadein {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { categoryIcon } from "../../../assets/icons/png/toolbar1/data";
 import {
   downArrowIcon,
@@ -9,9 +9,14 @@ import { categoryList } from "../../../data/categoryList";
 import { Link } from "react-router-dom";
 import { UserToolbarList } from "../../../data/UserToolbarList";
 import { vendorToolbarList } from "../../../data/vendorToolbarList";
+import { roles } from "../../../routes/Path";
+import { AccountContext } from "../../../context/AccountProvider";
 
 
 const NavBar = () => {
+
+  const {account} = useContext(AccountContext);
+
   const [category, setCategory] = useState(false);
   const [subCategory, setSubCategory] = useState(
     Array(categoryList.length).fill(false)
@@ -28,11 +33,10 @@ const NavBar = () => {
     
   };
 
-  console.log("userListBtn",userListBtn);
 
 
   const handelUserListBtnClose = () => {
-    console.log("close");
+
     setUserListBtn(false);
   };
 
@@ -182,6 +186,7 @@ const NavBar = () => {
               </div>
               }
             </div>
+            { account?.role === roles.VENDOR &&
             <div className="vendor-acc-li hover:shadow-lg" onClick={handelVendorListBtnOpen}>
               <span className="flex nav-bar-span">
                 Vendor
@@ -197,6 +202,7 @@ const NavBar = () => {
               }
               </div>
             </div>
+            }
             <Link to="/user/orders">
             <span className="nav-bar-span">Track Orders</span>
             </Link>

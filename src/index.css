@@ -80,6 +80,15 @@ input[type='radio']:checked:after {
 
 }
 
+@keyframes unauthspin {
+  50%{
+    color: #e94560;
+  }
+  100%{
+    color: #BA374D;
+  }
+}
+
 
 @layer components {
   .max-container {
@@ -136,5 +145,8 @@ input[type='radio']:checked:after {
   }
   .Btndisabled{
     @apply  bg-slate-300 font-semibold shadow-md text-slate-600 rounded-8 px-6 py-1  leading-7 tracking-wider cursor-not-allowed;
+  }
+  .Btn4 {
+    @apply   font-medium text-sm text-white rounded-8 px-6 py-1.5 h-[40px] w-[380px] ml-[-3px] flex justify-center items-center space-x-2 leading-7 tracking-wider  my-3;
   }
 }

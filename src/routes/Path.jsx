@@ -24,47 +24,76 @@ import Payment from "../pages/checkout/payment/payment";
 import Review from "../pages/checkout/review/Review";
 import Login from "../pages/Authenticate/login/Login";
 import SignUp from "../pages/Authenticate/Signup/SignUp";
+import RequireAuth, { RequireAuth2, RequireAuth3 } from "../pages/Authenticate/RequireAuth";
+import UnauthorizedPage from "./UnauthorizedPage";
+import Logout from "../pages/Authenticate/Logout";
+
+export const roles = {
+  USER: "USER",
+  VENDOR: "VENDOR",
+  ADMIN: "ADMIN",
+};
+
+export const routes = {
+  entry: ["/login", "/signup"],
+  exit: ["/logout"],
+};
 
 function Path() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
+        <Route element={<RequireAuth3 unAllowedRoutes={routes.exit} />}>
+          <Route path="/logout" element={<Logout />} />
+        </Route>
+        <Route element={<RequireAuth2 unAllowedRoutes={routes.entry} />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+        </Route>
+
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="/home" element={<Home />} />
           <Route path="/search" element={<Search />} />
           <Route path="/product" element={<Product />} />
-          <Route path="/checkout" element={<Checkout/>}>
-            <Route index element={<Cart />} />
-            <Route path="cart" element={<Cart />} />
-            <Route path="details" element={<Details />} />
-            <Route path="payment" element={<Payment/>} />
-            <Route path="review" element={<Review/>} />
-            <Route path="*" element={<NotFound />} />
+          <Route element={<RequireAuth allowedRoles={roles.USER} />}>
+            <Route path="/checkout" element={<Checkout />}>
+              <Route index element={<Cart />} />
+              <Route path="cart" element={<Cart />} />
+              <Route path="details" element={<Details />} />
+              <Route path="payment" element={<Payment />} />
+              <Route path="review" element={<Review />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
           </Route>
-          <Route path="/user" element={<User />}>
-            <Route index element={<UserProfile />} />
-            <Route path="profile" element={<UserProfile />} />
-            <Route path="address" element={<Address />} />
-            <Route path="wishlist" element={<WishList />} />
-            <Route path="orders/:id" element={<UserProfile />} />
-            <Route path="orders" element={<UserOrders />} />
-            <Route path="payment-methods" element={<PaymentMethods />} />
-            <Route path="*" element={<NotFound />} />
+          <Route element={<RequireAuth allowedRoles={roles.USER} />}>
+            <Route path="/user" element={<User />}>
+              <Route index element={<UserProfile />} />
+              <Route path="profile" element={<UserProfile />} />
+              <Route path="address" element={<Address />} />
+              <Route path="wishlist" element={<WishList />} />
+              <Route path="orders/:id" element={<UserProfile />} />
+              <Route path="orders" element={<UserOrders />} />
+              <Route path="payment-methods" element={<PaymentMethods />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
           </Route>
-          <Route path="/vendor" element={<Vendor />}>
-            <Route index element={<Dashboard />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="Products" element={<Products />} />
-            <Route path="add-products" element={<AddProducts />} />
-            <Route path="orders/:id" element={<UserProfile />} />
-            <Route path="orders" element={<Orders />} />
-            <Route path="account-settings" element={<AccountSettings />} />
-            <Route path="*" element={<NotFound />} />
+
+          <Route element={<RequireAuth allowedRoles={roles.VENDOR} />}>
+            <Route path="/vendor" element={<Vendor />}>
+              <Route index element={<Dashboard />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="Products" element={<Products />} />
+              <Route path="add-products" element={<AddProducts />} />
+              <Route path="orders/:id" element={<UserProfile />} />
+              <Route path="orders" element={<Orders />} />
+              <Route path="account-settings" element={<AccountSettings />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
           </Route>
         </Route>
+
+        <Route path="/unauthorized" element={<UnauthorizedPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

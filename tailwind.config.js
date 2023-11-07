@@ -45,6 +45,10 @@ export default {
         "light-pink-100":'#ffe1e6',
         "text-pink":"#ea6b87",
         "hover-light-pink":"#f4bec3",
+        "google-blue":"#4285F4",
+        "facebook-blue":"#3b5998",
+        "google-blue-hover":"#357ae8",
+        "facebook-blue-hover":"#2f477a",
       },
       width: {
         'search-min':'600px',

@@ -15,6 +15,7 @@ import instagram from './instagram.png';
 import youtube from './youtube.png';
 import google from './google.png';
 import category from './category.png';
+import logo2 from './logo2.png';
 
 export const logoIcon = logo;
 export const searchIcon = search;
@@ -33,3 +34,4 @@ export const instagramIcon = instagram;
 export const youtubeIcon = youtube;
 export const googleIcon = google;
 export const categoryIcon = category;
+export const logo2Icon = logo2;

@@ -1,0 +1,80 @@
+
+
+.login-main-cntr input[type="text"],
+.login-main-cntr [type="email"],
+.login-main-cntr input[type="password"],
+.login-main-cntr input[type="number"] {
+  border: 1px solid #d1d6dd;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 12px;
+  width: 380px;
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+.reg-price-div-error  input[type="text"],
+.reg-price-div-error  input[type="email"],
+.reg-price-div-error  input[type="password"],
+.reg-price-div-error  input[type="number"] {
+
+  border: 2px solid #e94560;
+}
+
+.reg-price-div-error ::placeholder {
+  color: #e94560;
+}
+
+.login-main-cntr label {
+    font-size: 18px;
+  font-weight:700;
+  color: #333;
+}
+
+.login-main-cntr{
+  animation: slideIn 0.5s ease-in-out;
+}
+
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-15%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+.login-main-cntr input:focus[type="text"],
+.login-main-cntr input:focus[type="number"],
+.login-main-cntr input:focus[type="email"],
+.login-main-cntr input:focus[type="password"] {
+    outline: none;
+    border: 1px solid #e94560;
+}
+
+
+.login-main-cntr input:hover[type="text"],
+.login-main-cntr input:hover[type="number"] ,
+.login-main-cntr input:hover[type="email"],
+.login-main-cntr input:hover[type="password"]
+{
+    border: 1px solid black;
+}
+
+.login-main-cntr h2 {
+    width: 100%; 
+    text-align: center; 
+    border-bottom: 1.2px solid #cfcece; 
+    line-height: 0.1em;
+    color: grey;
+    margin: 20px 0 20px; 
+ } 
+ 
+ .login-main-cntr h2  span { 
+     background:#fff; 
+     padding:0 10px; 
+ }

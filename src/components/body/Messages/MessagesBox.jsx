@@ -4,7 +4,6 @@ import './messages.css';
 const MessagesBox = ({ newMessage }) => {
   const [messagesQueue, setMessagesQueue] = useState([]);
   const [messageToShow, setMessageToShow] = useState(null);
-
   // Add new messages to the queue when newMessage prop changes
   useEffect(() => {
     if (newMessage) {
@@ -19,16 +18,17 @@ const MessagesBox = ({ newMessage }) => {
         // Show the next message and remove it from the queue
         const nextMessage = messagesQueue[0];
         setMessageToShow(nextMessage);
+        console.log(nextMessage);
 
         // Remove the displayed message from the queue
         setMessagesQueue((prevQueue) => prevQueue.slice(1));
       }
     };
 
-    // Initially display the first message immediately
+    
     displayNextMessage();
 
-    // Set up an interval to display subsequent messages every 7 seconds
+
     const timerId = setInterval(() => {
       displayNextMessage();
     }, 7000);

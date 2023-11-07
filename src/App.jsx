@@ -1,18 +1,22 @@
-import axios from 'axios'
-import React, { Suspense, lazy } from 'react'
-import Layout from './layouts/Layout'
-import Loader from './components/body/Loader'
-const Path  = lazy(()=> import('./routes/Path'))
+import React, { Suspense, lazy } from "react";
+
+import Loader from "./components/body/Loader";
+import UserProvider from "./context/UserProvider";
+import AccountProvider from "./context/AccountProvider";
+const Path = lazy(() => import("./routes/Path"));
 
 function App() {
-
   return (
     <>
-      <Suspense fallback={<Loader/>}>
-        <Path/>
-      </Suspense>    
+      <UserProvider>
+        <AccountProvider>
+          <Suspense fallback={<Loader />}>
+            <Path />
+          </Suspense>
+        </AccountProvider>
+      </UserProvider>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

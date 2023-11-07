@@ -16,7 +16,7 @@ function CartBtn({ cartToggle, cartValue }) {
     <>
       <div
         className="profile-icon bg-slate-100 ml-6 shadow-md"
-        onClick={toggleCart}
+        onClick={toggleCart} 
       >
         {cartValue !== 0 && <div className="alerts">{cartValue}</div>}
         <img src={shoppingbagIcon} alt="" className="user-icon" />
@@ -29,5 +29,7 @@ const mapCartStateToProps = (state) => ({
   cartToggle: state.cartToggle,
   cartValue: state.cartValue,
 });
+
+
 
 export default connect(mapCartStateToProps)(CartBtn);

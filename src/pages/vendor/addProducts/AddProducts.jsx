@@ -18,6 +18,7 @@ const AddProducts = () => {
   const [imagePreview, setImagePreview] = useState([]);
   const [salePriceActive, setSalePriceActive] = useState(false);
   const [viewImage, setViewImage] = useState(false);
+  const [responseMessage, setResponseMessage] = useState("");
   const [deleteImage, setDeleteImage] = useState(
     Array.from({ length: image.length }, (v, i) => i).fill(false)
   );
@@ -30,7 +31,7 @@ const AddProducts = () => {
     tags: ["hello"],
     regularPrice: 0,
     images: [],
-    salePrice:0.0,
+    salePrice: 0.0,
   });
 
   useEffect(() => {
@@ -53,7 +54,7 @@ const AddProducts = () => {
         tags: "",
         regularPrice: "",
         images: [],
-        salePrice:0.0,
+        salePrice: 0.0,
       });
       setImage([]);
       handeDragClose();
@@ -155,7 +156,7 @@ const AddProducts = () => {
   const handelSalePriceCheck = (e) => {
     setFormData((prev) => ({
       ...prev,
-      salePrice:0.0,
+      salePrice: 0.0,
     }));
   };
 
@@ -209,11 +210,17 @@ const AddProducts = () => {
     formData.images.forEach((img, index) => {
       formsData.append(`images`, img);
     });
-    console.log([...formsData.entries()]);
 
     const response = await AddProduct(formsData);
+    setResponseMessage(response.data);
+    setFormSubmitted(true);
+    timerId !== null && clearTimeout(timerId);
+    let timerId;
+    timerId = setTimeout(() => {
+      setFormSubmitted(false);
+    }, 10000);
     console.log(response.data);
-  }
+   }
 
   const formErrorHandelling = (e) => {
     let errorList = {};
@@ -252,14 +259,9 @@ const AddProducts = () => {
 
     const errorList = formErrorHandelling(e);
 
-    let timerId;
-    timerId !== null && clearTimeout(timerId);
+   
     if (Object.keys(errorList).length === 0) {
-      setFormSubmitted(true);
       postFormData();
-      timerId = setTimeout(() => {
-        setFormSubmitted(false);
-      }, 10000);
     }
   };
 
@@ -270,7 +272,7 @@ const AddProducts = () => {
   return (
     <>
       {formSubmitted ? (
-        <MessagesBox newMessage={"Product Added Successfully"} />
+        <MessagesBox newMessage={responseMessage} />
       ) : null}
       {viewImage && (
         <div className="image-viewer-cntr">
@@ -412,11 +414,10 @@ const AddProducts = () => {
                           }}
                         >
                           <div className=" flex justify-center">
-
-                          <img
-                            src={URL.createObjectURL(img)}
-                            alt=""
-                            className="uploaded-img h-16"
+                            <img
+                              src={URL.createObjectURL(img)}
+                              alt=""
+                              className="uploaded-img h-16"
                             />
                           </div>
                           <span>{trimFileName(img.name)}</span>

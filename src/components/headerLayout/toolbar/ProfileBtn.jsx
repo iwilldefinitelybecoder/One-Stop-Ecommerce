@@ -57,10 +57,12 @@ function ProfileBtn() {
     if (account?.imageId) fetchProfileIcon();
   }, [account?.imageId]);
 
-  return showLogoutButton ? (
-    <Navigate to="/logout" state={{ from: location }} replace />
-  ) : (
-    <div className="profile-icon rounded-full bg-slate-100 ml-3 shadow-md cursor-default b">
+  return (
+    showLogoutButton ? (
+      <Navigate to="/logout" state={{from:location}} replace/>
+    ) : (
+    <div className="profile-icon rounded-full bg-slate-100 ml-3 shadow-md cursor-default ">
+
       <button onClick={() => setShowLoginButton(!showLoginButton)}>
         <img src={account?.userIcon || userIcon} alt="" className="user-icon" />
       </button>

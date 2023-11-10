@@ -138,6 +138,8 @@ const LoginInput = ({ isPending, setIsPending }) => {
     password: "",
   });
 
+
+
   const { account, setAccount, setShowLoginButton } =
     useContext(AccountContext);
 
@@ -168,6 +170,10 @@ const LoginInput = ({ isPending, setIsPending }) => {
       LoginUser();
     }
   }, [formSubmitted]);
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
 
   async function LoginUser() {
     setIsPending(true);
@@ -308,7 +314,7 @@ const LoginInput = ({ isPending, setIsPending }) => {
   );
 };
 
-const ErrorMessage = ({ message }) => {
+export const ErrorMessage = ({ message }) => {
   const [show, setShow] = useState(true);
 
   useEffect(() => {

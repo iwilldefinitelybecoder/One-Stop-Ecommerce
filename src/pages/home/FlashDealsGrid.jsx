@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import FlashDealsGridCards from "../../components/body/productCards/flashDealsCard/flashDealsGridCards";
 
 import { products } from "../../data/products";
+import { getProducts } from "../../service/ProductServices";
 
 
 function FlashDealsGrid() {
@@ -26,11 +27,21 @@ function FlashDealsGrid() {
     setProductinfo(products);
   }
   , [products]);
+
+  useEffect(() => {
+    async function fetchProductInfo() {
+      const response = await getProducts();
+      if (response?.status === 200) {
+        setProductinfo(response?.data);
+
+      }else{
+        console.log(response);
+      }
+    }
+    fetchProductInfo();
+  }
+  , []);
   
-  // Create array with 500 slides
-  const [slides, setSlides] = useState(
-    Array.from({ length: 5 }).map((_, index) => `Slide ${index + 1}`)
-  );
 
   return (
     <>

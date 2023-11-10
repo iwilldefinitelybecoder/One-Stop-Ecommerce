@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { editIcon, userIcon } from "../../../assets/icons/png/toolbar1/data";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import {
@@ -7,61 +7,98 @@ import {
   settingsIcon,
 } from "../../../assets/icons/png/user-page-icons/data";
 import { rightArrowIcon } from "../../../assets/icons/png/toolbar-icons/data";
-import { NotificationIcon, logoutIcon } from "../../../assets/icons/png/Rareicons/data";
+import {
+  NotificationIcon,
+  logoutIcon,
+} from "../../../assets/icons/png/Rareicons/data";
 import { AccountContext } from "../../../context/AccountProvider";
 import LoginUI from "../../body/login/loginUI";
 import Cookies from "js-cookie";
 import { removeData } from "../../../utils/encryptData";
+import {
+  SaveUserIcon,
+  fetchUserIcon,
+} from "../../../service/AuthenticateServices";
+import MessagesBox from "../../body/Messages/MessagesBox";
+import { binaryToDataURL } from "../../../utils/binaryToUrl";
 
+const imageType = ["image/png", "image/jpeg", "image/jpg"];
 
 function ProfileBtn() {
-  const { account, showLoginButton, setShowLoginButton,showLogoutButton } =
-    useContext(AccountContext);
+  const {
+    account,
+    setAccount,
+    showLoginButton,
+    setShowLoginButton,
+    showLogoutButton,
+  } = useContext(AccountContext);
 
+  const location = useLocation();
+  useEffect(() => {
+    async function fetchProfileIcon() {
+      const data = await fetchUserIcon(account?.imageId);
 
-  const location  = useLocation();
+      if (data?.success) {
+        try {
+          // const urlLink = await binaryToDataURL(data?.response.data);
+          const blob = new Blob([data?.response.data], {
+            type: data?.response.headers["content-type"],
+          });
+          const urlLink = URL.createObjectURL(blob);
+          setAccount({ ...account, userIcon: `http://localhost:8000/api/v1/user/getprofileicon/${account.imageId}` });
+         
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        console.log(response);
+      }
+    }
+    if (account?.imageId) fetchProfileIcon();
+  }, [account?.imageId]);
 
-  return (
-    showLogoutButton ? (
-      <Navigate to="/logout" state={{from:location}} replace/>
-    ) : (
+  return showLogoutButton ? (
+    <Navigate to="/logout" state={{ from: location }} replace />
+  ) : (
     <div className="profile-icon rounded-full bg-slate-100 ml-3 shadow-md cursor-default b">
       <button onClick={() => setShowLoginButton(!showLoginButton)}>
         <img src={account?.userIcon || userIcon} alt="" className="user-icon" />
       </button>
       {showLoginButton && account && (
         <ProfileMenu
-          img={account?.userIcon}
+          image={account?.userIcon}
           firstName={account?.firstName}
           lastName={account?.lastName}
           email={account?.email}
         />
       )}
     </div>
-  )
   );
 }
 
 const ProfileMenu = (props) => {
-
-  const {setAccount, setShowLoginButton,setShowLogoutButton } = useContext(AccountContext);
+  const { setAccount, setShowLoginButton, setShowLogoutButton } =
+    useContext(AccountContext);
   const navigate = useNavigate();
-  
 
   const logOut = () => {
-    setShowLogoutButton(true)
-    
-  }
+    setShowLogoutButton(true);
+  };
 
   const handleShowLoginButton = () => {
     setShowLoginButton(false);
-  }
+  };
 
-  const MenuItem = ({link ,image1,image2,children,onClick}) => {
+  const MenuItem = ({ link, image1, image2, children, onClick }) => {
     return (
       <>
         <Link to={link} role="menuitem">
-          <div className="menu-item flex w-full  px-2 py-3 items-center border-b-[1px] hover:text-white  hover:bg-light-pink transition-all rounded-md active:bg-dark-pink " onClick={()=>{onClick()}}>
+          <div
+            className="menu-item flex w-full  px-2 py-3 items-center border-b-[1px] hover:text-white  hover:bg-light-pink transition-all rounded-md active:bg-dark-pink "
+            onClick={() => {
+              onClick();
+            }}
+          >
             <img src={image1} alt="" className="h-7 mr-2 " />
             <span className=" text-lg font-semibold">{children}</span>
             <img src={image2} alt="" className="h-4 ml-auto" />
@@ -81,20 +118,29 @@ const ProfileMenu = (props) => {
           style={{ display: "flex", flexDirection: "column" }}
           className=" w-full justify-center space-y-1 items-center mt-3 mb-4"
         >
-          <ProfileIcon image={props?.userIcon} />
-          <UserName firstName={props?.firstName} 
-          lastName={props?.lastName} 
-          email={props?.email}
+          <ProfileIcon image={props?.image} />
+          <UserName
+            firstName={props?.firstName}
+            lastName={props?.lastName}
+            email={props?.email}
           />
         </div>
         <div className=" rounded-lg ">
-          <MenuItem link="/user/profile" onClick={handleShowLoginButton} image1={profileIcon}>
+          <MenuItem
+            link="/user/profile"
+            onClick={handleShowLoginButton}
+            image1={profileIcon}
+          >
             Your Account
           </MenuItem>
-          <MenuItem link="/user/profile" onClick={handleShowLoginButton} image1={settingsIcon}>
+          <MenuItem
+            link="/user/profile"
+            onClick={handleShowLoginButton}
+            image1={settingsIcon}
+          >
             Settings
           </MenuItem>
-          <MenuItem  onClick={handleShowLoginButton} image1={NotificationIcon} >
+          <MenuItem onClick={handleShowLoginButton} image1={NotificationIcon}>
             Notifications
           </MenuItem>
           <MenuItem image1={logoutIcon} onClick={logOut}>
@@ -106,22 +152,36 @@ const ProfileMenu = (props) => {
   );
 };
 
-const ProfileIcon = (props) => {
+export const ProfileIcon = (props) => {
+  const [displayEditIcon, setDisplayEditIcon] = useState(false);
+
   return (
     <>
-      <div className="profile-icons rounded-full flex justify-center items-center h-24 w-24 bg-slate-100 ml-3 shadow-md">
-        <img src={props?.userIcon || userIcon} alt="" className="user-icon" />
+      <div className="profile-icons rounded-full flex justify-center items-center ring-4 ring-slate-300  overflow-hidden h-24 w-24 bg-slate-100 ml-3 shadow-lg">
         <img
-          src={editIcon}
-          className="user-icon-edit h-5  absolute top-[90px] right-[90px]  "
-          title="edit-icon"
+          src={props?.image || userIcon}
+          alt=""
+          className="profile-img  rounded-full   "
         />
+        <div className="profile-icon-edit-cntr  h-20  absolute top-[90px] right-[90px]">
+          <div onClick={() => setDisplayEditIcon(!displayEditIcon)}>
+            <img
+              src={editIcon}
+              className={`user-icon-edit h-5 }`}
+              style={{ display: displayEditIcon ? "block" : "" }}
+              title="edit-icon"
+            />
+          </div>
+          {displayEditIcon && (
+            <EditProfileIcon setdisplayBtn={setDisplayEditIcon} displayBtn={displayEditIcon} />
+          )}
+        </div>
       </div>
     </>
   );
 };
 
-const UserName = (props) => {
+export const UserName = (props) => {
   return (
     <>
       <div className="user-name text-xl font-semibold text-center justify-center flex flex-wrap">
@@ -129,6 +189,107 @@ const UserName = (props) => {
         <span className="ml-1">{props?.lastName}</span>
       </div>
       <span>{props?.email}</span>
+    </>
+  );
+};
+
+const EditProfileIcon = ({ displayBtn,setdisplayBtn }) => {
+  const { account, setAccount,showLoginButton } = useContext(AccountContext);
+  const inputRef = useRef();
+  const [responseMessage, setResponseMessage] = useState("");
+  const [prevImage, setPrevImage] = useState("");
+  const [imageData, setImageData] = useState({
+    email: account?.email,
+    image: "",
+  });
+  const [saveImage, setSaveImage] = useState(false);
+  useEffect(() => {
+    if (imageData.image !== "") {
+      setPrevImage({...account?.userIcon});
+      setAccount({
+        ...account,
+        userIcon: URL.createObjectURL(imageData.image),
+      });
+    }
+  }, [imageData]);
+
+  useEffect(() => {
+    let timerId;
+    async function uploadImage() {
+      if (saveImage) {
+        const data = new FormData();
+        data.append("email", account?.email);
+        data.append("image", imageData.image);
+        const response = await SaveUserIcon(data);
+        if (response?.success) {
+          setSaveImage(false);
+          setResponseMessage(response?.message);
+          setImageData({ ...imageData, image: "" });
+          setdisplayBtn(false);
+          timerId = setTimeout(() => {
+            setResponseMessage("");
+          }, 10000);
+        } else {
+          setSaveImage(false);
+          console.log(response);
+          setResponseMessage(response?.message);
+        }
+      }
+    }
+    uploadImage();
+  }, [saveImage]);
+
+  // useEffect(() => {
+  //   console.log("displayBtn",displayBtn);
+  //   if(!displayBtn || !showLoginButton) {
+  //     setAccount({ ...account, userIcon: prevImage });
+  //   }
+  // }, [showLoginButton,displayBtn]);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    
+    setImageData({ ...imageData, image: file });
+  };
+
+  const handleEditProfileIcon = () => {
+    inputRef.current.click();
+  };
+
+  return (
+    <>
+      {responseMessage && <MessagesBox message={responseMessage} />}
+      <div className="profile-icon-edit-cntr  absolute top-[30px] right-[-60px] w-24 font-semibold text-slate-500 py-1 bg-white ring-1 ring-slate-200 shadow-md rounded-md ">
+        <input
+          type="file"
+          ref={inputRef}
+          style={{ display: "none" }}
+          accept="image"
+          disabled={saveImage}
+          onChange={handleImageChange}
+        />
+        {imageData.image === "" ? (
+          <button
+            className=" hover:bg-slate-200 w-full py-1"
+            type="file"
+            onClick={handleEditProfileIcon}
+          >
+            <span>{"upload pic"}</span>
+          </button>
+        ) : (
+          <button
+            className=" hover:bg-slate-200 w-full py-1"
+            style={{ backgroundColor: `${saveImage ? "gray" : ""}` }}
+            type="file"
+            disabled={saveImage}
+            onClick={() => {
+              setSaveImage(true);
+            }}
+          >
+            <span>{saveImage ? "saving..." : "save"}</span>
+          </button>
+        )}
+      </div>
     </>
   );
 };

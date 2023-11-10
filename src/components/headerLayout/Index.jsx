@@ -17,12 +17,12 @@ const Index = () => {
         <div className=" rounded-md  py-2 z-20 ">
           <Toolbar />
           <NavBar />
-        </div>
+        </div>   
 
         <CartContainer />
         {
           showLoginButton && !account  && 
-          <div className=" profile-btn-login">
+          <div className=" profile-btn-login ">
           <div className="cart-bg-container " onClick={()=>setShowLoginButton(false)}></div>
           <LoginUI />
         </div>

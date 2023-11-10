@@ -15,47 +15,49 @@ import {
   viewIcon,
 } from "../../../assets/icons/png/Rareicons/data";
 import { Link, useNavigate } from "react-router-dom";
-import ErrorOutlineOutlinedIcon from "@material-ui/icons/ErrorOutlineOutlined";
-import CheckOutlinedIcon from "@material-ui/icons/CheckOutlined";
-import { Box, LinearProgress, Typography, makeStyles } from "@material-ui/core";
+import { ErrorOutlineOutlined } from "@mui/icons-material";
+import { CheckOutlined } from "@mui/icons-material";
+import { Box, LinearProgress, Typography, linearProgressClasses } from "@mui/material";
+//    
 import { login } from "../../../service/AuthenticateServices";
 import Cookies from "js-cookie";
 import { AccountContext } from "../../../context/AccountProvider";
 import { saveData } from "../../../utils/encryptData";
 import Lottie from "react-lottie-player";
 import { checkMarkGif } from "../../../assets/icons/json/data";
+import styled from "styled-components";
 
-const PasswordStrength = {
+export const PasswordStrength = {
   STRONG: "Strong",
   MEDIUM: "Medium",
   WEAK: "Weak",
-};
+}; 
 
-const useStyles = makeStyles((theme) => ({
-  progress: {
-    backgroundColor: "#e9456065",
-  },
-  bar: {
-    backgroundColor: "#e94560",
-  },
-}));
+ 
+ 
+const StyledLinearProgressBar = styled(LinearProgress)({
+	[`&.${linearProgressClasses.determinate}`]: { backgroundColor: "#e9456065" },
+	[`&.${linearProgressClasses.determinate} > .${linearProgressClasses.bar1Determinate}`]: { backgroundColor: "#e94560" }
+});
+       
 
 const LoginUI = () => {
-  const classes = useStyles();
+  // const classes = useStyles();
   const [isPending, setIsPending] = useState(false);
 
   return (
-    <div className="login-main-cntr w-[500px] bg-white rounded-xl shadow-lg z-50 ">
+    <div className="login-main-cntr w-[500px] bg-white rounded-xl shadow-lg z-50  ">
       {isPending && (
-        <LinearProgress
+        <StyledLinearProgressBar
           style={{
             borderTopLeftRadius: "10px 20px",
             borderTopRightRadius: "20px 10px",
+            backgroundColor: "#e9456065",
+            '& .MuiLinearProgress-bar': {
+              backgroundColor: "#e94560", 
+            },
           }}
-          classes={{
-            root: classes.progress,
-            bar: classes.bar,
-          }}
+       
         />
       )}
       <div className=" px-16 pt-8 ">
@@ -69,40 +71,40 @@ const LoginUI = () => {
           </h1>
         </div>
         {!isPending && Cookies.get("JWT") !== undefined ? (
-        <div className=" h-[234px] w-[372px] flex justify-center items-center ">
-          <Lottie
-            animationData={checkMarkGif}
-            play
-            style={{ width: 150, height: 150 }}
-            loop={false}
-          />
-        </div>
-      ) : (
-        <>
-        <LoginInput isPending={isPending} setIsPending={setIsPending} />
-        <h2>
-          <span>On</span>
-        </h2>
+          <div className=" h-[234px] w-[372px] flex justify-center items-center ">
+            <Lottie
+              animationData={checkMarkGif}
+              play
+              style={{ width: 150, height: 150 }}
+              loop={false}
+            />
+          </div>
+        ) : (
+          <>
+            <LoginInput isPending={isPending} setIsPending={setIsPending} />
+            <h2>
+              <span>On</span>
+            </h2>
 
-        <OtherSignInOptions
-          text={"Sign in with Google"}
-          image={googleIcon3}
-          hoverColor={"hover:bg-google-blue-hover"}
-          color={"bg-google-blue"}
-        />
-        <OtherSignInOptions
-          text={"Sign in with Facebook"}
-          image={facebookIcon3}
-          hoverColor={"hover:bg-facebook-blue-hover"}
-          color={"bg-facebook-blue"}
-        />
-        <ExtraOptions
-          message={"Don't have an account?"}
-          option={"Sign Up"}
-          link={"/signup"}
-        />
-      </>
-      )}
+            <OtherSignInOptions
+              text={"Sign in with Google"}
+              image={googleIcon3}
+              hoverColor={"hover:bg-google-blue-hover"}
+              color={"bg-google-blue"}
+            />
+            <OtherSignInOptions
+              text={"Sign in with Facebook"}
+              image={facebookIcon3}
+              hoverColor={"hover:bg-facebook-blue-hover"}
+              color={"bg-facebook-blue"}
+            />
+            <ExtraOptions
+              message={"Don't have an account?"}
+              option={"Sign Up"}
+              link={"/signup"}
+            />
+          </>
+        )}
       </div>
       <div className="flex justify-center items-center pb-2">
         <span className="text-slate-500 text-sm">
@@ -176,7 +178,7 @@ const LoginInput = ({ isPending, setIsPending }) => {
     formsData.append("password", formData.password);
     const auth = await login(formsData);
     if (auth?.success === true) {
-  
+
       Cookies.set("JWT", auth.response.data.token);
       setIsPending(false);
       setTimeout(() => {
@@ -201,6 +203,9 @@ const LoginInput = ({ isPending, setIsPending }) => {
     if (formData.email === "") {
       errorList.email = "Please enter a email";
     }
+    if(formData.email.includes("@") === false){
+      errorList.email = "Please enter a valid email";
+    }
     if (formData.password === "") {
       errorList.password = "Please enter a password";
     }
@@ -219,96 +224,96 @@ const LoginInput = ({ isPending, setIsPending }) => {
   const handelSubmitButton = () => {
     submitRef.current.click();
   };
- 
+
 
   return (
     <>
       {errorFields.response && <ErrorMessage message={errorFields.response} />}
-      
-        <form
-          action=""
-          onSubmit={handelFormSumbit}
-          autoComplete="true"
-          noValidate
-        >
-          <div
-            className="price-sale-div1 items-center "
-            style={{ display: "flex", flexDirection: "column" }}
-          >
-            <div className={`reg-price-div  ml-6 ${errorFields.email && "reg-price-div-error"}`}>
-              <div className="price-div">
-                <label htmlFor="reg-price">Email:</label>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Example@mail.com"
-                  onChange={handelformChange}
-                  value={formData.email}
-                  ref={inputRef}
-                />
-              </div>
-              {errorFields.email && (
-                <span className=" ml-4 text-red-500 font-semibold">
-                  *Email is Required
-                </span>
-              )}
-            </div>
 
-            <div className="sale-div ml-6">
-              <div className={`sale-div ${errorFields.password && "reg-price-div-error"}`}>
-                <div>
-                  <label htmlFor="sale-price">Password:</label>
-                </div>
-                <div className=" relative flex">
-                  <input
-                    type={passwordVisible ? "text" : "password"}
-                    name="password"
-                    placeholder="********"
-                    value={formData.password}
-                    onChange={handelformChange}
-                  />
-                  <div
-                    className="view-password cursor-pointer"
-                    onClick={(e) => setPasswordVisible(!passwordVisible)}
-                  >
-                    <img
-                      src={passwordVisible ? viewDisabledIcon : viewIcon}
-                      className="h-6 absolute right-9 top-4"
-                    />
-                  </div>
-                </div>
-                {formData.password && (
-                  <CheckPasswordStrength password={formData.password} />
-                )}
+      <form
+        action=""
+        onSubmit={handelFormSumbit}
+        autoComplete="true"
+        noValidate
+      >
+        <div
+          className="price-sale-div1 items-center "
+          style={{ display: "flex", flexDirection: "column" }}
+        >
+          <div className={`reg-price-div  ml-6 ${errorFields.email && "reg-price-div-error"}`}>
+            <div className="price-div">
+              <label htmlFor="reg-price">Email:</label>
+              <input
+                type="email"
+                name="email"
+                placeholder="Example@mail.com"
+                onChange={handelformChange}
+                value={formData.email}
+                ref={inputRef}
+              />
+            </div>
+            {errorFields.email && (
+              <span className=" ml-4 text-red-500 font-semibold">
+                *Email is Required
+              </span>
+            )}
+          </div>
+
+          <div className="sale-div ml-6">
+            <div className={`sale-div ${errorFields.password && "reg-price-div-error"}`}>
+              <div>
+                <label htmlFor="sale-price">Password:</label>
               </div>
-              {errorFields.password && (
-                <span className=" ml-4 text-red-500 font-semibold">
-                  *Password is Required
-                </span>
+              <div className=" relative flex">
+                <input
+                  type={passwordVisible ? "text" : "password"}
+                  name="password"
+                  placeholder="********"
+                  value={formData.password}
+                  onChange={handelformChange}
+                />
+                <div
+                  className="view-password cursor-pointer"
+                  onClick={(e) => setPasswordVisible(!passwordVisible)}
+                >
+                  <img
+                    src={passwordVisible ? viewDisabledIcon : viewIcon}
+                    className="h-6 absolute right-9 top-4"
+                  />
+                </div>
+              </div>
+              {formData.password && (
+                <CheckPasswordStrength password={formData.password} />
               )}
             </div>
-            <div className="btn-div w-[380px]">
-              <input
-                ref={submitRef}
-                type="submit"
-                style={{ display: "none" }}
-              />
-              <button
-                className={`${isPending ? "Btndisabled" : "Btn3"} w-full`}
-                onClick={(e) => handelSubmitButton(e)}
-                disabled={isPending}
-              >
-                Login
-              </button>
-            </div>
+            {errorFields.password && (
+              <span className=" ml-4 text-red-500 font-semibold">
+                *Password is Required
+              </span>
+            )}
           </div>
-        </form>
-      
+          <div className="btn-div w-[380px]">
+            <input
+              ref={submitRef}
+              type="submit"
+              style={{ display: "none" }}
+            />
+            <button
+              className={`${isPending ? "Btndisabled" : "Btn3"} w-full`}
+              onClick={(e) => handelSubmitButton(e)}
+              disabled={isPending}
+            >
+              Login
+            </button>
+          </div>
+        </div>
+      </form>
+
     </>
   );
 };
 
-const ErrorMessage = ({ message }) => {
+export const ErrorMessage = ({ message }) => {
   const [show, setShow] = useState(true);
 
   useEffect(() => {
@@ -331,7 +336,7 @@ const ErrorMessage = ({ message }) => {
   );
 };
 
-const OtherSignInOptions = (props) => {
+export const OtherSignInOptions = (props) => {
   return (
     <button className={`other-signin-options Btn4  ${props.color} ${props.hoverColor} transition-all`}>
       <div className=" p-1 bg-white rounded-full">
@@ -342,7 +347,7 @@ const OtherSignInOptions = (props) => {
   );
 };
 
-const ExtraOptions = (props) => {
+export const ExtraOptions = (props) => {
   return (
     <div
       className={`extra-options flex justify-center py-3 items-center my-3 ${props?.bg} text-slate-400 text-sm`}
@@ -384,16 +389,16 @@ function testingPasswordStrength(password) {
 }
 
 function getIcon(strength) {
-  let icon = ErrorOutlineOutlinedIcon;
+  let icon =  ErrorOutlineOutlined;
   switch (strength) {
     case PasswordStrength.WEAK:
-      icon = ErrorOutlineOutlinedIcon;
+      icon = ErrorOutlineOutlined;
       break;
     case PasswordStrength.MEDIUM:
-      icon = ErrorOutlineOutlinedIcon;
+      icon =  ErrorOutlineOutlined;
       break;
     case PasswordStrength.STRONG:
-      icon = CheckOutlinedIcon;
+      icon = CheckOutlined;
       break;
   }
   return icon;
@@ -421,7 +426,7 @@ function generateColors(strength) {
   return result;
 }
 
-function CheckPasswordStrength({ password }) {
+export   function CheckPasswordStrength({ password }) {
   const passwordStrength = testingPasswordStrength(password);
   const Icon = getIcon(passwordStrength);
   const colors = generateColors(passwordStrength);
@@ -438,9 +443,9 @@ function CheckPasswordStrength({ password }) {
         {colors?.map((color, index) => (
           <Box
             key={index}
-            flex={1}
+            
             height="5px"
-            width="10px"
+            width="50px"
             borderRadius="5px"
             bgcolor={color}
           ></Box>
@@ -449,7 +454,7 @@ function CheckPasswordStrength({ password }) {
       <Box
         display="flex"
         alignItems="center"
-        justifyContent="flex-start"
+        justifyContent="center"
         gap="5px"
         margin="0 0 15px 0"
       >

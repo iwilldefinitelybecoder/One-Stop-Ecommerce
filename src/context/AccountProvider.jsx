@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useRef } from 'react';
-import { getData } from '../utils/encryptData';
+import { getData, saveData } from '../utils/encryptData';
 
 export const AccountContext = createContext(null);
 
@@ -25,6 +25,11 @@ const AccountProvider = ({children}) => {
   
     }
     ,[])
+
+    useEffect(() => {
+        
+    }
+    ,[account])
     
     return (
         <AccountContext.Provider value={{ 

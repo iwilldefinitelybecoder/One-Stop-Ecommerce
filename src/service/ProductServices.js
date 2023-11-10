@@ -19,3 +19,17 @@ export const AddProduct = async (product) => {
     console.log(error.message);
   }
 };
+
+
+export const getProducts = async () => {
+
+  try {
+    return axios.get(API_URL + "get", {
+      headers: headers,
+    },
+      { withCredentials: true }
+    );
+  } catch (error) {
+    console.log(error.message);
+  }
+}

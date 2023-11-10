@@ -24,9 +24,13 @@ import Payment from "../pages/checkout/payment/payment";
 import Review from "../pages/checkout/review/Review";
 import Login from "../pages/Authenticate/login/Login";
 import SignUp from "../pages/Authenticate/Signup/SignUp";
-import RequireAuth, { RequireAuth2, RequireAuth3 } from "../pages/Authenticate/RequireAuth";
+import RequireAuth, {
+  RequireAuth2,
+  RequireAuth3,
+} from "../pages/Authenticate/RequireAuth";
 import UnauthorizedPage from "./UnauthorizedPage";
 import Logout from "../pages/Authenticate/Logout";
+import UpgradeToVendor from "../pages/Authenticate/vendor/UpgradeTOVendor";
 
 export const roles = {
   USER: "USER",
@@ -50,7 +54,9 @@ function Path() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
         </Route>
-
+        <Route element={<RequireAuth allowedRoles={roles.USER} />}>
+          <Route path="/register-vendor" element={<UpgradeToVendor />} />
+        </Route>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="/home" element={<Home />} />

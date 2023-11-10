@@ -1,6 +1,8 @@
 import React from "react";
 import { cartProducts } from "../../data/cartproducts";
 
+
+
 const initialState = [...cartProducts];
 const items = (state = initialState, action) => {
   switch (action.type) {

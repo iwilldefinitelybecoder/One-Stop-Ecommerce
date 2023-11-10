@@ -54,7 +54,6 @@ export const register = async (data) => {
 export const Authenticate = async ({ data }) => {
   const token = Cookies.get("JWT");
   try {
-  
     const response = await axios.get(
       `${URI}/user/authenticate`,
       {
@@ -75,6 +74,62 @@ export const Authenticate = async ({ data }) => {
       return { success: false, message: "Session Expired" };
     } else {
       return { success: false, message: "failed to connect to server" };
+    }
+  }
+};
+
+export const SaveUserIcon = async (data) => {
+  const token = Cookies.get("JWT");
+  try {
+    const response = await axios.post(
+      `${URI}/user/uploadprofileicon`,
+      data,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+      { withCredentials: true },
+      { setTimeout: 10000 }
+    );
+    if (response.status === 200) {
+      return { success: true, message: "Icon Saved" };
+    }
+  } catch (error) {
+    if (!error?.response) {
+      return { success: false, message: "No Server Response" };
+    } else if (error?.response.status === 400) {
+      return { success: false, message: "Error, retry again" };
+    }
+  }
+};
+
+export const fetchUserIcon = async (id) => {
+  const token = Cookies.get("JWT");
+  try {
+    const response = await axios.get(
+      `${URI}/user/getprofileicon/${id}`,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+      { withCredentials: true },
+    );
+    if (response.status === 200) {
+      return {
+        success: true,
+        response,
+        contentType: response.headers["content-type"],
+      };
+    }
+  } catch (error) {
+    if (!error?.response) {
+      return { success: false, message: "No Server Response" };
+    } else if (error?.response.status === 400) {
+      return { success: false, message: "Fatal error" };
     }
   }
 };

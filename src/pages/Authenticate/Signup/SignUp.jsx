@@ -166,8 +166,11 @@ const SignupInput = ({ isPending, setIsPending }) => {
   async function LoginUser() {
     setIsPending(true);
     const formsData = new FormData();
+    formsData.append("firstName", formData.firstName);
+    formsData.append("lastName", formData.lastName);
     formsData.append("email", formData.email);
     formsData.append("password", formData.password);
+
     const auth = await register(formsData);
     if (auth?.success === true) {
 

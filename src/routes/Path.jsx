@@ -31,6 +31,10 @@ import RequireAuth, {
 import UnauthorizedPage from "./UnauthorizedPage";
 import Logout from "../pages/Authenticate/Logout";
 import UpgradeToVendor from "../pages/Authenticate/vendor/UpgradeTOVendor";
+import Auth from "../pages/Authenticate/Auth";
+import ChangePassword from "../pages/Authenticate/extraAuthpages/ChangePassword";
+import ResetPassword from "../pages/Authenticate/extraAuthpages/ResetPassword";
+import VerifyEmail from "../pages/Authenticate/extraAuthpages/VerifyEmail";
 
 export const roles = {
   USER: "USER",
@@ -47,10 +51,16 @@ function Path() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/Auth" element={<Auth />} >
+          <Route path="verify-email" element={<VerifyEmail />} />
+          <Route path="change-password" element={<ChangePassword />} />
+        </Route>
+
         <Route element={<RequireAuth3 unAllowedRoutes={routes.exit} />}>
           <Route path="/logout" element={<Logout />} />
         </Route>
         <Route element={<RequireAuth2 unAllowedRoutes={routes.entry} />}>
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
         </Route>
@@ -62,7 +72,7 @@ function Path() {
           <Route path="/home" element={<Home />} />
           <Route path="/search" element={<Search />} />
           <Route path="/product" element={<Product />} />
-          <Route element={<RequireAuth allowedRoles={roles.USER} />}>
+          <Route element={<RequireAuth allowedRoles={[roles.USER, roles.VENDOR]} />}>
             <Route path="/checkout" element={<Checkout />}>
               <Route index element={<Cart />} />
               <Route path="cart" element={<Cart />} />
@@ -72,7 +82,7 @@ function Path() {
               <Route path="*" element={<NotFound />} />
             </Route>
           </Route>
-          <Route element={<RequireAuth allowedRoles={roles.USER} />}>
+          <Route element={<RequireAuth allowedRoles={[roles.USER, roles.VENDOR]} />}>
             <Route path="/user" element={<User />}>
               <Route index element={<UserProfile />} />
               <Route path="profile" element={<UserProfile />} />

@@ -15,9 +15,6 @@ import React, {
     viewIcon,
   } from "../../../assets/icons/png/Rareicons/data";
   import { Link, useNavigate } from "react-router-dom";
-  import ErrorOutlineOutlinedIcon from "@material-ui/icons/ErrorOutlineOutlined";
-  import CheckOutlinedIcon from "@material-ui/icons/CheckOutlined";
-  import { Box, LinearProgress, Typography, makeStyles } from "@material-ui/core";
   import { login } from "../../../service/AuthenticateServices";
   import Cookies from "js-cookie";
   import { AccountContext } from "../../../context/AccountProvider";
@@ -31,21 +28,15 @@ import React, {
     WEAK: "Weak",
   };
   
-  const useStyles = makeStyles((theme) => ({
-    progress: {
-      backgroundColor: "#e9456065",
-    },
-    bar: {
-      backgroundColor: "#e94560",
-    },
-  }));
+
   
 import { ErrorMessage } from "../../../components/body/login/loginUI";
 import { ProfileIcon, UserName } from "../../../components/headerLayout/toolbar/ProfileBtn";
 import { upgradeToVendor } from "../../../service/vendorServices";
+import { LinearProgress } from "@mui/material";
 
 const UpgradeToVendor = () => {
-    const classes = useStyles();
+   
     const [isPending, setIsPending] = useState(false);
     const {account} = useContext(AccountContext);
 
@@ -54,15 +45,14 @@ const UpgradeToVendor = () => {
       <div className="login-main-cntr w-[500px] bg-white rounded-xl shadow-lg z-50 ">
         {isPending && (
           <LinearProgress
-            style={{
-              borderTopLeftRadius: "10px 20px",
-              borderTopRightRadius: "20px 10px",
-            }}
-            classes={{
-              root: classes.progress,
-              bar: classes.bar,
-            }}
-          />
+          style={{
+            borderTopLeftRadius: "10px 20px",
+            borderTopRightRadius: "20px 10px",
+            backgroundColor: "#e9456065",
+            '& .MuiLinearProgress-bar': {
+              backgroundColor: "#e94560", 
+            },
+          }}/>
         )}
         <div className=" px-16 pt-8 ">
           <div
@@ -120,14 +110,7 @@ const UpgradeToVendor = () => {
     const { account, setAccount, setShowLoginButton } =
       useContext(AccountContext);
   
-    useEffect(() => {
-      if (formSubmitted && Object.keys(errorFields).length === 0) {
-        setFormData({
-          email: "",
-          vendorName: "",
-        });
-      }
-    }, [account]);
+ 
   
     const navigate = useNavigate();
   
@@ -164,11 +147,11 @@ const UpgradeToVendor = () => {
         
         setIsPending(false);
         setTimeout(() => {
-          setAccount(auth.response.data);
           navigate("/");
-          const data = auth.response;
-          saveData(data, "account");
-          setShowLoginButton(false);
+          setFormData({
+            email: "",
+            vendorName: "",
+          });
         }, 2000);
       } else {
         setErrorFields({ ...errorFields, response: auth?.message });
@@ -221,7 +204,7 @@ const UpgradeToVendor = () => {
             >
               <div className={`reg-price-div  ml-6 ${errorFields.email && "reg-price-div-error"}`}>
                 <div className="price-div">
-                  <label htmlFor="reg-price">Email:</label>
+                  <label htmlFor="reg-price">Support Email:</label>
                   <input
                     type="email"
                     name="email"

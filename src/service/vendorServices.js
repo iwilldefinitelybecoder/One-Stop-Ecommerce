@@ -30,3 +30,31 @@ export const upgradeToVendor = async (data) => {
         }
     }
     }
+
+    export const AuthVendor = async (data) => {
+        const token = Cookies.get("JWT");
+        try {
+          const response = await axios.get(
+            `${URI}/authenticate`,
+
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            },
+            { withCredentials: true }
+          );
+          if (response.status === 200 || response.status === "ok") {
+            return { success: true, response };
+          }
+        } catch (error) {
+          if (!error?.response) {
+            return { success: false, message: "No Server Response" };
+          } else if (error?.response.status === 403) {
+            return { success: false, message: "Session Expired" };
+          } else {
+            return { success: false, message: "failed to connect to server" };
+          }
+        }
+      }

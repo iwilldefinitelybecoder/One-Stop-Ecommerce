@@ -26,6 +26,7 @@ import { saveData } from "../../../utils/encryptData";
 import Lottie from "react-lottie-player";
 import { checkMarkGif } from "../../../assets/icons/json/data";
 import styled from "styled-components";
+import { GoogleLogin } from "@react-oauth/google";
 
 export const PasswordStrength = {
   STRONG: "Strong",
@@ -44,6 +45,8 @@ const StyledLinearProgressBar = styled(LinearProgress)({
 const LoginUI = () => {
   // const classes = useStyles();
   const [isPending, setIsPending] = useState(false);
+  const gLoginRef = React.useRef(null);
+  const facebookLoginRef = React.useRef(null);
 
   return (
     <div className="login-main-cntr w-[500px] bg-white rounded-xl shadow-lg z-50  ">
@@ -81,7 +84,7 @@ const LoginUI = () => {
           </div>
         ) : (
           <>
-            <LoginInput isPending={isPending} setIsPending={setIsPending} />
+            <LoginInput isPending={isPending} setIsPending={setIsPending} gref={gLoginRef} fbLoginRef={facebookLoginRef} />
             <h2>
               <span>On</span>
             </h2>
@@ -91,6 +94,7 @@ const LoginUI = () => {
               image={googleIcon3}
               hoverColor={"hover:bg-google-blue-hover"}
               color={"bg-google-blue"}
+              ref = {gLoginRef}
             />
             <OtherSignInOptions
               text={"Sign in with Facebook"}
@@ -102,7 +106,10 @@ const LoginUI = () => {
               message={"Don't have an account?"}
               option={"Sign Up"}
               link={"/signup"}
-            />
+              
+            >
+             
+            </ExtraOptions>
           </>
         )}
       </div>
@@ -129,7 +136,7 @@ const LoginUI = () => {
   );
 };
 
-const LoginInput = ({ isPending, setIsPending }) => {
+const LoginInput = ({ isPending, setIsPending,gLoginRef,fbLoginRef }) => {
   const inputRef = React.useRef(null);
   const submitRef = React.useRef(null);
   const [errorFields, setErrorFields] = useState({});
@@ -288,9 +295,7 @@ const LoginInput = ({ isPending, setIsPending }) => {
                   />
                 </div>
               </div>
-              {formData.password && (
-                <CheckPasswordStrength password={formData.password} />
-              )}
+              
             </div>
             {errorFields.password && (
               <span className=" ml-4 text-red-500 font-semibold">
@@ -311,6 +316,9 @@ const LoginInput = ({ isPending, setIsPending }) => {
             >
               Login
             </button>
+            {/* <div>
+            <GoogleLogin onSuccess={(res) => console.log(res)}/> 
+            </div> */}
           </div>
         </div>
       </form>
@@ -342,9 +350,9 @@ export const ErrorMessage = ({ message }) => {
   );
 };
 
-export const OtherSignInOptions = (props) => {
+export const  OtherSignInOptions = (props) => {
   return (
-    <button className={`other-signin-options Btn4  ${props.color} ${props.hoverColor} transition-all`}>
+    <button className={`other-signin-options Btn4  ${props.color} ${props.hoverColor} transition-all`} ref={props.ref}>
       <div className=" p-1 bg-white rounded-full">
         <img src={props.image} className="h-4" />
       </div>
@@ -357,6 +365,7 @@ export const ExtraOptions = (props) => {
   return (
     <div
       className={`extra-options flex justify-center py-3 items-center my-3 ${props?.bg} text-slate-400 text-sm`}
+      onClick={props.onClick}
     >
       <span>
         {props.message}&nbsp;

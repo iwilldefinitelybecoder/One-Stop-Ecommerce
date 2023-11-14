@@ -7,9 +7,15 @@ import { AccountContext } from "../context/AccountProvider";
 import { getData } from "../utils/encryptData";
 import Cookies from "js-cookie";
 import { Authenticate } from "../service/AuthenticateServices";
+import {jwtDecode} from "jwt-decode"
+const tokens = Cookies.get("JWT");
+
+
+
+
 
 function Layout({ children }) {
-  const { account, setShowLogoutButton } = useContext(AccountContext);
+  const { account, setShowLogoutButton,setAuthErrors,authErrors } = useContext(AccountContext);
 
   const navigate = useNavigate();
 
@@ -18,17 +24,33 @@ function Layout({ children }) {
   useEffect(() => {
     async function verifyToken() {
       const token = Cookies.get("JWT");
-      const auth = await Authenticate({ token });
-      if (auth.success) {
-      } else {
+
+      const decodeToken = (token) => {
+        try {
+          const decodedToken = jwtDecode(token);
+          const currentTime = Math.floor(Date.now() / 1000);
+         
+          if (decodedToken.exp < currentTime) {
+            return true;
+          }
+          return false;
+          
+        } catch (error) {
+          return null;
+        }
+      };
+      if (decodeToken(token)) {
         setShowLogoutButton(false);
+        setAuthErrors({...authErrors,tokenExpired:true})
         navigate("/logout");
       }
     }
-    setTimeout(() => {
-    if (token !== undefined) verifyToken();
-    }, 2000);
-  }, [account,token]);
+    verifyToken();
+  });
+
+  console.log(account)
+  
+ 
 
   useEffect(() => {
     function verifyToken() {
@@ -37,13 +59,16 @@ function Layout({ children }) {
       if (token !== account?.token) {
         navigate("/logout");
         setShowLogoutButton(false);
+        setAuthErrors({...authErrors,invalidToken:true})
       }
       if (token && !account) {
       
         navigate("/logout");
+        setAuthErrors({...authErrors,noUserData:true})
         setShowLogoutButton(null);
       }
     }
+    
     if (token !== undefined && account!==undefined) verifyToken();
   }, [account, token]);
 

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { editIcon, userIcon } from "../../../assets/icons/png/toolbar1/data";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import {
+  emptyCartIcon2,
   profileIcon,
   rightArrowIcon2,
   settingsIcon,
@@ -24,6 +25,7 @@ import { binaryToDataURL } from "../../../utils/binaryToUrl";
 
 const imageType = ["image/png", "image/jpeg", "image/jpg"];
 
+
 function ProfileBtn() {
   const {
     account,
@@ -32,30 +34,9 @@ function ProfileBtn() {
     setShowLoginButton,
     showLogoutButton,
   } = useContext(AccountContext);
-
+  
   const location = useLocation();
-  useEffect(() => {
-    async function fetchProfileIcon() {
-      const data = await fetchUserIcon(account?.imageId);
-
-      if (data?.success) {
-        try {
-          // const urlLink = await binaryToDataURL(data?.response.data);
-          const blob = new Blob([data?.response.data], {
-            type: data?.response.headers["content-type"],
-          });
-          const urlLink = URL.createObjectURL(blob);
-          setAccount({ ...account, userIcon: `http://localhost:8000/api/v1/user/getprofileicon/${account.imageId}` });
-         
-        } catch (error) {
-          console.log(error);
-        }
-      } else {
-        console.log(response);
-      }
-    }
-    if (account?.imageId) fetchProfileIcon();
-  }, [account?.imageId]);
+ 
 
   return (
     showLogoutButton ? (
@@ -72,21 +53,24 @@ function ProfileBtn() {
           firstName={account?.firstName}
           lastName={account?.lastName}
           email={account?.email}
-        />
-      )}
+          />
+          )}
     </div>
+  )
   );
 }
 
 const ProfileMenu = (props) => {
+  const windowWidth = window.innerWidth;
   const { setAccount, setShowLoginButton, setShowLogoutButton } =
     useContext(AccountContext);
   const navigate = useNavigate();
+  const {account} = useContext(AccountContext);
 
   const logOut = () => {
     setShowLogoutButton(true);
   };
-
+  
   const handleShowLoginButton = () => {
     setShowLoginButton(false);
   };
@@ -96,7 +80,7 @@ const ProfileMenu = (props) => {
       <>
         <Link to={link} role="menuitem">
           <div
-            className="menu-item flex w-full  px-2 py-3 items-center border-b-[1px] hover:text-white  hover:bg-light-pink transition-all rounded-md active:bg-dark-pink "
+            className="menu-item flex w-full   px-2 py-3 items-center border-b-[1px] hover:text-white  hover:bg-light-pink transition-all rounded-md active:bg-dark-pink "
             onClick={() => {
               onClick();
             }}
@@ -113,7 +97,7 @@ const ProfileMenu = (props) => {
   return (
     <>
       <div
-        className="profile-menu absolute top-14 h-[365px] overflow-scroll w-72  rounded-xl cursor-default shadow-lg bg-white pb-5  px-4  py-2 overflow-hidden "
+      className={`profile-menu absolute ${windowWidth < 1300?'right-0':''} top-14 h-[365px] overflow-scroll w-72  rounded-xl cursor-default shadow-lg bg-white pb-5  px-4  py-2 overflow-hidden `}
         style={{ boxShadow: "0 0 10px 0 rgba(0,0,0,0.3)" }}
       >
         <div
@@ -145,6 +129,12 @@ const ProfileMenu = (props) => {
           <MenuItem onClick={handleShowLoginButton} image1={NotificationIcon}>
             Notifications
           </MenuItem>
+          {
+          account?.role === "USER" &&
+            <MenuItem link="/register-vendor" image1={emptyCartIcon2}>
+            Become Seller
+          </MenuItem>
+          }
           <MenuItem image1={logoutIcon} onClick={logOut}>
             Logout
           </MenuItem>

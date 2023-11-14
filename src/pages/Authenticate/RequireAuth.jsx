@@ -6,11 +6,13 @@ import MessagesBox from '../../components/body/Messages/MessagesBox';
 const RequireAuth = ({allowedRoles}) => {
     const { account } = useContext(AccountContext);
     const location = useLocation();
+
+    console.log(allowedRoles.includes(account?.role))
   
 
   return (
 
-        account?.role === allowedRoles?
+        allowedRoles.includes(account?.role)?
         <Outlet />:
         account?.email?
         <Navigate to={'/unauthorized'} state={{from:location}} replace />
@@ -41,11 +43,12 @@ export const RequireAuth2 = ({unAllowedRoutes}) => {
   }
 
   export const RequireAuth3 = ({unAllowedRoutes}) => {
-    const { account } = useContext(AccountContext);
+    
+    const { account,authErrors } = useContext(AccountContext);
     const location = useLocation();
     const route = location.pathname;
     return (
-      !account?.token && unAllowedRoutes.includes(route)?
+      authErrors.invalidToken && !account?.token && unAllowedRoutes.includes(route)?
       <Navigate to={'/'} state={{from:location}} replace />
       :
       <Outlet />

@@ -19,6 +19,7 @@ const AddProducts = () => {
   const [salePriceActive, setSalePriceActive] = useState(false);
   const [viewImage, setViewImage] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
+  const [submitform, setSubmitForm] = useState(false);
   const [deleteImage, setDeleteImage] = useState(
     Array.from({ length: image.length }, (v, i) => i).fill(false)
   );
@@ -45,6 +46,7 @@ const AddProducts = () => {
         regularPrice: formData.regularPrice,
         // ...
       };
+      postFormData();
 
       setFormData({
         name: "",
@@ -59,7 +61,7 @@ const AddProducts = () => {
       setImage([]);
       handeDragClose();
     }
-  }, [formSubmitted]);
+  }, [submitform]);
 
   const handelDragOpen = (e) => {
     setDropField(true);
@@ -206,16 +208,16 @@ const AddProducts = () => {
     formsData.append("stock", formData.stock);
     formsData.append("tags", JSON.stringify(formData.tags));
     formsData.append("regularPrice", formData.regularPrice);
-
+    formsData.append("salePrice", formData.salePrice);    
     formData.images.forEach((img, index) => {
       formsData.append(`images`, img);
     });
-
     const response = await AddProduct(formsData);
-    setResponseMessage(response.data);
+
+    setResponseMessage("successfully added product");
     setFormSubmitted(true);
-    timerId !== null && clearTimeout(timerId);
     let timerId;
+    timerId !== null && clearTimeout(timerId);
     timerId = setTimeout(() => {
       setFormSubmitted(false);
     }, 10000);
@@ -261,7 +263,7 @@ const AddProducts = () => {
 
    
     if (Object.keys(errorList).length === 0) {
-      postFormData();
+      setSubmitForm(true);
     }
   };
 

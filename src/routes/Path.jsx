@@ -24,6 +24,7 @@ import Payment from "../pages/checkout/payment/payment";
 import Review from "../pages/checkout/review/Review";
 import Login from "../pages/Authenticate/login/Login";
 import SignUp from "../pages/Authenticate/Signup/SignUp";
+import Payment2 from "../pages/payments/Payment";
 import RequireAuth, {
   RequireAuth2,
   RequireAuth3,
@@ -55,6 +56,7 @@ function Path() {
           <Route path="verify-email" element={<VerifyEmail />} />
           <Route path="change-password" element={<ChangePassword />} />
         </Route>
+        <Route path="payment" element={<Payment2 />} />
 
         <Route element={<RequireAuth3 unAllowedRoutes={routes.exit} />}>
           <Route path="/logout" element={<Logout />} />

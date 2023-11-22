@@ -38,7 +38,7 @@ const SignUp = () => {
   const [isPending, setIsPending] = useState(false);
 
   return (
-    <div className=" flex w-full h-full justify-center items-start bg-main-bg py-10 ">
+    <div className=" flex w-full h-[100vh] justify-center items-start bg-main-bg py-10 ">
     <div className="login-main-cntr w-[500px] bg-white rounded-xl shadow-lg z-50  ">
       {isPending && (
         <StyledLinearProgressBar

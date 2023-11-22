@@ -19,6 +19,7 @@ export const login = async (data) => {
     );
     return { success: true, response };
   } catch (error) {
+    console.log(error)
     if (!error?.response) {
       return { success: false, message: "No Server Response" };
     } else if (error?.response.status === 400) {
@@ -27,7 +28,12 @@ export const login = async (data) => {
       return { success: false, message: "Invalid Username or Password" };
     } else if (error?.response.status === 403) {
       return { success: false, message: "Email or Password is incorrect" };
-    } else {
+    }else if(error?.response.status === 404){
+        if(error?.response.data === "NOT_VERIFIED"){
+          return { success: false, message: "User Email Not Verified" };
+    }
+  }
+    else  {
       return { success: false, message: "Login Failed" };
     }
   }

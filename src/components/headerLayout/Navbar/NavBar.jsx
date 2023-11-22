@@ -186,7 +186,7 @@ const NavBar = () => {
               </div>
               }
             </div>
-            { account?.role === roles.VENDOR &&
+            { account?.roles.includes(roles.VENDOR) &&
             <div className="vendor-acc-li hover:shadow-lg" onClick={handelVendorListBtnOpen}>
               <span className="flex nav-bar-span">
                 Vendor

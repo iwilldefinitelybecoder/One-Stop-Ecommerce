@@ -150,11 +150,7 @@ const TokenExpired = () => {
 const TokenVerified = () => {
     return (
         <>
-        {
-            setTimeout(() => {
-                <Navigate to={'/'} />
-            }, 4000)
-        }
+         
             <span className=' font-semibold text-2xl'>Token Verified</span>
             <p className=' text-center font-normal'>Your Email is Verified Continue To Login</p>
             <VerificationSuccess />

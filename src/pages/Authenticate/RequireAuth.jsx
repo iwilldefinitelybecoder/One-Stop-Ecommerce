@@ -12,7 +12,7 @@ const RequireAuth = ({allowedRoles}) => {
 
   return (
 
-        allowedRoles.includes(account?.role)?
+        account?.roles.find(role=> allowedRoles.includes(role))?
         <Outlet />:
         account?.email?
         <Navigate to={'/unauthorized'} state={{from:location}} replace />

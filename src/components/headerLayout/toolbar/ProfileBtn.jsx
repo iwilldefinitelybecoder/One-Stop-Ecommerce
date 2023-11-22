@@ -130,7 +130,7 @@ const ProfileMenu = (props) => {
             Notifications
           </MenuItem>
           {
-          account?.role === "USER" &&
+          !account?.roles.includes("VENDOR") &&
             <MenuItem link="/register-vendor" image1={emptyCartIcon2}>
             Become Seller
           </MenuItem>

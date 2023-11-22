@@ -17,18 +17,6 @@ const AccountProvider = ({children}) => {
       noUserData: false,
     });
 
-    useEffect(() => {
-      async function authVendor() {
-        const token = account?.token;
-        const response = await AuthVendor(token);
-        if (response?.success) {
-          saveData("account", { ...account.token, ...response?.response?.data });
-        } else {
-          console.log(response);
-        }  
-      }
-      if (account?.role === roles.VENDOR) authVendor();
-    }, [account]);
 
     useEffect(() => {
         async function fetchProfileIcon() {
@@ -37,11 +25,10 @@ const AccountProvider = ({children}) => {
           if (data?.success) {
             try {
               // const urlLink = await binaryToDataURL(data?.response.data);
-              const blob = new Blob([data?.response.data], {
-                type: data?.response.headers["content-type"],
-              });
+              const blob = await fetch(`http://localhost:8000/api/v1/user/getprofileicon/${account?.imageId}`).then((r) =>r.blob());
+              
               const urlLink = URL.createObjectURL(blob);
-              setAccount({ ...account, userIcon: `http://localhost:8000/api/v1/user/getprofileicon/${account.imageId}` });
+              setAccount({ ...account, userIcon:urlLink });
              
             } catch (error) {
               console.log(error);

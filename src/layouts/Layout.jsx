@@ -48,8 +48,7 @@ function Layout({ children }) {
     verifyToken();
   });
 
-  console.log(account)
-  
+
  
 
   useEffect(() => {

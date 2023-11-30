@@ -12,12 +12,28 @@ import { emptycartIcon } from "../../../assets/icons/img/randoms/data";
 import AlertBox from "../../body/AlertBox";
 import { Link } from "react-router-dom";
 import { emptyCartIcon2 } from "../../../assets/icons/png/user-page-icons/data";
+import { getAllCartItems } from "../../../service/CustomerServices/CartServices";
 
 const CartContainer = ({ cartToggle, cartValue, items }) => {
+  items = items?.productInfo;
+  console.log(items);
   const dispatch = useDispatch();
   const [CartTotal, setCartTotal] = useState(0);
   const [deleteToggle, setDeleteToggle] = useState(false);
   const [deleteItem, setDeleteItem] = useState(null);
+  const [cart, setCart] = useState();
+  useEffect(() => {
+
+    getAllCartItems()
+      .then((res) => {
+        setCart(res); 
+      })
+      .catch((err) => {
+        console.log(err); 
+      });
+  }, []);
+
+  console.log(cart);
 
   document.body.style.overflow = cartToggle ? "hidden" : "auto";
   const alertMessage = (
@@ -41,7 +57,7 @@ const CartContainer = ({ cartToggle, cartValue, items }) => {
   );
 
   useEffect(() => {
-    const total = items.reduce(
+    const total = items?.reduce(
       (sum, item) => sum + item.price * item.itemQuantity,
       0
     );
@@ -49,7 +65,7 @@ const CartContainer = ({ cartToggle, cartValue, items }) => {
     setCartTotal(formattedTotal);
   }, [items]);
 
-  const ContainerRefs = items.map(() => React.createRef());
+  const ContainerRefs = items?.map(() => React.createRef());
 
   const handelToggle = (e) => {
     e.preventDefault();

@@ -1,9 +1,10 @@
 import React from "react";
 import { cartProducts } from "../../data/cartproducts";
+import { getAllCartItems } from "../../service/CustomerServices/CartServices";
 
-
-
-const initialState = [...cartProducts];
+const cart = await getAllCartItems() 
+const initialState = cart || [];
+console.log(initialState)
 const items = (state = initialState, action) => {
   switch (action.type) {
     case "ADD_ITEM":

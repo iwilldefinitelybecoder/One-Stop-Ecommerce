@@ -102,6 +102,7 @@ function Path() {
               <Route index element={<Dashboard />} />
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="Products" element={<Products />} />
+              <Route path="products/:id" element={<AddProducts />} />
               <Route path="add-products" element={<AddProducts />} />
               <Route path="orders/:id" element={<UserProfile />} />
               <Route path="orders" element={<Orders />} />

@@ -21,26 +21,22 @@ import { getProducts } from "../../service/ProductServices";
 
 function FlashDealsGrid() {
   const [swiperRef, setSwiperRef] = useState(null);
-  const [productinfo, setProductinfo] = useState(products);
-
-  useEffect(() => {
-    setProductinfo(products);
-  }
-  , [products]);
+  const [productinfo, setProductinfo] = useState([]);
 
   useEffect(() => {
     async function fetchProductInfo() {
       const response = await getProducts();
-      if (response?.status === 200) {
-        setProductinfo(response?.data);
-
-      }else{
-        console.log(response);
-      }
+      console.log(response);
+        setProductinfo(response);
     }
+    
     fetchProductInfo();
   }
   , []);
+
+
+
+console.log(productinfo);
   
 
   return (
@@ -79,7 +75,7 @@ function FlashDealsGrid() {
         navigation={true}
         className="flash-deals-grid-swiper"
         virtual
-        initialSlide={1}
+        initialSlide={3}
       >
         {productinfo?.map((product, index) => (
           <SwiperSlide key={product} virtualIndex={index} className="flash-grid-cards flex-col justify-start items-start px-4 py-4 rounded-xl shadow-lg hover:shadow-2xl  transition-all">

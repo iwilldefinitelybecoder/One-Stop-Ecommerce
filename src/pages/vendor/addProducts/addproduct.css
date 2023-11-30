@@ -61,6 +61,7 @@ textarea:focus{
 
 
 
+
 .ad-prdct-body input[type='text']:focus, .ad-prdct-body input[type='number']:focus{
     margin-top: 8px;
     margin-bottom: 12px;
@@ -76,6 +77,7 @@ textarea:focus{
     justify-content: space-between;
     margin-bottom: 15px;
 }
+
 
 .price-sale-div{
     margin-right: 10px;
@@ -100,6 +102,11 @@ textarea:focus{
     width: 406px;
     margin-top: 8px;
 }
+
+.extra-attributes input[type="text"],.extra-attributes input[type="text"]:hover, .extra-attributes input[type="text"]:focus{
+    all: unset;
+}
+
 
 
 

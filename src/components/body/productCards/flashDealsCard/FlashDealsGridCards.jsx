@@ -16,21 +16,24 @@ import { Autoplay, Navigation, Pagination, Virtual } from "swiper/modules";
 import { SwiperSlide,Swiper } from "swiper/react";
 import { AccountContext } from "../../../../context/AccountProvider";
 import Cookies from "js-cookie";
+import { addCardItem } from "../../../../service/CustomerServices/CardServices";
 
 
-const FlashDealsGridCards = ({ productInfo, estimateCost, itemDetails }) => {
+const FlashDealsGridCards = ({ productInfo, estimateCost, itemsDetails }) => {
+  const itemDetails = itemsDetails?.productInfo;
+  console.log(itemsDetails);
   const {setShowLoginButton,showLoginButton,account} = useContext(AccountContext)
 
-  const offerPercentage = productInfo.discountPrice
+  const offerPercentage = productInfo.salePrice
     ? (
-        ((productInfo.price - productInfo.discountPrice) / productInfo.price) *
+        ((productInfo.regularPrice - productInfo.salePrice) / productInfo.regularPrice) *
         100
       ).toFixed(0)
     : 0;
 
   let index;
   const item = itemDetails?.filter((item, i) => {
-    if (item.id === productInfo.id) {
+    if (item?.productId === productInfo.productId) {
       index = i;
       return item;
     }
@@ -41,7 +44,7 @@ const FlashDealsGridCards = ({ productInfo, estimateCost, itemDetails }) => {
       ? item[0]
       : {
           ...productInfo,
-          images:[...productInfo.image],
+          images:[...productInfo.imageURL],
           itemQuantity: 0,
           itemTotal: 0,
         }
@@ -80,7 +83,7 @@ const FlashDealsGridCards = ({ productInfo, estimateCost, itemDetails }) => {
         ? item[0]
         : {
             ...productInfo,
-            images:[...productInfo.image],
+            images:[...productInfo.imageURL],
             itemQuantity: 0,
             itemTotal: 0,
           }
@@ -90,6 +93,15 @@ const FlashDealsGridCards = ({ productInfo, estimateCost, itemDetails }) => {
   const dispatch = useDispatch();
 
   const buttonDisableRef = useRef(null);
+
+  const addToCart = () => {
+    const data = {
+      productId: productInfo.productId,
+      quantity: itemDetail.itemQuantity,
+      cartId:0,
+    };
+    const response = addCardItem(data);
+    }
 
   const handelAddQuantity = () => {
     const total = itemDetail.itemQuantity + 1;
@@ -117,7 +129,7 @@ const FlashDealsGridCards = ({ productInfo, estimateCost, itemDetails }) => {
     );
 
     setItemDetail((prevItemDetail) => {
-      const itemTotal = prevItemDetail.hasOwnProperty("discountPrice")
+      const itemTotal = prevItemDetail.hasOwnProperty("salePrice")
         ? prevItemDetail.discountPrice * total
         : prevItemDetail.price;
       const formattedTotal = parseFloat(itemTotal.toFixed(2));
@@ -168,7 +180,7 @@ const FlashDealsGridCards = ({ productInfo, estimateCost, itemDetails }) => {
   const handelMouseleave = () => {
     setMouseHover(false);
   };
-
+console.log(productInfo);
 
   return (
     <>
@@ -182,14 +194,14 @@ const FlashDealsGridCards = ({ productInfo, estimateCost, itemDetails }) => {
             <div
               className={`flsh-grd-ofr-prcnt  bg-light-pink text-white font-normal text-xs rounded-xl px-3 py-1 flex justify-center w-20`}
               style={{
-                display: `${productInfo?.discountPrice > 0 ? "flex" : " none"}`,
+                display: `${productInfo?.salePrice > 0 ? "flex" : " none"}`,
               }}
             >
               <h5 className=" ">{offerPercentage}% off</h5>
             </div>
           </div>
           <ItemImageSlider
-            productImages={productInfo.image}
+            productImages={productInfo?.imageURL}
             mouseHover={mouseHover}
           />
         </div>
@@ -202,25 +214,25 @@ const FlashDealsGridCards = ({ productInfo, estimateCost, itemDetails }) => {
             <div className="flsh-grd-prdt-name mb-2">
               <h5 className="text-lg font-semibold">{productInfo.name}</h5>
             </div>
-            {productInfo.hasOwnProperty("rating") && (
+            {productInfo.hasOwnProperty("rating") && productInfo.rating >0 && (
               <div className="flsh-grd-prdt-rating">
                 <Rating name="read-only" value={productInfo.rating} readOnly />
               </div>
             )}
             <div className="flsh-grd-prdt-price-add-crt  items-center">
               <div className="flsh-grd-prdt-price flex space-x-2">
-                {productInfo.hasOwnProperty("discountPrice") ? (
+                {productInfo.hasOwnProperty("salePrice") ? (
                   <>
                     <h5 className=" text-base font-semibold text-light-pink">
-                      &#8377;{productInfo.discountPrice}
+                      &#8377;{productInfo.salePrice}
                     </h5>
                     <h5 className="text-base font-semibold line-through text-slate-400 ">
-                      &#8377;{productInfo.price}
+                      &#8377;{productInfo.regularPrice}
                     </h5>
                   </>
                 ) : (
                   <h5 className="text-base font-semibold text-light-pink ">
-                    &#8377;{productInfo.price}
+                    &#8377;{productInfo.regularPrice}
                   </h5>
                 )}
               </div>
@@ -299,11 +311,12 @@ const reduxCart = (state) => ({
 });
 
 const ItemImageSlider = ({ productImages, mouseHover }) => {
+  console.log(productImages);
   return !mouseHover ? (
     <div
-      className="flash-grd-img-cntr-non-hover w-full flex justify-center mt-4"
+      className="flash-grd-img-cntr-non-hover w-full h-[180px] items-center flex justify-center mt-10 mb-5"
     >
-      <div className="flash-grid-img h-60 w-60">
+      <div className="flash-grid-img h-40 w-40">
         <img
           src={productImages[0]}
           alt=""
@@ -331,12 +344,12 @@ const ItemImageSlider = ({ productImages, mouseHover }) => {
       {
         productImages?.map((image, index) => (
        
-          <SwiperSlide key={index}  style={{maxHeight:'216px',maxWidth:'252px',padding:'0'}}>
+          <SwiperSlide key={index}  style={{height:'180px',maxWidth:'252px',padding:'0'}} className=" mt-3 mb-2">
             <div
               className="flash-grd-img-cntr w-full flex justify-center mt-4"
               key={index}
             >
-              <div className="flash-grid-img h-60 w-60">
+              <div className="flash-grid-img h-40 w-40">
                 <img src={image} alt="" style={{ objectFit: "cover" }} />
               </div>
             </div>

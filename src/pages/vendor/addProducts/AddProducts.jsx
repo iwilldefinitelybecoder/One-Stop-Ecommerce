@@ -4,7 +4,10 @@ import "./addproduct.css";
 import { trashbinIcon } from "../../../assets/icons/png/toolbar1/data";
 import { Link } from "react-router-dom";
 import MessagesBox from "../../../components/body/Messages/MessagesBox";
-import { AddProduct } from "../../../service/ProductServices";
+import { addProduct } from "../../../service/ProductServices";
+import { Checkbox, FormControlLabel, MenuItem, Radio, RadioGroup, Select } from "@mui/material";
+import { getAllWarehouses } from "../../../service/LogisticServices/wareHouseService";
+
 
 const AddProducts = () => {
   const inputRef = React.useRef(null);
@@ -20,20 +23,33 @@ const AddProducts = () => {
   const [viewImage, setViewImage] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
   const [submitform, setSubmitForm] = useState(false);
-  const [deleteImage, setDeleteImage] = useState(
-    Array.from({ length: image.length }, (v, i) => i).fill(false)
-  );
-
+  const [wareHouse, setWareHouse] = useState([]);
+ 
+  console.log(image)
   const [formData, setFormData] = useState({
     name: "",
     category: "",
     description: "",
     stock: 0,
-    tags: ["hello"],
+    tags: [],
     regularPrice: 0,
     images: [],
     salePrice: 0.0,
+    extraAttributes:{
+      "hello":""
+    },
+    wareHouse:{},
+    thumbnail: "",
   });
+console.log(formData)
+  useEffect(() => {
+    async function getWareHouse(){
+       let wareHouse = await getAllWarehouses()
+        setWareHouse(wareHouse)
+      }
+      getWareHouse()
+    }, []);
+    console.log(wareHouse)
 
   useEffect(() => {
     if (Object.keys(errorFields).length === 0) {
@@ -57,9 +73,13 @@ const AddProducts = () => {
         regularPrice: "",
         images: [],
         salePrice: 0.0,
+        extraAttributes:{},
+        wareHouse:{},
+        thumbnail: "",
       });
       setImage([]);
       handeDragClose();
+      setSalePriceActive(false);
     }
   }, [submitform]);
 
@@ -208,11 +228,15 @@ const AddProducts = () => {
     formsData.append("stock", formData.stock);
     formsData.append("tags", JSON.stringify(formData.tags));
     formsData.append("regularPrice", formData.regularPrice);
-    formsData.append("salePrice", formData.salePrice);    
+    formsData.append("extraAttributes", formData.extraAttributes);
+    formsData.append("salePrice", formData.salePrice);   
+    formsData.append("wareHouseId", formData.wareHouse); 
+    const imageData = new FormData();
+
     formData.images.forEach((img, index) => {
       formsData.append(`images`, img);
     });
-    const response = await AddProduct(formsData);
+    const response = await addProduct(formsData);
 
     setResponseMessage("successfully added product");
     setFormSubmitted(true);
@@ -325,25 +349,42 @@ const AddProducts = () => {
                   </span>
                 )}
               </div>
+              
               <div className="cat-div">
                 <label htmlFor="category">Category</label>
-                <select
+                <Select
+                sx={{
+                  marginBottom: 2,
+                  maxWidth: 408,
+                  width: "100%",
+                  height: 45,
+                  marginTop: .5,
+                  borderRadius: 2,
+                  border: "1px solid #e5e5e5",
+                  ":focus":{border: "1px solid #e5e5e5",}
+                }}
+                placeholder="Select a Category"
                   name="category"
-                  className="custom-select"
                   onChange={handelformChange}
                   value={formData.category}
                 >
-                  <option value="">Select a Category</option>
-                  <option value="Apparel & Accessories">
+                  <MenuItem value="Apparel & Accessories">
                     Apparel & Accessories
-                  </option>
-                  <option value="style & Fashion">style & Fashion</option>
-                  <option value="home & Gardening">home & Gardening</option>
-                  <option value="Health & Wellness">Health & Wellness</option>
-                  <option value="medical Health">medical Health</option>
-                  <option value="Children & Infant">Children & Infant</option>
-                  <option value="Electronic Goods">Electronic Goods</option>
-                </select>
+                  </MenuItem>
+
+                  <MenuItem value="style & Fashion">style & Fashion</MenuItem>
+                  <MenuItem value="home & Gardening">home & Gardening</MenuItem>
+                  <MenuItem value="Health & Wellness">
+                    Health & Wellness
+                  </MenuItem>
+                  <MenuItem value="medical Health">medical Health</MenuItem>
+                  <MenuItem value="Children & Infant">
+                    Children & Infant
+                  </MenuItem>
+                  <MenuItem value="Electronic Goods">
+                    Electronic Goods
+                  </MenuItem>
+                </Select>
                 {errorFields.category && (
                   <span className=" ml-4 text-red-500 font-semibold">
                     *Select Catrgory
@@ -402,19 +443,30 @@ const AddProducts = () => {
                   </div>
                 </div>
               </div>
-              <div className="img-display-field">
-                <div className="img-display flex flex-wrap">
-                  {image &&
+                {image.length !==0 &&
+              <div className="img-display-field space-y-2">
+              <span className=" font-semibold">Select An Image for Thumbnail</span>
+                  <RadioGroup
+                   aria-labelledby="demo-radio-buttons-group-label"
+                   name="set-thumbnail" 
+                   defaultValue={0}
+                   onChange={handelformChange}
+                   sx={{display:"flex",flexWrap:"wrap",flexDirection:"row"}}
+                  
+                   >
+                  {
                     image?.map((img, index) => {
                       return (
                         <div
-                          className="img-cntr px-5 hover:bg-slate-100 hover:rounded-md flex-col py-1 h-24 w-40
+                          className="img-cntr px-5 hover:bg-slate-100 hover:rounded-md flex-col py-2 h-24 w-40
                          mx-3 mb-4 "
                           key={index}
                           onDoubleClick={(e) => {
                             handelImageOpen(e, index);
                           }}
                         >
+                          <FormControlLabel value={index} control={<Radio sx={{":hover":{backgroundColor:"#FFF",},
+                        padding:"0px"}}  />} sx={{position:"absolute",right:"-13px"}} />
                           <div className=" flex justify-center">
                             <img
                               src={URL.createObjectURL(img)}
@@ -435,8 +487,9 @@ const AddProducts = () => {
                         </div>
                       );
                     })}
-                </div>
+                    </RadioGroup>
               </div>
+                }
               {errorFields.images && (
                 <span className=" ml-4 text-red-500 font-semibold">
                   *Upload atleast one Image
@@ -499,7 +552,7 @@ const AddProducts = () => {
                     *type some tags
                   </span>
                 )}
-                {}
+                
                 <div className="add-tag-btn absolute">
                   <button className="shadow-none Btn" onClick={handelTagsAdd}>
                     Add
@@ -546,15 +599,22 @@ const AddProducts = () => {
                   </span>
                 )}
               </div>
-
-              <input
-                type="checkbox"
+              <Checkbox
+              sx={{":hover":{backgroundColor:"#FFF"},marginBottom: 5,}}
                 name="sale-price"
                 checked={salePriceActive}
-                onChange={(e) => {
+                onClick={(e) => {
                   setSalePriceActive(!salePriceActive);
                   handelSalePriceCheck(e);
                 }}
+              // <input
+              //   type="checkbox"
+              //   name="sale-price"
+              //   checked={salePriceActive}
+              //   onChange={(e) => {
+              //     setSalePriceActive(!salePriceActive);
+              //     handelSalePriceCheck(e);
+              //   }}
               />
               <div className="sale-div">
                 <div className="sale-div">
@@ -577,6 +637,42 @@ const AddProducts = () => {
                 )}
               </div>
             </div>
+            <div className="sale-div">
+                <div className="sale-div">
+                  <div>
+                    <label htmlFor="sale-price">WareHouse</label>
+                  </div>
+                  <Select
+                  sx={{
+                        marginBottom: 2,     
+                       maxWidth: 408,
+                       width: "100%",
+                       height: 45,
+                       borderRadius: 2,
+                       border: "1px solid #e5e5e5",
+                      ":focus":{border: "1px solid #e5e5e5",}
+
+                     }}
+                     placeholder="Select a Warehouse"
+                    name="wareHouse"
+                    value={formData.wareHouse}
+                    onChange={handelformChange}
+                  >
+                  {
+                    wareHouse?.map((item,index)=>{return(
+                      <MenuItem value={item.warehouseId} key={index}>{item.wareHouseName}</MenuItem>
+                    )})
+                  }
+                 
+                  </Select>
+         
+                </div>
+                {errorFields.salePrice && (
+                  <span className=" ml-4 text-red-500 font-semibold">
+                    *Sale Price is Required
+                  </span>
+                )}
+              </div>
             <div className="btn-div">
               <input
                 ref={submitRef}

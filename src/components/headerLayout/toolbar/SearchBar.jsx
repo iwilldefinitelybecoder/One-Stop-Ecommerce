@@ -2,6 +2,7 @@ import React, { createRef, useEffect, useState } from "react";
 import { searchIcon } from "../../../assets/icons/png/toolbar1/data";
 import "./toolbar.css";
 import { downArrowIcon } from "../../../assets/icons/png/toolbar-icons/data";
+import { searchProducts } from "../../../service/ProductServices";
 function SearchBar() {
   const [focued, setFocued] = useState(false);
   const [seacrchResultFocusIndex, setSeacrchResultFocusIndex] = useState(0);
@@ -39,6 +40,20 @@ function SearchBar() {
       description: "he is a goodguy",
     },
   ]);
+
+  useEffect(() => {
+   async function handelSearch() {
+      const results = await searchProducts(searchValue);
+      console.log(results);
+      if(results.length > 0){
+
+        setSearchResults(results);
+      }else{
+        setSearchResults([]);
+      }
+    }
+    handelSearch();
+  }, [searchValue]);
 
   const spanRefs = searchResults.map(() => createRef());
 

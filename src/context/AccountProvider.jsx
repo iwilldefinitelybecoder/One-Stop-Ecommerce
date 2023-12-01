@@ -34,7 +34,7 @@ const AccountProvider = ({children}) => {
               console.log(error);
             }
           } else {
-            console.log(response);
+            console.log(data?.response?.data?.message);
           }
         }
         if (account?.imageId) fetchProfileIcon();

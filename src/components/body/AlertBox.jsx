@@ -2,10 +2,16 @@ import React from "react";
 import "./alert.css";
 import { TshirtIcon } from "../../assets/icons/img/products/data";
 import { WarningIcon, closeIcon } from "../../assets/icons/png/toolbar1/data";
+import {useCart} from "../../CustomHooks/CartHook";
 
-const AlertBox = ({index, item ,setDeleteToggle,updateValue,AlertMessage}) => {
-  const [itemDetail, setItemDetail] = React.useState(item);
+const AlertBox = ({ item ,setDeleteToggle,AlertMessage}) => {
   const [animation, setAnimation] = React.useState(false);
+  const {removeItem} = useCart();
+
+  const handelDeleteItem = () => {
+    removeItem(item.cartItemsId);
+    setDeleteToggle(false)
+  }
 
   const handelAnimation = () => {
     
@@ -41,7 +47,7 @@ const AlertBox = ({index, item ,setDeleteToggle,updateValue,AlertMessage}) => {
                 No
               </button>
               <button className="alert-btn bg-white text-light-pink font-semibold px-4 py-1 rounded-md ring-1 ring-light-pink  hover:bg-light-pink hover:text-white"
-              onClick={(e)=>{handelAnimation();updateValue(index,itemDetail)}}
+              onClick={(e)=>{handelAnimation();handelDeleteItem();}}
               >
                 yes
               </button>

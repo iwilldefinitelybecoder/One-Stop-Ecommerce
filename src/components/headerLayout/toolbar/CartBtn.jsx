@@ -3,10 +3,11 @@ import { shoppingbagIcon } from "../../../assets/icons/png/toolbar1/data";
 import CartContainer from "../SideBar/CartContainer";
 
 import { connect, useDispatch } from "react-redux";
+import {useCart} from "../../../CustomHooks/CartHook";
 
-function CartBtn({ cartToggle, cartValue }) {
+function CartBtn({ cartToggle }) {
   const dispatch = useDispatch();
-
+  const { cartTotal, totalItems, cart } = useCart();
   const toggleCart = (e) => {
     e.preventDefault();
     dispatch({ type: "TOGGLE_CART" });
@@ -18,7 +19,7 @@ function CartBtn({ cartToggle, cartValue }) {
         className="profile-icon bg-slate-100 ml-6 shadow-md"
         onClick={toggleCart} 
       >
-        {cartValue !== 0 && <div className="alerts">{cartValue}</div>}
+        {totalItems() !== 0 && <div className="alerts">{totalItems()}</div>}
         <img src={shoppingbagIcon} alt="" className="user-icon" />
       </div>
     </>
@@ -27,7 +28,6 @@ function CartBtn({ cartToggle, cartValue }) {
 
 const mapCartStateToProps = (state) => ({
   cartToggle: state.cartToggle,
-  cartValue: state.cartValue,
 });
 
 

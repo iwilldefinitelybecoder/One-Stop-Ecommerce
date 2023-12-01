@@ -23,7 +23,6 @@ export const getAllCartItems = async () => {
     setToken(Cookies.get('JWT'));
     try {
         const response = await instance.get('/getAll');
-        console.log(response.data);
         
         return response.data;
     } catch (error) {

@@ -16,98 +16,72 @@ import { Autoplay, Navigation, Pagination, Virtual } from "swiper/modules";
 import { SwiperSlide,Swiper } from "swiper/react";
 import { AccountContext } from "../../../../context/AccountProvider";
 import Cookies from "js-cookie";
-import { addCardItem } from "../../../../service/CustomerServices/CardServices";
+
+import {useCart} from "../../../../CustomHooks/CartHook";
 
 
-const FlashDealsGridCards = ({ productInfo, estimateCost, itemsDetails }) => {
-  const itemDetails = itemsDetails?.productInfo;
-  console.log(itemsDetails);
+const FlashDealsGridCards = ({ productInfo }) => {
+  const {cart,itemExist,updateItem,addItemToCart,removeItem} = useCart()
   const {setShowLoginButton,showLoginButton,account} = useContext(AccountContext)
+
+  const buttonDisableRef = useRef(null);
 
   const offerPercentage = productInfo.salePrice
     ? (
         ((productInfo.regularPrice - productInfo.salePrice) / productInfo.regularPrice) *
         100
       ).toFixed(0)
-    : 0;
-
-  let index;
-  const item = itemDetails?.filter((item, i) => {
-    if (item?.productId === productInfo.productId) {
-      index = i;
-      return item;
-    }
-  });
-
+      : 0;
+      
+      const exists = itemExist(productInfo.productId)
   const [itemDetail, setItemDetail] = useState(
-    item[0] !== undefined
-      ? item[0]
+    exists !==undefined?
+      exists
       : {
           ...productInfo,
           images:[...productInfo.imageURL],
-          itemQuantity: 0,
-          itemTotal: 0,
+          productQuantity: 0,
+          productTotal: 0,
         }
   );
   const [addNewItem, setAddNewItem] = useState(null);
   const [mouseHover, setMouseHover] = useState(false);
 
+  const data = {
+    productId:productInfo?.productId,
+    quantity:null,
+    cartItemId:exists?.cartItemsId
+  }
+
   useEffect(() => {
     if (addNewItem !== null) {
-      dispatch({ type: "ADD_ITEM", payload: addNewItem });
+      data.quantity = 1
+      addItemToCart(data)
     }
   }, [addNewItem]);
 
   useEffect(() => {
-    const item = itemDetails?.filter((item, i) => {
-      if (item.id === productInfo.id) {
-        index = i;
-        return item;
-      }
-    });
-
-    // useEffect(() => {
-    //   let timerId; 
-    //   if(mouseHover){
-    //     timerId = setTimeout(() => {
-    //       handelMouseEnter();
-    //     }, 1500);
-    //   }
-    //   return () => {
-    //     clearTimeout(timerId)
-    //   }
-    // }, [mouseHover])
 
     setItemDetail(
-      item[0] !== undefined
-        ? item[0]
+      exists !== undefined
+        ? exists
         : {
             ...productInfo,
-            images:[...productInfo.imageURL],
-            itemQuantity: 0,
-            itemTotal: 0,
+            // images:[...productInfo.imageURL],
+            productQuantity: 0,
+            productTotal: 0,
           }
     );
-  }, [itemDetails]);
+  }, [cart]);
 
-  const dispatch = useDispatch();
 
-  const buttonDisableRef = useRef(null);
 
-  const addToCart = () => {
-    const data = {
-      productId: productInfo.productId,
-      quantity: itemDetail.itemQuantity,
-      cartId:0,
-    };
-    const response = addCardItem(data);
-    }
 
   const handelAddQuantity = () => {
-    const total = itemDetail.itemQuantity + 1;
+    const total = itemDetail.productQuantity + 1;
     setItemDetail({
       ...itemDetail,
-      itemQuantity: total,
+      productQuantity: total,
     });
     calulateTotal(total);
   };
@@ -115,41 +89,40 @@ const FlashDealsGridCards = ({ productInfo, estimateCost, itemsDetails }) => {
   const handelMinusQuantity = () => {
     if (itemDetail.itemQuantity > 1) {
       // buttonDisableRef.current.disabled = true;
-      const total = itemDetail.itemQuantity - 1;
+      const total = itemDetail.productQuantity - 1;
+      setItemDetail({
+        ...itemDetail,
+        productQuantity: total,
+      });
 
       calulateTotal(total);
     } else {
-      dispatch({ type: "REMOVE_ITEM", payload: index });
+      
+      removeItem(data.cartItemId)
     }
   };
 
   const calulateTotal = (total) => {
-    const existingItem = itemDetails.some(
-      (items, i) => items.id === productInfo.id
-    );
+    const existingItem = exists !==undefined
 
     setItemDetail((prevItemDetail) => {
       const itemTotal = prevItemDetail.hasOwnProperty("salePrice")
-        ? prevItemDetail.discountPrice * total
-        : prevItemDetail.price;
+        ? prevItemDetail.salePrice * total
+        : prevItemDetail.regularPrice * total;
       const formattedTotal = parseFloat(itemTotal.toFixed(2));
-      const cartItem = {
-        ...prevItemDetail,
-        itemQuantity: total,
-        itemTotal: formattedTotal,
-      };
+     
 
-      console.log(existingItem);
+    
       if (existingItem) {
-        dispatch({
-          type: "UPDATE_ITEM",
-          payload: { index, cartItem },
-        });
+        data.quantity = total
+        console.log("data",data);
+        updateItem(data);
       } else {
-        setAddNewItem(cartItem);
+        data.quantity = total
+        setAddNewItem(data);
       }
 
-      return cartItem;
+      return {...itemDetail, itemTotal: formattedTotal };
     });
   };
 
@@ -163,14 +136,10 @@ const FlashDealsGridCards = ({ productInfo, estimateCost, itemsDetails }) => {
     const values = parseInt(value, 10);
     let cases;
 
-    if (quantity < values) {
-      cases = "ADD";
-    } else {
-      cases = "MINUS";
-    }
+  
 
-    setItemDetail({ ...itemDetail, itemQuantity: values });
-    calulateTotal(values, cases);
+    setItemDetail({ ...itemDetail, productQuantity: values });
+    calulateTotal(values);
   };
 
   const handelMouseEnter = () => {
@@ -180,7 +149,6 @@ const FlashDealsGridCards = ({ productInfo, estimateCost, itemsDetails }) => {
   const handelMouseleave = () => {
     setMouseHover(false);
   };
-console.log(productInfo);
 
   return (
     <>
@@ -245,7 +213,7 @@ console.log(productInfo);
             <div className="flsh-grd-prdt-add-crt-btn">
               <div className="cart-quantity ">
                 <div className="quantity-checkout flex-col space-y-2  ">
-                  {itemDetail?.itemQuantity > 0 ? (
+                  {itemDetail?.productQuantity > 0 ? (
                     <>
                   
                       <button
@@ -260,9 +228,9 @@ console.log(productInfo);
                         className="quantity-input w-7 py-1 rounded-lg font-semibold text-center text-sm focus:ring-1 focus:ring-light-pink  "
                         pattern="[0-9]{0,1}"
                         maxLength={1}
-                        value={itemDetail?.itemQuantity}
+                        value={itemDetail?.productQuantity}
                         onChange={(e) => {
-                          handleChange(e, itemDetail?.quantity);
+                          handleChange(e, itemDetail?.productQuantity);
                         }}
                       />
                       <button
@@ -275,7 +243,8 @@ console.log(productInfo);
                     </>
                   ) : (
                     <button
-                      className="quantity-btn  ring-1 ring-light-pink rounded-md p-1 h-5 w-5 hover:bg-light-pink hover:text-white transition-colors"
+                      className="quantity-btn   ring-1 ring-light-pink rounded-md p-1 h-5 w-5 hover:bg-light-pink hover:text-white transition-colors"
+                      
                       onClick={(e)=>{account?handelAddQuantity(e):setShowLoginButton(true)}}
                       title="Add to Cart"
                     >
@@ -306,12 +275,11 @@ console.log(productInfo);
 };
 
 const reduxCart = (state) => ({
-  itemDetails: state.cartItems,
-  estimateCost: state.estimate,
+  itemsDetails: state.cartItems,
 });
 
 const ItemImageSlider = ({ productImages, mouseHover }) => {
-  console.log(productImages);
+
   return !mouseHover ? (
     <div
       className="flash-grd-img-cntr-non-hover w-full h-[180px] items-center flex justify-center mt-10 mb-5"
@@ -344,7 +312,7 @@ const ItemImageSlider = ({ productImages, mouseHover }) => {
       {
         productImages?.map((image, index) => (
        
-          <SwiperSlide key={index}  style={{height:'180px',maxWidth:'252px',padding:'0'}} className=" mt-3 mb-2">
+          <SwiperSlide key={index}  style={{height:'150px',maxWidth:'252px',padding:'0'}} className=" mt-7 mb-5">
             <div
               className="flash-grd-img-cntr w-full flex justify-center mt-4"
               key={index}

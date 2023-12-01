@@ -26,7 +26,6 @@ function FlashDealsGrid() {
   useEffect(() => {
     async function fetchProductInfo() {
       const response = await getProducts();
-      console.log(response);
         setProductinfo(response);
     }
     
@@ -34,10 +33,6 @@ function FlashDealsGrid() {
   }
   , []);
 
-
-
-console.log(productinfo);
-  
 
   return (
     <>

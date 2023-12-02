@@ -24,8 +24,7 @@ const AddProducts = () => {
   const [responseMessage, setResponseMessage] = useState("");
   const [submitform, setSubmitForm] = useState(false);
   const [wareHouse, setWareHouse] = useState([]);
- 
-  console.log(image)
+
   const [formData, setFormData] = useState({
     name: "",
     category: "",
@@ -41,7 +40,7 @@ const AddProducts = () => {
     wareHouse:{},
     thumbnail: "",
   });
-console.log(formData)
+
   useEffect(() => {
     async function getWareHouse(){
        let wareHouse = await getAllWarehouses()

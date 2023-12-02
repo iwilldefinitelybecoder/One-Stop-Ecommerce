@@ -1,43 +1,38 @@
 import React, { useEffect } from "react";
 import "./details.css";
 import MessagesBox from "../../../components/body/Messages/MessagesBox";
+import { InputLabel, MenuItem, Select } from "@mui/material";
+import { countryList } from "../../../data/countryList";
+import useAddresses from "../../../CustomHooks/AddressHooks";
+import { useMatch, useParams } from "react-router";
 
-const Container1 = ({forwardRef,grantPermision}) => {
+const Container1 = ({forwardRef,grantPermission}) => {
+  const isEditing = useMatch("/user/edit-Address/:id")
+  const addressId = useParams("id");
   
   const [userAddress, setUserAddress] = React.useState({
     name: "",
     email: "",
     phone: "",
-    company: "",
+    city: "",
     zip: "",
     country: "",
-    address1: "",
-    address2: "",
+    area: "",
+    locality: "",
   });
   const [errorList, setErrorList] = React.useState({});
   const [isSubmit, setIsSubmit] = React.useState(false);
+  const {updateAddresses,addAddresses} = useAddresses();
   
   useEffect(() => {
     if (isSubmit) {
-      const addressStored = JSON.parse(localStorage.getItem("userAddress"));
-      if (Array.isArray(addressStored) && addressStored.length!==0) {
-        const arr = [...addressStored];
-        arr.push(userAddress);
-        localStorage.setItem("userAddress", JSON.stringify(arr));
-
-      }else{
-        const arr = [];
-        arr.push(userAddress);
-        localStorage.setItem("userAddress", JSON.stringify(arr));
-      }
-      
       setErrorList({});
       setIsSubmit(false);
-      grantPermision(true);
+      grantPermission(true);
     }
 
   }, [isSubmit]);
-  console.log(JSON.parse(localStorage.getItem("userAddress")));
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -47,25 +42,39 @@ const Container1 = ({forwardRef,grantPermision}) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    let timerId
-    clearTimeout(timerId); 
+    let timerId;
+        let timerId2
+        clearTimeout(timerId);
+        clearTimeout(timerId2);
     const errors = {};
     if (!userAddress.name) errors.name = "Name is required";
     if (!userAddress.email) errors.email = "Email is required";
     if (!userAddress.phone) errors.phone = "Phone is required";
-    if (!userAddress.company) errors.company = "Company is required";
+    if (!userAddress.city) errors.city = "Company is required";
     if (!userAddress.zip) errors.zip = "Zip is required";
     if (!userAddress.country) errors.country = "Country is required";
-    if (!userAddress.address1) errors.address1 = "Address1 is required";
-    if (!userAddress.address2) errors.address2 = "Address2 is required";
+    if (!userAddress.area) errors.area = "Address1 is required";
+    if (!userAddress.locality) errors.locality = "Address2 is required";
     
     setErrorList(errors);
     timerId =  setTimeout(() => {
       setErrorList({});
     }, 7000);
 
+    const addressData = {...userAddress};
+    addAddresses.addressId = addressId;
+
     if (Object.keys(errors).length === 0) {
       setIsSubmit(true);
+      if(isEditing !==null){
+        updateAddresses(addressData)
+        timerId2 = setTimeout(()=>{
+          navigate('/user/Payment-methods')
+        },2000)
+      }else{
+
+        addAddresses(addressData)
+      }
     }
   }
 
@@ -88,7 +97,7 @@ const Container1 = ({forwardRef,grantPermision}) => {
     }
       <div className="cntr1-sub shadow-lg rounded-md">
         <div className="details-header pb-5 pt-2">
-          <span className=" font-bold text-lg">Shipping Address</span>
+          <span className=" font-bold text-lg">Add New Address</span>
         </div>
         <form autoCapitalize="false" onSubmit={handleSubmit} >
         <div className="name-email-div flex">
@@ -117,10 +126,10 @@ const Container1 = ({forwardRef,grantPermision}) => {
             }
           </div>
           <div className="label-input">
-            <label htmlFor="">Company:</label>
-            <input type="text" placeholder="Company"  value={userAddress.company} name="company" onChange={handleChange}  />
+            <label htmlFor="">City:</label>
+            <input type="text" placeholder="City"  value={userAddress.city} name="city" onChange={handleChange}  />
             {
-              errorList.company && <div className="error">{errorList.company}</div>
+              errorList.city && <div className="error">{errorList.city}</div>
             }
           </div>
         </div>
@@ -133,8 +142,16 @@ const Container1 = ({forwardRef,grantPermision}) => {
             }
           </div>
           <div className="label-input">
-            <label htmlFor="">Country:</label>
-            <input type="text" placeholder="Country"  value={userAddress.country} name="country" onChange={handleChange} />
+            <label htmlFor="country">Country:</label>
+            <Select className="select" sx={{height:"44px",marginTop:"10px"}} inputProps={{id:"country"}} value={userAddress.country} name="country" onChange={handleChange} >
+              {
+                countryList.map((country, index) => (
+                  <MenuItem key={index} value={country.name}>{country.name}</MenuItem>
+                ))
+
+              }
+            </Select>
+           
             {
               errorList.country && <div className="error">{errorList.country}</div>
             }
@@ -143,18 +160,18 @@ const Container1 = ({forwardRef,grantPermision}) => {
         <div className="adrs1-adrs2-div">
 
             <div className="label-input">
-              <label htmlFor="">Address1</label>
-              <input type="text" placeholder="Address 1"  value={userAddress.address1} name="address1" onChange={handleChange} />
+              <label htmlFor="">Community/Area/Building</label>
+              <input type="text" placeholder="Address"  value={userAddress.area} name="area" onChange={handleChange} />
               {
-                errorList.address1 && <div className="error">{errorList.address1}</div>
+                errorList.area && <div className="error">{errorList.area}</div>
               }
 
           </div>
           <div className="label-input">
-            <label htmlFor="">Address2</label>
-            <input type="text" placeholder="Address 2" value={userAddress.address2} name="address2" onChange={handleChange} />
+            <label htmlFor="">Street/locality</label>
+            <input type="text" placeholder="Address" value={userAddress.locality} name="locality" onChange={handleChange} />
             {
-              errorList.address2 && <div className="error">{errorList.address2}</div>
+              errorList.locality && <div className="error">{errorList.locality}</div>
             }
           </div>
         </div>

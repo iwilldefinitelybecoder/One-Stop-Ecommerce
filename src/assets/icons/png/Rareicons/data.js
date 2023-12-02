@@ -7,6 +7,8 @@ import viewDisabled from './eye.png';
 import googleIcon2 from './google.png';
 import facebook3 from './facebook.png';
 import Notification from './notification.png';
+import plusBlack from './plusBlack.png';
+import mapPin from './map-pin.png';
 
 export const flashIcon = flash;
 export const rightTriangleArrowIcon = rightTriangleArrow;
@@ -17,3 +19,5 @@ export const viewDisabledIcon = viewDisabled;
 export const googleIcon3 = googleIcon2;
 export const facebookIcon3 = facebook3;
 export const NotificationIcon = Notification;
+export const plusBlackIcon = plusBlack
+export const mapPinIcon = mapPin

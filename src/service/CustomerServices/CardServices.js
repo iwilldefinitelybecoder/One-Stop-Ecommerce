@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const baseURL = 'http://localhost:8000/api/v1/customer/cards'; // Your API base URL
 
@@ -19,6 +20,7 @@ const clearToken = () => {
 
 // GET all cards
 export const getAllCards = async () => {
+    setToken(Cookies.get("JWT"))
     try {
         const response = await instance.get('/getAll');
         return response.data;
@@ -29,6 +31,7 @@ export const getAllCards = async () => {
 
 // PUT (Update) card item
 export const updateCardItem = async (request) => {
+    setToken(Cookies.get("JWT"))
     try {
         const response = await instance.put('/updateItem', request);
         return response.data;
@@ -39,6 +42,7 @@ export const updateCardItem = async (request) => {
 
 // DELETE card item
 export const deleteCardItem = async (cardId) => {
+    setToken(Cookies.get("JWT"))
     try {
         const response = await instance.delete(`/deleteItem?cardId=${cardId}`);
         return response.data;
@@ -49,6 +53,7 @@ export const deleteCardItem = async (cardId) => {
 
 // POST (Add) card item
 export const addCardItem = async (request) => {
+    setToken(Cookies.get("JWT"))
     try {
         const response = await instance.post('/addItem', request);
         return response.data;
@@ -59,6 +64,7 @@ export const addCardItem = async (request) => {
 
 // PATCH (Set Default) card
 export const setDefaultCard = async (cardId) => {
+    setToken(Cookies.get("JWT"))
     try {
         const response = await instance.patch(`/setDefault?cardId=${cardId}`);
         return response.data;
@@ -69,6 +75,7 @@ export const setDefaultCard = async (cardId) => {
 
 // GET single card by cardId
 export const getCardById = async (cardId) => {
+    setToken(Cookies.get("JWT"))
     try {
         const response = await instance.get(`/getCard?cardId=${cardId}`);
         return response.data;

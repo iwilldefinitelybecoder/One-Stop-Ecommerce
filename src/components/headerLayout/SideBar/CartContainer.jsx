@@ -109,7 +109,7 @@ const CartContainer = ({ cartToggle, itemDetails }) => {
                         />
                       );
                     })
-                  : itemDetails.length ===0 && (
+                  : cart.length ===0 && (
                       <div className="empty-cart-container mt-40">
                         <div className="empty-cart">
                           <img
@@ -125,7 +125,7 @@ const CartContainer = ({ cartToggle, itemDetails }) => {
                       </div>
                     )}
               </div>
-              {itemDetails.length !== 0 && (
+              {cart.length !== 0 && (
                 <div className="cart-footer" onClick={handelToggle}>
                   <div className="flex justify-center mr-4 items-center">
                   <div
@@ -134,7 +134,7 @@ const CartContainer = ({ cartToggle, itemDetails }) => {
                     title="empty-Cart"
                     onClick={e=>{handelToggle(e);handelEmptyCart()}}
                   >
-                    <img src={emptyCartIcon2} alt="" className="h-8 " />
+                    <img src={emptycartIcon} alt="" className="h-8 " />
 
                     <span>Empty Cart</span>
                   </div>

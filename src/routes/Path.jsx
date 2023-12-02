@@ -35,6 +35,7 @@ import Auth from "../pages/Authenticate/Auth";
 import ChangePassword from "../pages/Authenticate/extraAuthpages/ChangePassword";
 import ResetPassword from "../pages/Authenticate/extraAuthpages/ResetPassword";
 import VerifyEmail from "../pages/Authenticate/extraAuthpages/VerifyEmail";
+import Container1 from "../pages/checkout/Details/Container1";
 
 export const roles = {
   USER: "USER",
@@ -88,11 +89,13 @@ function Path() {
               <Route index element={<UserProfile />} />
               <Route path="profile" element={<UserProfile />} />
               <Route path="address" element={<Address />} />
+              <Route path="edit-address/:id " element={<Address/>}/>
               <Route path="wishlist" element={<WishList />} />
               <Route path="orders/:id" element={<UserProfile />} />
               <Route path="orders" element={<UserOrders />} />
               <Route path="payment-methods" element={<PaymentMethods />} />
-              <Route path="*" element={<NotFound />} />
+              <Route path="edit-payment-method/:id" element={<PaymentMethods/>}/>
+              {/* <Route path="*" element={<NotFound />} /> */}
             </Route>
           </Route>
 

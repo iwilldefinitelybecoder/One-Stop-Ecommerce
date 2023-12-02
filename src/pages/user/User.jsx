@@ -9,9 +9,11 @@ const User = ({ children }) => {
     const orders  = useMatch("/user/orders");
     const wishlist  = useMatch("/user/Wishlist");
     const profile  = useMatch("/user/profile");
-    const payment  = useMatch("/user/Payment-methods");
+    const payment  = useMatch("/user/Payment-methods") 
+    const editPayment =  useMatch("/user/edit-payment-method/:id");
     const address  = useMatch("/user/address");
-  
+    const editAddress = useMatch("/user/edit-address/:id");
+  console.log(editAddress);
   return (
 
     <>
@@ -90,7 +92,7 @@ const User = ({ children }) => {
                 </div>
                 </Link>
                 <Link to={`/user/Payment-methods`}>
-                <div className={`user-dashboard-items ${payment?'user-dashboard-items-active':''}  flex justify-between`}>
+                <div className={`user-dashboard-items ${editPayment || payment?'user-dashboard-items-active':''}  flex justify-between`}>
                   <div className="items-icon-name flex space-x-3">
                     <div className="item-icon">
                       <img src={creditcardIcon} alt="" className=" dashboard-icons h-5" />
@@ -105,7 +107,7 @@ const User = ({ children }) => {
                 </div>
                 </Link>
                 <Link to={`/user/address`}>
-                <div className={`user-dashboard-items ${address?'user-dashboard-items-active':''}  flex justify-between`}>
+                <div className={`user-dashboard-items ${editAddress || address?'user-dashboard-items-active':''}  flex justify-between`}>
                   <div className="items-icon-name flex space-x-3">
                     <div className="item-icon">
                       <img src={locationIcon} alt="" className="  dashboard-icons h-5" />

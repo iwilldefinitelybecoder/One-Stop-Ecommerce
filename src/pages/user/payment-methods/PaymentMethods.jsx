@@ -20,6 +20,22 @@ import {
 } from "../../../assets/icons/png/cardIcons/data";
 import { trashbinIcon } from "../../../assets/icons/png/toolbar1/data";
 import { plusBlackIcon } from "../../../assets/icons/png/Rareicons/data";
+import { CircularProgress } from "@mui/material";
+
+export  const getCardProvider = (name) => {
+  switch (name) {
+    case "VISA":
+      return visaIcon;
+    case "MASTER":
+      return mastercardIcon;
+    case "AMERICAN_EXPRESS":
+      return americanExpressIcon;
+    case "RUPAY":
+      return rupayIcon;
+    default:
+      return creditCardIcon;
+  }
+};
 
 function PaymentMethods() {
   const { getCard, deleteItem, cards, setDefault, loading } = useCard();
@@ -52,20 +68,7 @@ function PaymentMethods() {
     }
   };
 
-  const getCardProvider = (name) => {
-    switch (name) {
-      case "VISA":
-        return visaIcon;
-      case "MASTER":
-        return mastercardIcon;
-      case "AMERICAN_EXPRESS":
-        return americanExpressIcon;
-      case "RUPAY":
-        return rupayIcon;
-      default:
-        return creditCardIcon;
-    }
-  };
+
 
  
   const handelDeleteCard = (cardId) => {

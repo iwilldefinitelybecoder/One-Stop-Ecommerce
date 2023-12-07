@@ -49,7 +49,9 @@ function Address() {
   return (
     <>
       {loading ? (
-        <CircularProgress />
+        <div className="w-full h-full flex justify-center items-center">
+        <CircularProgress/>
+      </div>
       ) : isEditing ? (
         <>
           <div className="orders-pg-header flex justify-between ">
@@ -58,12 +60,12 @@ function Address() {
               <span className=" font-semibold ">My Addresses</span>
             </div>
             <div className="back-btn">
-              <Link to="/user/payment-methods">
+              <Link to="/user/address">
                 <button className="Btn">Back to Address List</button>
               </Link>
             </div>
           </div>
-          <Container1 forwardRef={forwardRef} grantPermission={setSave} />
+          <Container1 forwardRef={forwardRef} grantPermission={setSave} setAddNewCard = {setAddnewCard} addnewCard={addNewCard} />
         </>
       ) : (
         <>
@@ -87,7 +89,7 @@ function Address() {
                               loading ? "bg-slate-100" : "bg-white"
                             } order-table-rows shadow-md py-7 pl-5 items-center`}
                           >
-                            <div className="order-table-row flex w-64">
+                            <div className="order-table-row flex w-40">
                               <div>
                               
                               </div>
@@ -104,7 +106,7 @@ function Address() {
                               </span>
                             </div>
                             <div className="order-table-row font-semibold text-lg text-slate-600">
-                              <span>{address?.number}</span>
+                              <span>{address?.phone}</span>
                             </div>
 
                             <div
@@ -145,6 +147,8 @@ function Address() {
                         <Container1
                           forwardRef={forwardRef}
                           grantPermission={setSave}
+                          setAddNewCard = {setAddnewCard}
+                          addnewCard={addNewCard}
                         />
                         <div className="add-new-method flex justify-end items-center mt-3">
                           <div
@@ -166,7 +170,7 @@ function Address() {
                 />
               </>
             ) : (
-              <Container1 forwardRef={forwardRef} grantPermission={setSave} />
+              <Container1 forwardRef={forwardRef} grantPermission={setSave} setAddNewCard = {setAddnewCard} addnewCard={addNewCard} />
             )}
           </div>
         </>

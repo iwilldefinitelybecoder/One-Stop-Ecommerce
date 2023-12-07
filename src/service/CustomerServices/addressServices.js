@@ -6,6 +6,7 @@ const baseURL = 'http://localhost:8000/api/v1/customer/address'; // Your API bas
 const instance = axios.create({
     baseURL,
     timeout: 5000,
+    
 });
 
 // Set JWT token in request headers
@@ -45,6 +46,7 @@ export const addAddress = async (address) => {
     setToken(Cookies.get("JWT"))
     try {
         const response = await instance.post('/add', address);
+
         return response.data;
     } catch (error) {
         handleError(error);

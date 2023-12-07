@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import "./details.css";
 import MessagesBox from "../../../components/body/Messages/MessagesBox";
-import { InputLabel, MenuItem, Select } from "@mui/material";
+import { Alert, CircularProgress, InputLabel, MenuItem, Select } from "@mui/material";
 import { countryList } from "../../../data/countryList";
 import useAddresses from "../../../CustomHooks/AddressHooks";
-import { useMatch, useParams } from "react-router";
+import { useMatch, useNavigate, useParams } from "react-router";
 
-const Container1 = ({forwardRef,grantPermission}) => {
+const Container1 = ({forwardRef,grantPermission,setAddNewCard,addnewCard}) => {
   const isEditing = useMatch("/user/edit-Address/:id")
   const addressId = useParams("id");
   
@@ -15,14 +15,15 @@ const Container1 = ({forwardRef,grantPermission}) => {
     email: "",
     phone: "",
     city: "",
-    zip: "",
+    zipCode: "",
     country: "",
     area: "",
     locality: "",
   });
   const [errorList, setErrorList] = React.useState({});
   const [isSubmit, setIsSubmit] = React.useState(false);
-  const {updateAddresses,addAddresses} = useAddresses();
+  const {updateAddresses,addAddresses,getAddresses,loading} = useAddresses();
+  const navigate = useNavigate()
   
   useEffect(() => {
     if (isSubmit) {
@@ -32,6 +33,27 @@ const Container1 = ({forwardRef,grantPermission}) => {
     }
 
   }, [isSubmit]);
+
+  useEffect(()=>{
+    async function fetchData(){
+      const response = await getAddresses(addressId.id);
+      if(response){
+        setUserAddress({
+          ...userAddress,
+          name:response?.name,
+          email: response.email,
+          phone: response.phone,
+          city: response.city,
+          zipCode: response.zipCode,
+          country: response.country,
+          area: response.area,
+          locality: response.locality,
+        })
+      }
+    }
+    if(isEditing) fetchData()
+
+  },[])
 
 
   const handleChange = (e) => {
@@ -44,14 +66,14 @@ const Container1 = ({forwardRef,grantPermission}) => {
     e.preventDefault();
     let timerId;
         let timerId2
-        clearTimeout(timerId);
+        clearTimeout(timerId);   
         clearTimeout(timerId2);
     const errors = {};
     if (!userAddress.name) errors.name = "Name is required";
     if (!userAddress.email) errors.email = "Email is required";
     if (!userAddress.phone) errors.phone = "Phone is required";
     if (!userAddress.city) errors.city = "Company is required";
-    if (!userAddress.zip) errors.zip = "Zip is required";
+    if (!userAddress.zipCode) errors.zipCode = "Zip is required";
     if (!userAddress.country) errors.country = "Country is required";
     if (!userAddress.area) errors.area = "Address1 is required";
     if (!userAddress.locality) errors.locality = "Address2 is required";
@@ -73,10 +95,11 @@ const Container1 = ({forwardRef,grantPermission}) => {
         },2000)
       }else{
 
-        addAddresses(addressData)
-      }
+      const response = getAddresses(addressId.Id)
+      setAddNewCard(false)
     }
   }
+}
 
 
   const handlesubmitBtn = () => {
@@ -87,6 +110,14 @@ const Container1 = ({forwardRef,grantPermission}) => {
 
   return (
     <>
+    {
+      loading?
+      <div className="w-full h-full flex justify-center items-center">
+        <CircularProgress/>
+
+      </div>
+    :
+    <>
      {
       Object.keys(errorList).length !== 0 &&
       <MessagesBox newMessage="clear the issue in the form" />
@@ -95,11 +126,11 @@ const Container1 = ({forwardRef,grantPermission}) => {
       isSubmit &&
       <MessagesBox newMessage="Address Saved Successfully" />
     }
-      <div className="cntr1-sub shadow-lg rounded-md">
-        <div className="details-header pb-5 pt-2">
+      <div className={` cntr1-sub shadow-lg rounded-md`}>
+        <div className="details-header pb-5 pt-2 ">
           <span className=" font-bold text-lg">Add New Address</span>
         </div>
-        <form autoCapitalize="false" onSubmit={handleSubmit} >
+        <form autoCapitalize="false" onSubmit={handleSubmit}  >
         <div className="name-email-div flex">
           <div className="label-input">
             
@@ -136,9 +167,9 @@ const Container1 = ({forwardRef,grantPermission}) => {
         <div className="zip-country-div">
           <div className="label-input">
             <label htmlFor="">Zip Code:</label>
-            <input type="text" placeholder="Zip"  value={userAddress.zip} name="zip" onChange={handleChange}  />
+            <input type="text" placeholder="Zip"  value={userAddress.zipCode} name="zipCode" onChange={handleChange}  />
             {
-              errorList.zip && <div className="error">{errorList.zip}</div>
+              errorList.zipCode && <div className="error">{errorList.zipCode}</div>
             }
           </div>
           <div className="label-input">
@@ -181,6 +212,8 @@ const Container1 = ({forwardRef,grantPermission}) => {
         </div>
         </form>
       </div>
+      </>
+    }
     </>
   );
 };

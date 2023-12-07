@@ -7,6 +7,7 @@ import MessagesBox from "../../../components/body/Messages/MessagesBox";
 import { addProduct } from "../../../service/ProductServices";
 import { Checkbox, FormControlLabel, MenuItem, Radio, RadioGroup, Select } from "@mui/material";
 import { getAllWarehouses } from "../../../service/LogisticServices/wareHouseService";
+import ExtraAttributes from "./ExtraAttributes";
 
 
 const AddProducts = () => {
@@ -24,6 +25,7 @@ const AddProducts = () => {
   const [responseMessage, setResponseMessage] = useState("");
   const [submitform, setSubmitForm] = useState(false);
   const [wareHouse, setWareHouse] = useState([]);
+  const [extraAttributes, setExtraAttributes] = useState([{}]);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -34,6 +36,7 @@ const AddProducts = () => {
     regularPrice: 0,
     images: [],
     salePrice: 0.0,
+    brand:"",
     extraAttributes:{
       "hello":""
     },
@@ -74,8 +77,10 @@ const AddProducts = () => {
         salePrice: 0.0,
         extraAttributes:{},
         wareHouse:{},
+        brand:"",
         thumbnail: "",
       });
+      setExtraAttributes([{}]);
       setImage([]);
       handeDragClose();
       setSalePriceActive(false);
@@ -219,6 +224,18 @@ const AddProducts = () => {
     }));
   };
 
+  const fillExtraAttributes = (e) => {
+    const combinedObject = {};
+    extraAttributes.forEach((item) => {
+      if (typeof item === 'object' && item !== null) {
+        Object.assign(combinedObject, item);
+      };
+    }
+    );
+    console.log(combinedObject)
+    return combinedObject;
+}
+
   async function postFormData() {
     const formsData = new FormData();
     formsData.append("name", formData.name);
@@ -229,8 +246,12 @@ const AddProducts = () => {
     formsData.append("regularPrice", formData.regularPrice);
     formsData.append("extraAttributes", formData.extraAttributes);
     formsData.append("salePrice", formData.salePrice);   
-    formsData.append("wareHouseId", formData.wareHouse); 
+    formsData.append("wareHouseId", formData.wareHouse);
+    formsData.append("brand", formData.brand);
+    formsData.append("extraAttributes", fillExtraAttributes());
     const imageData = new FormData();
+    console.log(fillExtraAttributes())
+
 
     formData.images.forEach((img, index) => {
       formsData.append(`images`, img);
@@ -274,6 +295,9 @@ const AddProducts = () => {
     }
     if (salePriceActive && !formData.salePrice === 0) {
       errorList.salePrice = "Please enter a sale price";
+    }
+    if(formData.brand === null || formData.brand === "") {
+      errorList.brand = "Please enter a brand";
     }
     setErrorFields(errorList);
     return errorList;
@@ -348,48 +372,24 @@ const AddProducts = () => {
                   </span>
                 )}
               </div>
-              
-              <div className="cat-div">
-                <label htmlFor="category">Category</label>
-                <Select
-                sx={{
-                  marginBottom: 2,
-                  maxWidth: 408,
-                  width: "100%",
-                  height: 45,
-                  marginTop: .5,
-                  borderRadius: 2,
-                  border: "1px solid #e5e5e5",
-                  ":focus":{border: "1px solid #e5e5e5",}
-                }}
-                placeholder="Select a Category"
-                  name="category"
-                  onChange={handelformChange}
-                  value={formData.category}
-                >
-                  <MenuItem value="Apparel & Accessories">
-                    Apparel & Accessories
-                  </MenuItem>
 
-                  <MenuItem value="style & Fashion">style & Fashion</MenuItem>
-                  <MenuItem value="home & Gardening">home & Gardening</MenuItem>
-                  <MenuItem value="Health & Wellness">
-                    Health & Wellness
-                  </MenuItem>
-                  <MenuItem value="medical Health">medical Health</MenuItem>
-                  <MenuItem value="Children & Infant">
-                    Children & Infant
-                  </MenuItem>
-                  <MenuItem value="Electronic Goods">
-                    Electronic Goods
-                  </MenuItem>
-                </Select>
-                {errorFields.category && (
+              <div className="name-div">
+                <label htmlFor="name font-semibold">Brand</label>
+                <input
+                  type="text"
+                  name="brand"
+                  placeholder="Brand"
+                  onChange={handelformChange}
+                  value={formData.brand}
+                />
+                {errorFields.brand && (
                   <span className=" ml-4 text-red-500 font-semibold">
-                    *Select Catrgory
+                    *Brand is Required
                   </span>
                 )}
               </div>
+              
+            
             </div>
             <div className="upload-img-container mb-4">
               <div
@@ -509,6 +509,8 @@ const AddProducts = () => {
                   name="description"
                   onChange={handelformChange}
                   value={formData.description}
+                  rows={6}
+                  style={{padding:"15px"}}
                 ></textarea>
               </div>
               {errorFields.description && (
@@ -535,50 +537,49 @@ const AddProducts = () => {
                   </span>
                 )}
               </div>
-              <div className="tag-div relative">
-                <div className="tag-div">
-                  <label htmlFor="tag">Tags</label>
-                  <input
-                    type="text"
-                    name="tags"
-                    placeholder="tags"
-                    onChange={handelTagsInput}
-                    value={tag?.value}
-                  />
-                </div>
-                {errorFields.tags && (
+              
+              <div className="cat-div">
+                <label htmlFor="category">Category</label>
+                <Select
+                sx={{
+                  marginBottom: 2,
+                  maxWidth: 408,
+                  width: "100%",
+                  height: 45,
+                  marginTop: .5,
+                  borderRadius: 2,
+                  border: "1px solid #e5e5e5",
+                  ":focus":{border: "1px solid #e5e5e5",}
+                }}
+                placeholder="Select a Category"
+                  name="category"
+                  onChange={handelformChange}
+                  value={formData.category}
+                >
+                  <MenuItem value="Apparel & Accessories">
+                    Apparel & Accessories
+                  </MenuItem>
+
+                  <MenuItem value="style & Fashion">style & Fashion</MenuItem>
+                  <MenuItem value="home & Gardening">home & Gardening</MenuItem>
+                  <MenuItem value="Health & Wellness">
+                    Health & Wellness
+                  </MenuItem>
+                  <MenuItem value="medical Health">medical Health</MenuItem>
+                  <MenuItem value="Children & Infant">
+                    Children & Infant
+                  </MenuItem>
+                  <MenuItem value="Electronic Goods">
+                    Electronic Goods
+                  </MenuItem>
+                </Select>
+                {errorFields.category && (
                   <span className=" ml-4 text-red-500 font-semibold">
-                    *type some tags
+                    *Select Catrgory
                   </span>
                 )}
-                
-                <div className="add-tag-btn absolute">
-                  <button className="shadow-none Btn" onClick={handelTagsAdd}>
-                    Add
-                  </button>
-                </div>
-                <div className="tags-list-cntr flex flex-wrap px-2  m-2">
-                  {Array.isArray(formData.tags) &&
-                    formData.tags.map((tag, index) => {
-                      return (
-                        <div className="actual-tags shadow-md " key={index}>
-                          <div className="tag-dot">
-                            <div className="dot"></div>
-                          </div>
-                          <div className="tag-name">
-                            <span>{tag}</span>
-                          </div>
-                          <div
-                            className="close-tag hover:cursor-pointer hover:bg-light-pink"
-                            onClick={(e) => handelTagsDelete(e, index)}
-                          >
-                            x
-                          </div>
-                        </div>
-                      );
-                    })}
-                </div>
               </div>
+            
             </div>
             <div className="price-sale-div">
               <div className="reg-price-div">
@@ -636,6 +637,7 @@ const AddProducts = () => {
                 )}
               </div>
             </div>
+            <div  className="stock-tag-div">
             <div className="sale-div">
                 <div className="sale-div">
                   <div>
@@ -672,6 +674,52 @@ const AddProducts = () => {
                   </span>
                 )}
               </div>
+              <div className="tag-div relative">
+                <div className="tag-div">
+                  <label htmlFor="tag">Tags</label>
+                  <input
+                    type="text"
+                    name="tags"
+                    placeholder="tags"
+                    onChange={handelTagsInput}
+                    value={tag?.value}
+                  />
+                </div>
+                {errorFields.tags && (
+                  <span className=" ml-4 text-red-500 font-semibold">
+                    *type some tags
+                  </span>
+                )}
+                
+                <div className="add-tag-btn absolute">
+                  <button className="shadow-none Btn" onClick={handelTagsAdd}>
+                    Add
+                  </button>
+                </div>
+                <div className="tags-list-cntr flex flex-wrap px-2  m-2">
+                  {Array.isArray(formData.tags) &&
+                    formData.tags.map((tag, index) => {
+                      return (
+                        <div className="actual-tags shadow-md " key={index}>
+                          <div className="tag-dot">
+                            <div className="dot"></div>
+                          </div>
+                          <div className="tag-name">
+                            <span>{tag}</span>
+                          </div>
+                          <div
+                            className="close-tag hover:cursor-pointer hover:bg-light-pink"
+                            onClick={(e) => handelTagsDelete(e, index)}
+                          >
+                            x
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+              </div>
+              <ExtraAttributes extraAttributes={extraAttributes} setExtraAttributes={setExtraAttributes} errorFields={errorFields} setErrorFields={setErrorFields}/>
             <div className="btn-div">
               <input
                 ref={submitRef}

@@ -4,7 +4,7 @@ import Home from "../pages/home/Home";
 import Search from "../pages/search/Search";
 import Address from "../pages/user/address/Address";
 import WishList from "../pages/user/wishlist/WishList";
-import Product from "../pages/product/Product";
+import Product from "../pages/product/ProductDetails";
 import UserProfile from "../pages/user/userProfile/UserProfile";
 import UserOrders from "../pages/user/orders/Orders";
 import Layout from "../layouts/Layout";
@@ -36,6 +36,7 @@ import ChangePassword from "../pages/Authenticate/extraAuthpages/ChangePassword"
 import ResetPassword from "../pages/Authenticate/extraAuthpages/ResetPassword";
 import VerifyEmail from "../pages/Authenticate/extraAuthpages/VerifyEmail";
 import Container1 from "../pages/checkout/Details/Container1";
+import ProductDetails from "../pages/product/ProductDetails";
 
 export const roles = {
   USER: "USER",
@@ -88,8 +89,8 @@ function Path() {
             <Route path="/user" element={<User />}>
               <Route index element={<UserProfile />} />
               <Route path="profile" element={<UserProfile />} />
+              <Route path="edit-address/:id" element={<Address/>}/>
               <Route path="address" element={<Address />} />
-              <Route path="edit-address/:id " element={<Address/>}/>
               <Route path="wishlist" element={<WishList />} />
               <Route path="orders/:id" element={<UserProfile />} />
               <Route path="orders" element={<UserOrders />} />
@@ -104,13 +105,13 @@ function Path() {
               <Route index element={<Dashboard />} />
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="Products" element={<Products />} />
-              <Route path="products/:id" element={<AddProducts />} />
               <Route path="add-products" element={<AddProducts />} />
               <Route path="orders/:id" element={<UserProfile />} />
               <Route path="orders" element={<Orders />} />
               <Route path="account-settings" element={<AccountSettings />} />
-              <Route path="*" element={<NotFound />} />
+              {/* <Route path="*" element={<NotFound />} /> */}
             </Route>
+              <Route path="products/:id" element={<ProductDetails/>} />
           </Route>
         </Route>
 

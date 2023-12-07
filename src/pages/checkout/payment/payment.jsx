@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { useOutletContext } from "react-router";
 import RightElement from "../cart/rightElement";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { rightArrowIcon2 } from "../../../assets/icons/png/user-page-icons/data";
 import RightContainer from "./RightContainer";
 import LeftComponent from "./LeftComponent";
@@ -12,10 +12,19 @@ const Payment = () => {
   const [topcntr] = useOutletContext();
   const ref1 = React.useRef(null);
   const ref2 = React.useRef(null);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [moveToNextPage, setMoveToNextPage] = React.useState(false);
   const [paymentMethod, setPaymentMethod] = React.useState();
 
 
+  const paymentMethod1 = searchParams.get("paymentMethod");
+  const cardId = searchParams.get("cardId");
+  React.useEffect(() => {
+    if (paymentMethod1) {
+      setPaymentMethod(paymentMethod1);
+    }
+  }, [paymentMethod1]);
+  
   return (
     <>
       <div className="checkout-pos-left-cntr">
@@ -35,8 +44,13 @@ const Payment = () => {
         {
           paymentMethod !== undefined ? 
           <Link to={moveToNextPage?'/checkout/review':''}>
-          <div className="Btn3 flex space-x-2 items-center" >
-            <button>{paymentMethod?'Finish Ordering':'Proceed And Pay'}</button>
+          <div className=" flex space-x-2 items-center" >
+            {
+              paymentMethod === "DEBITCARD" ?
+               cardId === null ?<button disabled className="Btndisabled">Select A Card</button>:<button className="Btn3">Proceed And Pay</button>
+               :
+            <button className="Btn3">{paymentMethod === "COD"?'Finish Ordering':'Proceed And Pay'}</button>
+            }
             <img src={rightArrowIcon2} className="right-arrow h-5"/>
           </div>
         </Link>

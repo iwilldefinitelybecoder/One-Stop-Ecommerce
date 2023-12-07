@@ -146,8 +146,8 @@ const UpgradeToVendor = () => {
     
         
         setIsPending(false);
+        navigate("/");
         setTimeout(() => {
-          navigate("/");
           setFormData({
             email: "",
             vendorName: "",

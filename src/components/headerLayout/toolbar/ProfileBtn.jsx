@@ -22,9 +22,10 @@ import {
 } from "../../../service/AuthenticateServices";
 import MessagesBox from "../../body/Messages/MessagesBox";
 import { binaryToDataURL } from "../../../utils/binaryToUrl";
+import { CSSTransition } from "react-transition-group";
+import useMessage from "../../../CustomHooks/MessageHook";
 
 const imageType = ["image/png", "image/jpeg", "image/jpg"];
-
 
 function ProfileBtn() {
   const {
@@ -34,16 +35,13 @@ function ProfileBtn() {
     setShowLoginButton,
     showLogoutButton,
   } = useContext(AccountContext);
-  
+
   const location = useLocation();
- 
 
-  return (
-    showLogoutButton ? (
-      <Navigate to="/logout" state={{from:location}} replace/>
-    ) : (
+  return showLogoutButton ? (
+    <Navigate to="/logout" state={{ from: location }} replace />
+  ) : (
     <div className="profile-icon rounded-full bg-slate-100 ml-3 shadow-md cursor-default ">
-
       <button onClick={() => setShowLoginButton(!showLoginButton)}>
         <img src={account?.userIcon || userIcon} alt="" className="user-icon" />
       </button>
@@ -53,10 +51,9 @@ function ProfileBtn() {
           firstName={account?.firstName}
           lastName={account?.lastName}
           email={account?.email}
-          />
-          )}
+        />
+      )}
     </div>
-  )
   );
 }
 
@@ -64,18 +61,32 @@ const ProfileMenu = (props) => {
   const windowWidth = window.innerWidth;
   const { setAccount, setShowLoginButton, setShowLogoutButton } =
     useContext(AccountContext);
+    const {messages} = useMessage();
   const navigate = useNavigate();
-  const {account} = useContext(AccountContext);
+  const { account } = useContext(AccountContext);
+  const [activeMenu, setActiveMenu] = useState("main");
+  const [eleHeight, setEleHeight] = useState(null);
 
   const logOut = () => {
     setShowLogoutButton(true);
   };
-  
+
   const handleShowLoginButton = () => {
     setShowLoginButton(false);
   };
 
-  const MenuItem = ({ link, image1, image2, children, onClick }) => {
+  const handleResize = (el) => {
+    const height = el.offsetHeight;
+    if(height > 300){
+
+      setEleHeight(el.offsetHeight);
+    }else{
+      setEleHeight(300);
+    }
+  };
+    
+
+  const MenuItem = ({ link, image1, image2, children, onClick, goToMenu }) => {
     return (
       <>
         <Link to={link} role="menuitem">
@@ -87,7 +98,10 @@ const ProfileMenu = (props) => {
           >
             <img src={image1} alt="" className="h-7 mr-2 " />
             <span className=" text-lg font-semibold">{children}</span>
-            <img src={image2} alt="" className="h-4 ml-auto" />
+            <div className=" ml-auto" onClick={e=>{e.preventDefault();e.stopPropagation();goToMenu && setActiveMenu(goToMenu);}}>
+            <img src={image2} alt="" className="h-5 ml-auto" />
+
+            </div>
           </div>
         </Link>
       </>
@@ -97,48 +111,89 @@ const ProfileMenu = (props) => {
   return (
     <>
       <div
-      className={`profile-menu absolute ${windowWidth < 1300?'right-0':''} top-14 h-[365px] overflow-scroll w-72  rounded-xl cursor-default shadow-lg bg-white pb-5  px-4  py-2 overflow-hidden `}
-        style={{ boxShadow: "0 0 10px 0 rgba(0,0,0,0.3)" }}
+        className={`profile-menu absolute ${
+          windowWidth < 1300 ? "right-0" : ""
+        } top-14 h-[365px] overflow-scroll w-72  rounded-xl cursor-default shadow-lg bg-white pb-5  px-4  py-2 overflow-hidden `}
+        style={{ boxShadow: "0 0 10px 0 rgba(0,0,0,0.3)",height:eleHeight }}
       >
-        <div
-          style={{ display: "flex", flexDirection: "column" }}
-          className=" w-full justify-center space-y-1 items-center mt-3 mb-4"
+        <CSSTransition
+          in={activeMenu === "main"}
+          unmountOnExit
+          timeout={500}
+          classNames="menu-primary"
+          onEnter={handleResize}
         >
-          <ProfileIcon image={props?.image} />
-          <UserName
-            firstName={props?.firstName}
-            lastName={props?.lastName}
-            email={props?.email}
-          />
-        </div>
-        <div className=" rounded-lg ">
-          <MenuItem
-            link="/user/profile"
-            onClick={handleShowLoginButton}
-            image1={profileIcon}
-          >
-            Your Account
-          </MenuItem>
-          <MenuItem
-            link="/user/profile"
-            onClick={handleShowLoginButton}
-            image1={settingsIcon}
-          >
-            Settings
-          </MenuItem>
-          <MenuItem onClick={handleShowLoginButton} image1={NotificationIcon}>
-            Notifications
-          </MenuItem>
-          {
-          !account?.roles.includes("VENDOR") &&
-            <MenuItem link="/register-vendor" image1={emptyCartIcon2}>
-            Become Seller
-          </MenuItem>
+          <div className="menu">
+            <div
+              style={{ display: "flex", flexDirection: "column" }}
+              className=" w-full justify-center space-y-1 items-center mt-3 mb-4"
+            >
+              <ProfileIcon image={props?.image} />
+              <UserName
+                firstName={props?.firstName}
+                lastName={props?.lastName}
+                email={props?.email}
+              />
+            </div>
+            <div className=" rounded-lg ">
+              <MenuItem
+                link="/user/profile"
+                onClick={handleShowLoginButton}
+                image1={profileIcon}
+              >
+                Your Account
+              </MenuItem>
+              <MenuItem
+                link="/user/profile"
+                onClick={handleShowLoginButton}
+                image1={settingsIcon}
+              >
+                Settings
+              </MenuItem>
+              <MenuItem
+                onClick={handleShowLoginButton}
+                image1={NotificationIcon}
+                goToMenu={"notification"}
+                image2={rightArrowIcon2}
+              >
+                Notifications
+              </MenuItem>
+              {!account?.roles.includes("VENDOR") && (
+                <MenuItem link="/register-vendor" image1={emptyCartIcon2}>
+                  Become Seller
+                </MenuItem>
+              )}
+              <MenuItem image1={logoutIcon} onClick={logOut}>
+                Logout
+              </MenuItem>
+            </div>
+          </div>
+        </CSSTransition>
+
+        <CSSTransition
+          in={activeMenu === "notification"}
+          unmountOnExit
+          timeout={500}
+          classNames="menu-secondary"
+          onEnter={handleResize}
+        >
+          <div className="menu">
+            <MenuItem
+              link="/user/profile"
+              image1={rightArrowIcon2}
+              goToMenu="main"
+            >
+              <h2>Notification</h2>
+            </MenuItem>
+        
+            {
+                messages.length > 0 ? messages.map((messag,index) => 
+                  <span>{messag.message}</span>
+                  
+                ) : <span>No Notification</span>
           }
-          <MenuItem image1={logoutIcon} onClick={logOut}>
-            Logout
-          </MenuItem>
-        </div>
+          </div>
+        </CSSTransition>
       </div>
     </>
   );
@@ -165,7 +220,10 @@ export const ProfileIcon = (props) => {
             />
           </div>
           {displayEditIcon && (
-            <EditProfileIcon setdisplayBtn={setDisplayEditIcon} displayBtn={displayEditIcon} />
+            <EditProfileIcon
+              setdisplayBtn={setDisplayEditIcon}
+              displayBtn={displayEditIcon}
+            />
           )}
         </div>
       </div>
@@ -185,8 +243,8 @@ export const UserName = (props) => {
   );
 };
 
-const EditProfileIcon = ({ displayBtn,setdisplayBtn }) => {
-  const { account, setAccount,showLoginButton } = useContext(AccountContext);
+const EditProfileIcon = ({ displayBtn, setdisplayBtn }) => {
+  const { account, setAccount, showLoginButton } = useContext(AccountContext);
   const inputRef = useRef();
   const [responseMessage, setResponseMessage] = useState("");
   const [prevImage, setPrevImage] = useState("");
@@ -197,7 +255,7 @@ const EditProfileIcon = ({ displayBtn,setdisplayBtn }) => {
   const [saveImage, setSaveImage] = useState(false);
   useEffect(() => {
     if (imageData.image !== "") {
-      setPrevImage({...account?.userIcon});
+      setPrevImage({ ...account?.userIcon });
       setAccount({
         ...account,
         userIcon: URL.createObjectURL(imageData.image),
@@ -240,7 +298,7 @@ const EditProfileIcon = ({ displayBtn,setdisplayBtn }) => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    
+
     setImageData({ ...imageData, image: file });
   };
 

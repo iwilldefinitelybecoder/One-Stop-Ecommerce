@@ -43,8 +43,8 @@ function Wishlist() {
           (
             <div>
 
-              <div className="w-full flex justify-end mr-14 mt-5">
-                <button className="Btn3" onClick={handelMoveAllToCart}>Move All To WishList</button>
+              <div className="w-full flex justify-end mr-14 ">
+                <button className="Btn3" onClick={handelMoveAllToCart}>Move All To Cart</button>
 
               </div>
 
@@ -52,7 +52,7 @@ function Wishlist() {
                 <div className='wishlist-body'>
                   {wishlist?.map((item) => {
                     return (
-                      <div key={item.productId} className='wishlist-card w-[270px] rounded-lg h-[403px] bg-white px-4 py-3'>
+                      <div key={item.productId} className=' w-72 swiper-slide swiper-slide-visible swiper-slide-fully-visible swiper-slide-active flash-grid-cards flex-col justify-start items-start px-4 py-4 rounded-xl shadow-lg  transition-all'>
                         <FlashDealsGridCards productInfo={item} />
                       </div>
 

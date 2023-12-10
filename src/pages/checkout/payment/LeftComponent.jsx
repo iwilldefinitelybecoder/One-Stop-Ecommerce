@@ -43,7 +43,7 @@ const [searchParams, setSearchParams] = useSearchParams();
           value={ordersDetails?.paymentMethod}
           onChange={handelPaymentMethod}
         >
-
+        
         {cards.length > 0 ? (
           <CardsListPanel setPaymentMethod={handelPaymentMethod} />
         ) : (

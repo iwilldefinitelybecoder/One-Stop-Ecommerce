@@ -18,13 +18,21 @@ import { AccountContext } from "../../../../context/AccountProvider";
 import Cookies from "js-cookie";
 
 import {useCart} from "../../../../CustomHooks/CartHook";
+import { Link, useMatch } from "react-router-dom";
+import useWishlist from "../../../../CustomHooks/WishListHook";
+import Lottie from "react-lottie-player";
+import { heartMarkGif } from "../../../../assets/icons/json/data";
 
 
 const FlashDealsGridCards = ({ productInfo }) => {
   const {cart,itemExist,updateItem,addItemToCart,removeItem} = useCart()
   const {setShowLoginButton,showLoginButton,account} = useContext(AccountContext)
+  const {productId,addToWishlist,removeFromWishlist,moveToCart} = useWishlist();
+  const productExist =productId!==0? productId?.includes(productInfo?.productId):false
+  const page = useMatch('/user/Wishlist')
 
   const buttonDisableRef = useRef(null);
+  
 
   const offerPercentage = productInfo.salePrice
     ? (
@@ -60,6 +68,9 @@ const FlashDealsGridCards = ({ productInfo }) => {
     }
   }, [addNewItem]);
 
+  
+
+
   useEffect(() => {
 
     setItemDetail(
@@ -77,7 +88,9 @@ const FlashDealsGridCards = ({ productInfo }) => {
 
 
 
-  const handelAddQuantity = () => {
+  const handelAddQuantity = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     const total = itemDetail.productQuantity + 1;
     setItemDetail({
       ...itemDetail,
@@ -86,7 +99,9 @@ const FlashDealsGridCards = ({ productInfo }) => {
     calulateTotal(total);
   };
 
-  const handelMinusQuantity = () => {
+  const handelMinusQuantity = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (itemDetail.itemQuantity > 1) {
       // buttonDisableRef.current.disabled = true;
       const total = itemDetail.productQuantity - 1;
@@ -115,11 +130,18 @@ const FlashDealsGridCards = ({ productInfo }) => {
     
       if (existingItem) {
         data.quantity = total
-        console.log("data",data);
+  
         updateItem(data);
       } else {
         data.quantity = total
-        setAddNewItem(data);
+        if(page){
+          moveToCart(itemDetail?.productId)
+      
+        }else{
+
+          setAddNewItem(data);
+        }
+
       }
 
       return {...itemDetail, itemTotal: formattedTotal };
@@ -150,6 +172,18 @@ const FlashDealsGridCards = ({ productInfo }) => {
     setMouseHover(false);
   };
 
+  const handelAddToWishList = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (account) {
+      productId?.includes(productInfo?.productId)
+        ? removeFromWishlist(productInfo?.productId)
+        : addToWishlist(productInfo?.productId);
+    } else {
+      setShowLoginButton(true);
+    }
+  }
+
   return (
     <>
       <div
@@ -157,6 +191,7 @@ const FlashDealsGridCards = ({ productInfo }) => {
         onMouseEnter={handelMouseEnter}
         onMouseLeave={handelMouseleave}
       >
+    <Link to={`/product/${productInfo?.productId}`}>
         <div className="flash-grid-top-cntr">
           <div className=" w-full h-6">
             <div
@@ -258,17 +293,32 @@ const FlashDealsGridCards = ({ productInfo }) => {
         </div>
 
         <div className=" space-y-1 z-50" >
-          <div className="view-hover-icon" role="button" title="view-product">
-            <img src={viewIcon} className=" h-5" />
+          
+          {productExist?
+          <div
+            className="wishlist-added-icon"
+            role="button"
+            title="remove from WishList"
+            onClick={handelAddToWishList}
+          >
+            <Lottie play loop={false} animationData={heartMarkGif} className=" h-[90px]" />
           </div>
+            :
           <div
             className="wishlist-hover-icon"
             role="button"
             title="Add to WishList"
+            onClick={handelAddToWishList}
           >
             <img src={wishListIcon2} className=" h-5" />
           </div>
+          
+          }
+          <div className="view-hover-icon" role="button" title="view-product">
+            <img src={viewIcon} className=" h-5" />
+          </div>
         </div>
+      </Link>
       </div>
     </>
   );

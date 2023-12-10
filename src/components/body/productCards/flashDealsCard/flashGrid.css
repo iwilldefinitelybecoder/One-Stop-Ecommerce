@@ -67,8 +67,19 @@
     transition: 0.1s ease-in-out;
 }
 
+.wishlist-added-icon{
+    position: absolute;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 6px;
+    top: -15px;
+    right: -23px;
+}
+
 .view-hover-icon{
-    top: 10px;   
+    top: 50px;   
     right: -30px;
     transition-property: right;
     transition-duration: 0.5s;
@@ -77,7 +88,8 @@
 }
 
 .wishlist-hover-icon{
-    top: 50px;   
+   
+    top: 10px;   
     right: -30px;
     transition-property: right;
     transition-duration: 0.5s;

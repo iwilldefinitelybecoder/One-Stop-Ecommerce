@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
-import { addCartItem, deleteCartItem, getAllCartItems, updateCartItem } from '../service/CustomerServices/CartServices';
-
+import { addCartItem, deleteCartItem, emptyCart, getAllCartItems, updateCartItem } from '../service/CustomerServices/CartServices';
+import Cookies from 'js-cookie';
 export const cartContext = React.createContext();  
 
 export const useCart = () =>{
@@ -10,11 +10,12 @@ export const useCart = () =>{
 }
 
 const CartProvider = ({children}) => {
+    const cookie = Cookies.get("JWT");
     const [cartInfo, setCartInfo] = useState([]);
     const [cart, setCart] = useState([]);
     const [loading, setLoading] = useState(false);
     
-    const dispatch = useDispatch();
+
 
     const data = {
         cartId: cartInfo?.cartId,
@@ -30,15 +31,24 @@ const CartProvider = ({children}) => {
         }
         fetchCart();
     }
-        , [])
+        , [cookie])
 
-    useEffect(() => {
-        dispatch({ type: "SET_CART", payload: cart });
-    }, [cart])
+    
 
     useEffect(() => {
         setCart(cartInfo?.productInfo);
     }, [cartInfo])
+
+    const getAllCartItemss = async () => {
+        if(loading) return;
+        setLoading(true);
+        const response = await getAllCartItems();
+        if (response) {
+            setCartInfo(response);
+        }
+        setLoading(false);
+    };
+
 
     const addItemToCart = async (cartItemData) => {
         if(loading) return;
@@ -46,13 +56,10 @@ const CartProvider = ({children}) => {
         const requestData = {...data,productId:cartItemData.productId,quantity:cartItemData.quantity}
 
         const response = await addCartItem(requestData);
-        if (response) {
-            setCart([...cart, {...response}]);
-            dispatch({ type: "SET_CART", payload:response});                
-        }
+        getAllCartItemss();
         setLoading(false);
     };
-    console.log(cart)   
+    
 
     const updateItem = async (itemData) => {
         if(loading) return;
@@ -60,11 +67,10 @@ const CartProvider = ({children}) => {
      
         const requestData = {...data,productId:itemData.productId,quantity:itemData.quantity,cartItemId:itemData.cartItemId}
 
-        const response = await updateCartItem(requestData);
+        updateCartItem(requestData);
+        getAllCartItemss();
 
-        if (response) {
-            dispatch({ type: "UPDATE_ITEM", payload: { ...response } });
-        }
+       
         setLoading(false);
 
     };
@@ -73,12 +79,8 @@ const CartProvider = ({children}) => {
         if(loading) return;
        setLoading(true);
         const response = await deleteCartItem(data);
-
-
-        if (response) {
-            dispatch({ type:"SET_CART",payload:response })
-        }
-        setLoading(false);
+        getAllCartItemss();
+        setLoading(false);   
 
     };
 
@@ -86,11 +88,21 @@ const CartProvider = ({children}) => {
         if(loading) return;
         setLoading(true);
         const response = await emptyCart(cartInfo.cartId);
-        if (response) {
-            dispatch({ type: "CLEAR_CART" });
-        }
+        getAllCartItemss();
         setLoading(false);
 
+
+    }
+
+    const estimatedCosts = () => {
+        return {
+            cartTotal: cartInfo?.cartTotal,
+            totalItems: cartInfo?.totalItems,
+            shipping:cartInfo?.shippingCharges,
+            tax:cartInfo?.tax,
+            discount:cartInfo?.discount,
+            grandTotal: cartInfo?.grandTotal
+        };
 
     }
   
@@ -113,7 +125,7 @@ const CartProvider = ({children}) => {
     
     return(
     <cartContext.Provider 
-    value={{ cart, addItemToCart, updateItem, removeItem, clearCart, cartTotal, totalItems, cartId, itemExist,loading }}>
+    value={{cartInfo, cart, addItemToCart, updateItem, removeItem, clearCart, cartTotal, totalItems, cartId, itemExist,loading,estimatedCosts }}>
         {children}
     </cartContext.Provider>
     )

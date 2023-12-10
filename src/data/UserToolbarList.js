@@ -17,17 +17,19 @@ export const UserToolbarList = [
 },
 
 {   name:'Payments',
-    subList:[
-        {name:'Payment-Methods',link:'/user/profile'},
-        {name:'Edit Payment-methods',link:'/user/edit-profile'},
-    ],
+    // subList:[
+    //     {name:'Payment-Methods',link:'/user/payment-methods'},
+    //     {name:'Edit Payment-methods',link:'/user/edit-payment-methods'},
+    // ],
+    link:'/user/payment-methods',
 },
 
 {   name:'Address',
-    subList:[
-        {name:'View Address',link:'/user/profile'},
-        {name:'Edit Address',link:'/user/edit-profile'},
-    ],
+    // subList:[
+    //     {name:'View Address',link:'/user/address'},
+    //     {name:'Edit Address',link:'/user/edit-address'},
+    // ],
+    link:'/user/address',
 },
 
 

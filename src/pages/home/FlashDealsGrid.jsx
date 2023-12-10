@@ -15,23 +15,21 @@ import {
 import { Link } from "react-router-dom";
 import FlashDealsGridCards from "../../components/body/productCards/flashDealsCard/flashDealsGridCards";
 
-import { products } from "../../data/products";
-import { getProducts } from "../../service/ProductServices";
+
+import useProducts from "../../CustomHooks/ProductsHook";
 
 
 function FlashDealsGrid() {
   const [swiperRef, setSwiperRef] = useState(null);
   const [productinfo, setProductinfo] = useState([]);
 
+  const {products} =useProducts();
+  console.log(products)
   useEffect(() => {
-    async function fetchProductInfo() {
-      const response = await getProducts();
-        setProductinfo(response);
-    }
-    
-    fetchProductInfo();
+
+    setProductinfo(products);
   }
-  , []);
+    , [products])
 
 
   return (

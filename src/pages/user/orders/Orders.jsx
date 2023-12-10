@@ -7,7 +7,7 @@ import {
 import { rightArrowIcon } from "../../../assets/icons/png/toolbar-icons/data";
 import { ordersList } from "../../../data/orderList";
 import { noOrderIcon } from "../../../assets/icons/img/randoms/data";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useSearchParams } from "react-router-dom";
 function Orders() {
   const [orders, setOrders] = React.useState(ordersList);
   const [currnetPage, setCurrentPage] = React.useState(0);
@@ -133,7 +133,17 @@ function Orders() {
 }
 
 export const OrderPaging = ({ currentPage, totalpages, updatePage }) => {
+
+  const [searchParams, setSearchParams] = useSearchParams();
   const pagenumbers = Array.from({ length: totalpages }, (_, i) => i + 1);
+  useEffect(() => {
+    searchParams.set("page", currentPage);
+    setSearchParams(searchParams);
+  }, [currentPage, searchParams, setSearchParams]);
+  
+  currentPage  = searchParams.get("page")? parseInt(searchParams.get("page")) : currentPage;
+
+
   return (
     <div className="order-pg-pagation h-12 ">
       <div

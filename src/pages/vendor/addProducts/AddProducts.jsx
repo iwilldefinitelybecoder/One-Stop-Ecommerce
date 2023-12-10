@@ -296,8 +296,14 @@ const AddProducts = () => {
     if (salePriceActive && !formData.salePrice === 0) {
       errorList.salePrice = "Please enter a sale price";
     }
+    if(salePriceActive && parseFloat(formData.salePrice) > parseFloat(formData.regularPrice)){
+      errorList.salePrice = "Sale price cannot be greater than regular price";
+    }
     if(formData.brand === null || formData.brand === "") {
       errorList.brand = "Please enter a brand";
+    }
+    if(formData.wareHouse === null || formData.wareHouse === "") {
+      errorList.wareHouse = "Please select a warehouse";
     }
     setErrorFields(errorList);
     return errorList;
@@ -632,7 +638,7 @@ const AddProducts = () => {
                 </div>
                 {errorFields.salePrice && (
                   <span className=" ml-4 text-red-500 font-semibold">
-                    *Sale Price is Required
+                    {errorFields.salePrice}
                   </span>
                 )}
               </div>
@@ -668,9 +674,9 @@ const AddProducts = () => {
                   </Select>
          
                 </div>
-                {errorFields.salePrice && (
+                {errorFields.wareHouse && (
                   <span className=" ml-4 text-red-500 font-semibold">
-                    *Sale Price is Required
+                    {errorFields.wareHouse}
                   </span>
                 )}
               </div>

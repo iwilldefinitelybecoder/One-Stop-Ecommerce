@@ -40,7 +40,7 @@ export const addProduct = async (data) => {
 };
 
 // Get all products
-export const getProducts = async () => {
+export const getAllProducts = async () => {
   setToken(Cookies.get('JWT'));
     try {
         const response = await instance.get('/getproducts');
@@ -113,6 +113,19 @@ export const getProductAttributes = async (attribute) => {
     }
 };
 
+export const publishProducts  = async (productId) =>{
+    
+    setToken(Cookies.get('JWT'));
+    try {
+        const response = await instance.post('/product/publish',null, {
+            params: {productId:productId},
+        });
+        return response.data;
+    } catch (error) {
+        handleError(error);
+    }
+}
+
 
 // Handle API call errors
 const handleError = (error) => {
@@ -124,7 +137,7 @@ export default {
     setToken,
     clearToken,
     addProduct,
-    getProducts,
+    getAllProducts,
     searchProducts,
     searchResults,
     getAllProductReviews,

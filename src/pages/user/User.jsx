@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import "./user.css";
 import { ShoppingbagIcon2, creditcardIcon, likeIcon, locationIcon, profileIcon } from "../../assets/icons/png/user-page-icons/data";
 import { ordersList } from "../../data/orderList";
+import useWishlist from "../../CustomHooks/WishListHook";
 const User = ({ children }) => {
 
     const orders  = useMatch("/user/orders");
@@ -13,7 +14,8 @@ const User = ({ children }) => {
     const editPayment =  useMatch("/user/edit-payment-method/:id");
     const address  = useMatch("/user/address");
     const editAddress = useMatch("/user/edit-address/:id");
-  console.log(editAddress);
+
+    const {wishlistInfo} = useWishlist(); 
   return (
 
     <>
@@ -51,7 +53,7 @@ const User = ({ children }) => {
                     </div>
                   </div>
                   <div className="item-count">
-                    <span>{-2}</span>
+                    <span>{wishlistInfo?.totalItems}</span>
                   </div>
                 </div>
                 </Link>

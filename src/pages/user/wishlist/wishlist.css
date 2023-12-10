@@ -1,0 +1,14 @@
+.wishlist-cntr{
+    display: flex;
+    flex-direction: row;
+    padding: 20px 0;
+    width: 100%;
+    height: auto;
+}
+
+.wishlist-body{
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    grid-gap: 20px;
+    
+}

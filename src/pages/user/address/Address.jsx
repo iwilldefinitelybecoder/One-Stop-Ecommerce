@@ -18,7 +18,7 @@ import { trashbinIcon } from "../../../assets/icons/png/toolbar1/data";
 import { mapPinIcon, plusBlackIcon } from "../../../assets/icons/png/Rareicons/data";
 import Container1 from "../../checkout/Details/Container1";
 import useAddresses from "../../../CustomHooks/AddressHooks";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Collapse } from "@mui/material";
 
 function Address() {
   const {getAddresses,deleteAddresses,loading,addresses} = useAddresses();
@@ -142,14 +142,16 @@ function Address() {
                           />
                         </div>
                       </div>
-                    ) : (
+                    ) : null}
                       <>
+                      <Collapse in={addNewCard} timeout={600} >
                         <Container1
                           forwardRef={forwardRef}
                           grantPermission={setSave}
                           setAddNewCard = {setAddnewCard}
                           addnewCard={addNewCard}
                         />
+                        </Collapse>
                         <div className="add-new-method flex justify-end items-center mt-3">
                           <div
                             className="add-mehtods-Btn Btn3 "
@@ -160,7 +162,7 @@ function Address() {
                           </div>
                         </div>
                       </>
-                    )}
+                    
                   </div>
                 </div>
                 <OrderPaging

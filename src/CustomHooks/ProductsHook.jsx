@@ -1,27 +1,26 @@
 import React, { useEffect, useState } from 'react'
-import { addReview, getAllProductReviews } from '../service/ProductServices';
+import { addReview, getAllProductReviews, getAllProducts, publishProducts } from '../service/ProductServices';
 
 const useProducts = () => {
   const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [reviews, setReviews] = useState([]);
-
+    console.log(products)
 
     useEffect(()=>{
-        async function getProducts(){
+        async function fetchProducts(){
             setLoading(true)
-            const response = await getProducts();
-            const data = await response.json();
-            setProducts(data);
+            const response = await getAllProducts();
+            setProducts(response);
             setLoading(false)
         }
-        getProducts();
+        fetchProducts();
     },[])
 
     const getProducts = async () => {
         if (loading) return;
         setLoading(true);
-        const response = await getProducts();
+        const response = await getAllProducts();
         setProducts(response);
         setLoading(false);
     }
@@ -66,6 +65,14 @@ const useProducts = () => {
         setLoading(false);
     }
 
+    const publishAproduct = async (id) => {
+        if (loading) return;
+        setLoading(true);
+        const response = await publishProducts(id);
+        getProducts();
+        setLoading(false);
+    }
+
     return {
         products,
         loading,
@@ -75,7 +82,9 @@ const useProducts = () => {
         // deleteProducts,
         // updateProduct,
         getAllproductsReview,
-        addProductReview
+        addProductReview,
+        publishAproduct
+
     }
 
 

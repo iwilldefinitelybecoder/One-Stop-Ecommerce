@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useOrders } from "../../../context/OrderContext";
 import PaymentCardsList from "../../../components/body/checkoutComponents/PaymentCardsList";
 import useCard from "../../../CustomHooks/CardsHooks";
-import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
+import { Collapse, FormControlLabel, Radio, RadioGroup } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 import {
   americanExpressIcon,
@@ -53,6 +53,7 @@ const CardsListPanel = ({ setPaymentMethod }) => {
           <img src={rupayIcon} className="h-9" />
         </div>
       </div>
+      <Collapse in={paymentMethod === "DEBITCARD"}>
       <div
         className={`   shadow-lg  ${
           paymentMethod === "COD" ? "h-0" : "h-[228px]"
@@ -74,6 +75,7 @@ const CardsListPanel = ({ setPaymentMethod }) => {
           ))}
         </RadioGroup>
       </div>
+    </Collapse>
     </div>
   );
 };

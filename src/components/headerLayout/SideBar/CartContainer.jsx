@@ -20,7 +20,8 @@ const CartContainer = ({ cartToggle, itemDetails }) => {
   const [CartTotal, setCartTotal] = useState(0);
   const [deleteToggle, setDeleteToggle] = useState(false);
   const [deleteItem, setDeleteItem] = useState(null);
-  const { cartTotal,totalItems,cart } = useCart();
+  const { cartTotal,totalItems,cart,clearCart } = useCart();
+  
 
 
 
@@ -51,7 +52,10 @@ const CartContainer = ({ cartToggle, itemDetails }) => {
     setCartTotal(cartTotal);
   }, [cart]);
 
-  
+  const handelEmptyCart = () => {
+
+    clearCart();
+  }
 
   const handelToggle = (e) => {
     e.preventDefault();

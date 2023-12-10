@@ -83,8 +83,9 @@ const Container1 = ({forwardRef,grantPermission,setAddNewCard,addnewCard}) => {
       setErrorList({});
     }, 7000);
 
-    const addressData = {...userAddress};
-    addAddresses.addressId = addressId;
+    
+    
+    const addressData = {...userAddress,addressId:addressId.id}
 
     if (Object.keys(errors).length === 0) {
       setIsSubmit(true);
@@ -94,8 +95,8 @@ const Container1 = ({forwardRef,grantPermission,setAddNewCard,addnewCard}) => {
           navigate('/user/Payment-methods')
         },2000)
       }else{
-
-      const response = getAddresses(addressId.Id)
+       
+      const response = addAddresses(addressData)
       setAddNewCard(false)
     }
   }

@@ -62,7 +62,7 @@ const SelectAddress = () => {
             <h3 className=" font-semibold text-xl border-b-2 py-2 ">
               Select Shipping Address
             </h3>
-            <div className=" shipping-address-cntr  bg-main-bg rounded-md mt-2 h-[50vh]  w-[804px] ">
+            <div className=" shipping-address-cntr  bg-main-bg rounded-md mt-2   w-[804px] ">
               <RadioGroup
                 aria-label="shippingAddress"
                 name="shippingAddress"
@@ -95,7 +95,7 @@ const SelectAddress = () => {
                 <span>Select billing Address</span>
               </div>
             </h3>
-            <div className=" shipping-address-cntr  bg-main-bg rounded-md mt-2 h-[48vh]  w-[804px] ">
+            <div className=" shipping-address-cntr  bg-main-bg rounded-md mt-2   w-[804px] ">
               <RadioGroup
                 aria-label="billingAddress"
                 name="billingAddress"

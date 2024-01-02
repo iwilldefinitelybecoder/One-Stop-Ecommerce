@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { createOrder, getAllOrders, getOrderById } from '../service/CustomerServices/OrderServices';
+import { AccountContext } from './AccountProvider';
 
 export const OrderContext = createContext();
 
@@ -8,6 +9,7 @@ export const useOrders = ()=>{
 }
 
 const OrderProvider = ({children}) => {
+  const {account} = useContext(AccountContext)
     const [orders, setOrders] = useState([])
     const [loading, setLoading] = useState(false)
     const [orderDetails, setOrderDetails] = useState({
@@ -19,9 +21,11 @@ const OrderProvider = ({children}) => {
         customerId: '',
         paymentMethod: '',
         paymentProcessId: '',
-        paymentId: '',
+        paymentDetails: '',
         products: [],
     })
+
+    console.log(orderDetails)
 
     useEffect(()=>{
       if(loading)return
@@ -33,7 +37,7 @@ const OrderProvider = ({children}) => {
         }
         fetchOrders()
     }
-    ,[])
+    ,[account])
 
     const createOrders = async ()=>{
       if(loading)return
@@ -56,6 +60,8 @@ const OrderProvider = ({children}) => {
   return (
     <>
     <OrderContext.Provider value={{orderDetails,
+                                    orders, 
+                                    setOrders,
                                     setOrderDetails,
                                     loading,
                                     createOrders,

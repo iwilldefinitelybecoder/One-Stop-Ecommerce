@@ -38,7 +38,7 @@ const CardsListPanel = ({ setPaymentMethod }) => {
 
 
   return (
-    <div className=" shipping-address-cntr bg-white rounded-md pt-3 px-5 overflow-hidden space-y-6 border-b-4">
+    <div className={` ${paymentMethod === "DEBITCARD?"?'h-[105px]':'h-auto'} max-h-[370px]  bg-white rounded-md pt-3 px-5 overflow-hidden space-y-6 border-b-4`}>
       <div className="option-cntr space-x-3 font-bold flex justify-between items-center ">
         <div className=" ">
         <FormControlLabel control={<Radio />} id="option" value="DEBITCARD" />
@@ -55,9 +55,7 @@ const CardsListPanel = ({ setPaymentMethod }) => {
       </div>
       <Collapse in={paymentMethod === "DEBITCARD"}>
       <div
-        className={`   shadow-lg  ${
-          paymentMethod === "COD" ? "h-0" : "h-[228px]"
-        } overflow-scroll  `}
+        className={` user-card-list px-3  shadow-lg  overflow-scroll  `}
       >
         <RadioGroup
           aria-label="cards"

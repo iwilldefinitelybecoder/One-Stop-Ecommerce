@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Outlet, useMatch } from "react-router";
 import { Link } from "react-router-dom";
 import {
@@ -17,6 +17,7 @@ import {
 import { ordersList } from "../../data/orderList";
 import './vendor.css'
 import Dashboard from "./dashboard/Dashboard";
+import { getVendorProductList } from "../../service/vendorServices";
 
 const Vendor = () => {
   const dashboard = useMatch("/vendor/dashboard");
@@ -24,6 +25,21 @@ const Vendor = () => {
   const addproducts = useMatch("/vendor/add-products");
   const orders  = useMatch("/vendor/orders");
   const accountsettings = useMatch("/vendor/account-settings");
+
+  const [product, setProduct] = React.useState();
+  
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await getVendorProductList();
+      console.log(data)
+      if (data.length > 0)
+        setProduct(data.length)
+      // setLoading(false)
+    }
+    fetchData()
+  }
+    , [])
 
   return (
     <>
@@ -51,7 +67,7 @@ const Vendor = () => {
                       </div>
                     </div>
                     <div className="item-count">
-                      <span>{ordersList.length}</span>
+                      <span></span>
                     </div>
                   </div>
                 </Link>
@@ -75,7 +91,7 @@ const Vendor = () => {
                       </div>
                     </div>
                     <div className="item-count">
-                      <span>{-2}</span>
+                      <span>{product}</span>
                     </div>
                   </div>
                 </Link>
@@ -98,7 +114,7 @@ const Vendor = () => {
                       </div>
                     </div>
                     <div className="item-count">
-                      <span>{-2}</span>
+                      <span></span>
                     </div>
                   </div>
                 </Link>
@@ -144,7 +160,7 @@ const Vendor = () => {
                       </div>
                     </div>
                     <div className="item-count">
-                      <span>{-2}</span>
+                      <span></span>
                     </div>
                   </div>
                 </Link>

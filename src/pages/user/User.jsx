@@ -5,17 +5,25 @@ import "./user.css";
 import { ShoppingbagIcon2, creditcardIcon, likeIcon, locationIcon, profileIcon } from "../../assets/icons/png/user-page-icons/data";
 import { ordersList } from "../../data/orderList";
 import useWishlist from "../../CustomHooks/WishListHook";
+import { useOrders } from "../../context/OrderContext";
+import useCard from "../../CustomHooks/CardsHooks";
+import useAddresses from "../../CustomHooks/AddressHooks";
 const User = ({ children }) => {
 
-    const orders  = useMatch("/user/orders");
+    const order  = useMatch("/user/orders");
     const wishlist  = useMatch("/user/Wishlist");
     const profile  = useMatch("/user/profile");
     const payment  = useMatch("/user/Payment-methods") 
     const editPayment =  useMatch("/user/edit-payment-method/:id");
-    const address  = useMatch("/user/address");
+    const addresses  = useMatch("/user/address");
     const editAddress = useMatch("/user/edit-address/:id");
+    const editProfile = useMatch("/user/edit-profile");
+    const OrderDetails = useMatch("/user/orders/:id");
 
     const {wishlistInfo} = useWishlist(); 
+    const {orders} = useOrders();
+    const {cards} = useCard();
+    const {address} = useAddresses();
   return (
 
     <>
@@ -25,10 +33,10 @@ const User = ({ children }) => {
             <div className="user-left-sub-cntr shadow-md ">
               <div className="user-dashboard-cntr font-semibold">
                 <div className="user-dashbord-title px-7 pt-6">
-                  <span className=" text-slate-500 font-bold">Dashbord</span>
+                  <span className=" text-slate-500 font-bold">DASHBOARD</span>
                 </div>
                 <Link to={`/user/orders`}>
-                <div className={`user-dashboard-items ${orders?'user-dashboard-items-active':''}  flex justify-between`} >
+                <div className={`user-dashboard-items ${order || OrderDetails?'user-dashboard-items-active':''}  flex justify-between`} >
                   <div className="items-icon-name flex space-x-3">
                     <div className="item-icon">
                       <img src={ShoppingbagIcon2} alt="" className="dashboard-icons h-5" />
@@ -38,7 +46,7 @@ const User = ({ children }) => {
                     </div>
                   </div>
                   <div className="item-count">
-                    <span>{ordersList.length}</span>
+                    <span>{orders?.length}</span>
                   </div>
                 </div>
                 </Link>
@@ -76,10 +84,10 @@ const User = ({ children }) => {
 
               <div className="user-dashboard-cntr font-semibold mt-5">
                 <div className="user-dashbord-title px-7 pt-6">
-                  <span className=" text-slate-500 font-bold">Dashbord</span>
+                  <span className=" text-slate-500 font-bold">ACCOUNT SETTINGS</span>
                 </div>
                 <Link to={`/user/profile`}>
-                <div className={`user-dashboard-items ${profile?'user-dashboard-items-active':''}  flex justify-between`}>
+                <div className={`user-dashboard-items ${profile || editProfile?'user-dashboard-items-active':''}  flex justify-between`}>
                   <div className="items-icon-name flex space-x-3">
                     <div className="item-icon">
                       <img src={profileIcon} alt="" className="dashboard-icons h-5" />
@@ -89,7 +97,7 @@ const User = ({ children }) => {
                     </div>
                   </div>
                   <div className="item-count">
-                    <span>{-2}</span>
+                    <span></span>
                   </div>
                 </div>
                 </Link>
@@ -104,12 +112,12 @@ const User = ({ children }) => {
                     </div>
                   </div>
                   <div className="item-count">
-                    <span>{-2}</span>
+                    <span>{cards?.length}</span>
                   </div>
                 </div>
                 </Link>
                 <Link to={`/user/address`}>
-                <div className={`user-dashboard-items ${editAddress || address?'user-dashboard-items-active':''}  flex justify-between`}>
+                <div className={`user-dashboard-items ${editAddress || addresses?'user-dashboard-items-active':''}  flex justify-between`}>
                   <div className="items-icon-name flex space-x-3">
                     <div className="item-icon">
                       <img src={locationIcon} alt="" className="  dashboard-icons h-5" />
@@ -119,7 +127,7 @@ const User = ({ children }) => {
                     </div>
                   </div>
                   <div className="item-count">
-                    <span>{-2}</span>
+                    <span>{address?.length}</span>
                   </div>
                 </div>
                 </Link>

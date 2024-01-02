@@ -88,6 +88,10 @@ const useWishlist = () => {
     setLoading(false);
   };
 
+  const productExistsInWishlist = (productId) => {
+    return wishlist?.find((item) => item.productId === productId);
+  };
+
   // Return functions, wishlist items, and loading state for use in components
   return {
     getWishlistItems,
@@ -98,6 +102,7 @@ const useWishlist = () => {
     moveAllItemsToWishlist,
     moveItemToWishlist,
     clearWishlist,
+    productExistsInWishlist,
     wishlist,
     wishlistInfo,
     productId,

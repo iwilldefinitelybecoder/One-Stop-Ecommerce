@@ -133,7 +133,7 @@ search-content-holder{
   padding-left:8px;
 }
 
-.result-list:hover, .result-list:focus{
+.focused-suggestion:hover, .focused-suggestion{
   background-color: rgba(207, 205, 205, 0.411);
   border-left: 3px solid #e94560;
   outline: none;

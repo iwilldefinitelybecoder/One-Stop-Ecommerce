@@ -47,9 +47,6 @@ const Cart = ({ }) => {
 
 
 
-
-  console.log(cartInfo)
-
   return (
     <>
       <div className="checkout-pos-left-cntr">

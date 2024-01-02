@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const baseURL = 'http://localhost:8000/api/v1/customer/orders'; // Your API base URL
 
@@ -19,6 +20,7 @@ const clearToken = () => {
 
 // GET all orders
 export const getAllOrders = async () => {
+    setToken(Cookies.get('JWT'))
     try {
         const response = await instance.get('/getAll');
         return response.data;
@@ -29,6 +31,7 @@ export const getAllOrders = async () => {
 
 // PUT (Cancel) order
 export const cancelOrder = async (request) => {
+    setToken(Cookies.get('JWT'))
     try {
         // Implement the cancellation logic if available in the backend
         // Replace the 'return null;' line with the cancellation logic
@@ -40,6 +43,7 @@ export const cancelOrder = async (request) => {
 
 // POST (Create) order
 export const createOrder = async (request) => {
+    setToken(Cookies.get('JWT'))
     try {
         const response = await instance.post('/createOrder', request);
         return response.data;
@@ -50,14 +54,25 @@ export const createOrder = async (request) => {
 
 // GET order by orderId
 export const getOrderById = async (orderId) => {
+    setToken(Cookies.get('JWT'))
     try {
-        // Implement logic to get order by ID if available in the backend
-        // Replace the 'return null;' line with the logic to get order by ID
+        
         return null;
     } catch (error) {
         handleError(error);
     }
 };
+
+export const applyCouponCode = async (couponCode) => {
+    setToken(Cookies.get('JWT'))
+    try {
+        const response = await instance.get(`/applyCoupon`,
+            { params: { couponCode } });
+        return response.data;
+    } catch (error) {
+        handleError(error);
+    }
+}
 
 // Handle API call errors
 const handleError = (error) => {

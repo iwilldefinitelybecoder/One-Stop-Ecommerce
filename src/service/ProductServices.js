@@ -63,6 +63,18 @@ export const searchProducts = async (keyword, category) => {
     }
 };
 
+export const getProductsByCategory = async (category) => {
+    setToken(Cookies.get('JWT'));
+        try {
+            const response = await instance.get('/productByCategory', {
+                params: { category },
+            });
+            return response.data;
+        } catch (error) {
+            handleError(error);
+        }
+    }
+
 // Search results by keyword and/or category
 export const searchResults = async (keyword, category) => {
   setToken(Cookies.get('JWT'));
@@ -104,7 +116,7 @@ export const addReview = async (request) => {
 export const getProductAttributes = async (attribute) => {
   setToken(Cookies.get('JWT'));
     try {
-        const response = await instance.get('/product/attributes', {
+        const response = await instance.get('/attributes', {
             params: { attribute },
         });
         return response.data;
@@ -117,7 +129,7 @@ export const publishProducts  = async (productId) =>{
     
     setToken(Cookies.get('JWT'));
     try {
-        const response = await instance.post('/product/publish',null, {
+        const response = await instance.post('/publish',null, {
             params: {productId:productId},
         });
         return response.data;
@@ -126,11 +138,91 @@ export const publishProducts  = async (productId) =>{
     }
 }
 
+export const getProductDetails  = async (productId) =>{
+        
+        setToken(Cookies.get('JWT'));
+        try {
+            const response = await instance.get('/getProduct', {
+                params: {productId:productId},
+            });
+            return response.data;
+        } catch (error) {
+            handleError(error);
+        }
+    }
+
+export const validateReview  = async (purchaseId) =>{
+        
+        setToken(Cookies.get('JWT'));
+        try {
+            const response = await instance.get('/validateReview', {
+                params: {purchaseId:purchaseId},
+            });
+            return response.data;
+        } catch (error) {
+            handleError(error);
+        }
+    }
+
+export const validateReviewExist  = async (purchaseId) =>{
+            
+            setToken(Cookies.get('JWT'));
+            try {
+                const response = await instance.get('/validateReviewExist', {
+                    params: {purchaseId:purchaseId},
+                });
+                return response
+            } catch (error) {
+                return handleError(error);
+            }
+        }
+
+export const updateProductInfos  = async (data,productId) =>{
+            
+            setToken(Cookies.get('JWT'));
+            try {
+                const response = await instance.post('/updateInfo',data, 
+                   {params: {productId:productId}},
+
+                );
+                return response.data;
+            } catch (error) {
+                handleError(error);
+            }
+        }
+
+
+export const getAttributes = async () =>{
+                
+                setToken(Cookies.get('JWT'));
+                try {
+                    const response = await instance.get('/getAddributes');
+                    return response.data;
+                } catch (error) {
+                    handleError(error);
+                }
+            }
+
+export const updateProductDetails  = async (data,productId) =>{
+                    
+                    setToken(Cookies.get('JWT'));
+                    try {
+                        const response = await instance.post('/updateDetails',data, 
+                        {params: {productId:productId}},
+        
+                        );
+                        return response.data;
+                    } catch (error) {
+                        handleError(error);
+                    }
+                }   
+                
+
 
 // Handle API call errors
 const handleError = (error) => {
     console.error('API Error:', error);
-    throw error; // Rethrow the error for handling in the calling function
+    return error
 };
 
 export default {

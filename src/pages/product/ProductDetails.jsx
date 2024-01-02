@@ -1,12 +1,15 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import "./productDetails.css";
 import Loader from "../../components/body/Loader";
 import useProducts from "../../CustomHooks/ProductsHook";
+
+
+
 const ProductDetail  = lazy(() => import("./ProductDetail"));
 
 function ProductDetails() {
 
-  const {} = useProducts();
+
 
 
   return (

@@ -27,16 +27,20 @@ import SignUp from "../pages/Authenticate/Signup/SignUp";
 import RequireAuth, {
   RequireAuth2,
   RequireAuth3,
+  ValidateAuth,
 } from "../pages/Authenticate/RequireAuth";
 import UnauthorizedPage from "./UnauthorizedPage";
 import Logout from "../pages/Authenticate/Logout";
 import UpgradeToVendor from "../pages/Authenticate/vendor/UpgradeTOVendor";
 import Auth from "../pages/Authenticate/Auth";
-import ChangePassword from "../pages/Authenticate/extraAuthpages/ChangePassword";
-import ResetPassword from "../pages/Authenticate/extraAuthpages/ResetPassword";
 import VerifyEmail from "../pages/Authenticate/extraAuthpages/VerifyEmail";
 import Container1 from "../pages/checkout/Details/Container1";
 import ProductDetails from "../pages/product/ProductDetails";
+import EditProfile from "../pages/user/userProfile/EditProfile";
+import OrderDetails from "../pages/user/orders/OrderDetails";
+import WriteReview from "../pages/product/WriteReview";
+import ChangePassword from "../pages/Authenticate/login/ResetPassword";
+import ResetPassword from "../pages/Authenticate/login/ResetPassword";
 
 export const roles = {
   USER: "USER",
@@ -53,11 +57,10 @@ function Path() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/Auth" element={<Auth />} >
+        <Route path="/Auth" element={<Auth />}>
           <Route path="verify-email" element={<VerifyEmail />} />
           <Route path="change-password" element={<ChangePassword />} />
         </Route>
-       
 
         <Route element={<RequireAuth3 unAllowedRoutes={routes.exit} />}>
           <Route path="/logout" element={<Logout />} />
@@ -70,12 +73,20 @@ function Path() {
         <Route element={<RequireAuth allowedRoles={roles.USER} />}>
           <Route path="/register-vendor" element={<UpgradeToVendor />} />
         </Route>
+
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="/home" element={<Home />} />
           <Route path="/search" element={<Search />} />
-          <Route path="/product" element={<Product />} />
-          <Route element={<RequireAuth allowedRoles={[roles.USER, roles.VENDOR]} />}>
+          <Route path="/product/:id" element={<Product />} />
+          <Route
+            element={<ValidateAuth allowedRoles={[roles.USER, roles.VENDOR]} />}
+          >
+            <Route path="/product/write-review/:id" element={<WriteReview />} />
+          </Route>
+          <Route
+            element={<RequireAuth allowedRoles={[roles.USER, roles.VENDOR]} />}
+          >
             <Route path="/checkout" element={<Checkout />}>
               <Route index element={<Cart />} />
               <Route path="cart" element={<Cart />} />
@@ -85,17 +96,24 @@ function Path() {
               <Route path="*" element={<NotFound />} />
             </Route>
           </Route>
-          <Route element={<RequireAuth allowedRoles={[roles.USER, roles.VENDOR]} />}>
+          <Route
+            element={<RequireAuth allowedRoles={[roles.USER, roles.VENDOR]} />}
+          >
+            <Route path="/reset-password" element={<ResetPassword/>}/>
             <Route path="/user" element={<User />}>
               <Route index element={<UserProfile />} />
               <Route path="profile" element={<UserProfile />} />
-              <Route path="edit-address/:id" element={<Address/>}/>
+              <Route path="edit-profile" element={<EditProfile />} />
+              <Route path="edit-address/:id" element={<Address />} />
               <Route path="address" element={<Address />} />
               <Route path="wishlist" element={<WishList />} />
-              <Route path="orders/:id" element={<UserProfile />} />
+              <Route path="orders/:id" element={<OrderDetails />} />
               <Route path="orders" element={<UserOrders />} />
               <Route path="payment-methods" element={<PaymentMethods />} />
-              <Route path="edit-payment-method/:id" element={<PaymentMethods/>}/>
+              <Route
+                path="edit-payment-method/:id"
+                element={<PaymentMethods />}
+              />
               {/* <Route path="*" element={<NotFound />} /> */}
             </Route>
           </Route>
@@ -106,12 +124,13 @@ function Path() {
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="Products" element={<Products />} />
               <Route path="add-products" element={<AddProducts />} />
+              <Route path="edit-product/:id" element={<AddProducts />} />
               <Route path="orders/:id" element={<UserProfile />} />
               <Route path="orders" element={<Orders />} />
               <Route path="account-settings" element={<AccountSettings />} />
               {/* <Route path="*" element={<NotFound />} /> */}
             </Route>
-              <Route path="products/:id" element={<ProductDetails/>} />
+            <Route path="products/:id" element={<ProductDetails />} />
           </Route>
         </Route>
 

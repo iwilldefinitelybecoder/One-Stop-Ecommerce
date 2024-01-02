@@ -13,3 +13,64 @@
     width: 100%;
     max-width: 1220px;
 }
+
+.facet-control {
+    min-height: 50vh;
+}
+
+.main-img-cntr{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: auto;
+    min-width: 335px;
+    max-width: 565px;
+    height: auto;
+    min-height: 565px;
+    max-height: 335px;   
+    padding: 0 20px;
+
+}
+
+.review-cntr{
+    max-width: 600px;
+    height: 110px;
+}
+
+.flex-col-cntr{
+    display: flex;
+    flex-direction: column;
+
+ 
+}
+
+.rating-panel{
+    display: none;
+   
+}
+
+.review-main-cntr{
+    border-bottom: 1px solid #d1d6dd00;
+}
+
+.review-main-cntr:hover{
+    border-bottom: 1px solid #d1d6dd;
+    
+}
+
+.review-main-cntr:hover .rating-panel,.rating-panel:hover{
+    display: block;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-in forwards 0.5s; ;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+

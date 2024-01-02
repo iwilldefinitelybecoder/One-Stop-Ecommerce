@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from "react";
 import Header from "./header/Header";
 
 import FooterLayout from "./footer/FooterLayout";
-import { Outlet, useNavigate } from "react-router";
+import { Outlet, useLocation, useNavigate } from "react-router";
 import { AccountContext } from "../context/AccountProvider";
 import { getData } from "../utils/encryptData";
 import Cookies from "js-cookie";
@@ -16,6 +16,8 @@ const tokens = Cookies.get("JWT");
 
 function Layout({ children }) {
   const { account, setShowLogoutButton,setAuthErrors,authErrors } = useContext(AccountContext);
+  const location = useLocation();
+  const { pathname,search } = location;
 
   const navigate = useNavigate();
 
@@ -47,6 +49,11 @@ function Layout({ children }) {
     }
     verifyToken();
   });
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }
+    , [pathname,search]);
 
 
  

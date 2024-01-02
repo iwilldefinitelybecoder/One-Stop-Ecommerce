@@ -24,7 +24,6 @@ function FlashDealsGrid() {
   const [productinfo, setProductinfo] = useState([]);
 
   const {products} =useProducts();
-  console.log(products)
   useEffect(() => {
 
     setProductinfo(products);

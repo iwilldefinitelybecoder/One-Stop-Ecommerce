@@ -16,7 +16,7 @@
     object-fit:fill;
 }
 
-.user-icon-edit{
+/* .user-icon-edit{
     transition: all 0.3s ease-in-out;
     display: none;
     
@@ -25,7 +25,7 @@
 .profile-icons:hover .user-icon-edit{
     transition: all 0.3s ease-in-out;
     display:block;
-}
+} */
 
 .profile-img{
     object-fit: fill;
@@ -46,6 +46,11 @@
     padding-top: 30px;
     z-index: 20;
    
+}
+
+.profile-icon-edit-cntr{
+    position: absolute;
+     z-index: 1000;
 }
 
 .profile-menu{

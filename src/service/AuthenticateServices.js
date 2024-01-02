@@ -5,10 +5,6 @@ const URI = "http://localhost:8000/api/v1";
 const host = window.location.protocol+"//"+window.location.hostname+":"+window.location.port;
 console.log(host)
 
-const header = {
-  
-}
-
 export const login = async (data) => {
   try {
     const response = await axios.post(
@@ -260,3 +256,55 @@ export const resendVerificationEmail = async (data) => {
     }
   }
 }
+
+export const validateOldPassword = async (data) => {
+  const token = Cookies.get("JWT");
+  try {
+    const response = await axios.post(
+      `${URI}/user/validateOldPassword`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+      { withCredentials: true }
+    );
+    if (response.status === 200) {
+      return { success: true, message: "Password Validated" };
+    }
+  } catch (error) {
+    if (!error?.response) {
+      return { success: false, message: "No Server Response" };
+    } else if (error?.response.status === 400) {
+      return { success: false, message: "Fatal error" };
+    }
+  }
+};
+
+export const changePassword = async (data) => {
+  const token = Cookies.get("JWT");
+  try {
+    const response = await axios.post(
+      `${URI}/user/changePassword`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+      { withCredentials: true }
+    );
+    if (response.status === 200) {
+      return { success: true, message: "Password Changed" };
+    }
+  } catch (error) {
+    if (!error?.response) {
+      return { success: false, message: "No Server Response" };
+    } else if (error?.response.status === 400) {
+      return { success: false, message: "Fatal error" };
+    }
+  }
+};

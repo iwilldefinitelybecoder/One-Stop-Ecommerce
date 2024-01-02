@@ -7,7 +7,7 @@ import {
   rightArrowIcon2,
   settingsIcon,
 } from "../../../assets/icons/png/user-page-icons/data";
-import { rightArrowIcon } from "../../../assets/icons/png/toolbar-icons/data";
+import { cameraIcon, rightArrowIcon } from "../../../assets/icons/png/toolbar-icons/data";
 import {
   NotificationIcon,
   logoutIcon,
@@ -204,20 +204,25 @@ export const ProfileIcon = (props) => {
 
   return (
     <>
-      <div className="profile-icons rounded-full flex justify-center items-center ring-4 ring-slate-300  overflow-hidden h-24 w-24 bg-slate-100 ml-3 shadow-lg">
+      <div className="profile-icons rounded-full relative flex justify-center items-center ring-4 ring-slate-300  overflow-visible h-24 w-24 bg-slate-100 ml-3 shadow-lg">
         <img
           src={props?.image || userIcon}
           alt=""
           className="profile-img  rounded-full   "
         />
-        <div className="profile-icon-edit-cntr  h-20  absolute top-[90px] right-[90px]">
-          <div onClick={() => setDisplayEditIcon(!displayEditIcon)}>
+        <div className="profile-icon-edit-cntr tooltip  h-20  absolute top-[60px] right-[-5px]">
+          <div onClick={() => setDisplayEditIcon(!displayEditIcon)} className=" bg-slate-300 p-3 rounded-full">
             <img
-              src={editIcon}
-              className={`user-icon-edit h-5 }`}
+              src={cameraIcon}
+              className={`user-icon-edit h-4 }`}
               style={{ display: displayEditIcon ? "block" : "" }}
               title="edit-icon"
             />
+            {
+               !displayEditIcon && 
+              <span className="tooltiptext">Edit-profile-icon</span>
+
+            }
           </div>
           {displayEditIcon && (
             <EditProfileIcon
@@ -243,7 +248,7 @@ export const UserName = (props) => {
   );
 };
 
-const EditProfileIcon = ({ displayBtn, setdisplayBtn }) => {
+export const EditProfileIcon = ({ displayBtn, setdisplayBtn }) => {
   const { account, setAccount, showLoginButton } = useContext(AccountContext);
   const inputRef = useRef();
   const [responseMessage, setResponseMessage] = useState("");
@@ -309,7 +314,7 @@ const EditProfileIcon = ({ displayBtn, setdisplayBtn }) => {
   return (
     <>
       {responseMessage && <MessagesBox message={responseMessage} />}
-      <div className="profile-icon-edit-cntr  absolute top-[30px] right-[-60px] w-24 font-semibold text-slate-500 py-1 bg-white ring-1 ring-slate-200 shadow-md rounded-md ">
+      <div className="profile-icon-edit-cntr z-50 absolute top-[30px] right-[-60px] w-24 font-semibold text-slate-500 py-1 bg-white ring-1 ring-slate-200 shadow-md rounded-md ">
         <input
           type="file"
           ref={inputRef}

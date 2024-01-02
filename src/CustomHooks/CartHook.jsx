@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { addCartItem, deleteCartItem, emptyCart, getAllCartItems, updateCartItem } from '../service/CustomerServices/CartServices';
 import Cookies from 'js-cookie';
+import { AccountContext } from '../context/AccountProvider';
 export const cartContext = React.createContext();  
 
 export const useCart = () =>{
@@ -11,6 +12,7 @@ export const useCart = () =>{
 
 const CartProvider = ({children}) => {
     const cookie = Cookies.get("JWT");
+    const {account} = useContext(AccountContext);
     const [cartInfo, setCartInfo] = useState([]);
     const [cart, setCart] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -31,7 +33,7 @@ const CartProvider = ({children}) => {
         }
         fetchCart();
     }
-        , [cookie])
+        , [cookie, account])
 
     
 
@@ -55,7 +57,7 @@ const CartProvider = ({children}) => {
         setLoading(true);
         const requestData = {...data,productId:cartItemData.productId,quantity:cartItemData.quantity}
 
-        const response = await addCartItem(requestData);
+        await addCartItem(requestData);
         getAllCartItemss();
         setLoading(false);
     };
@@ -78,7 +80,7 @@ const CartProvider = ({children}) => {
     const removeItem = async (data) => {
         if(loading) return;
        setLoading(true);
-        const response = await deleteCartItem(data);
+        await deleteCartItem(data);
         getAllCartItemss();
         setLoading(false);   
 

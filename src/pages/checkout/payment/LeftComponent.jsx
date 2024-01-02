@@ -29,9 +29,11 @@ const LeftComponent = ({
 const [searchParams, setSearchParams] = useSearchParams();
   const handelPaymentMethod = (e) => {
     const { name, value } = e.target;
-    setOrderDetails({ ...ordersDetails, [name]: value });
+    setOrderDetails(prevOrderItems =>( { ...prevOrderItems, [name]: value }));
     setSearchParams(prevParams => ({ ...prevParams, [name]: value }));
   };
+
+ 
 
 
   return (

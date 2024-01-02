@@ -22,6 +22,7 @@ import { Link, useMatch } from "react-router-dom";
 import useWishlist from "../../../../CustomHooks/WishListHook";
 import Lottie from "react-lottie-player";
 import { heartMarkGif } from "../../../../assets/icons/json/data";
+import QuickProductView from "../../QuickProductView";
 
 
 const FlashDealsGridCards = ({ productInfo }) => {
@@ -30,6 +31,10 @@ const FlashDealsGridCards = ({ productInfo }) => {
   const {productId,addToWishlist,removeFromWishlist,moveToCart} = useWishlist();
   const productExist =productId!==0? productId?.includes(productInfo?.productId):false
   const page = useMatch('/user/Wishlist')
+
+
+
+  const [quickView, setQuickView] = useState(false);
 
   const buttonDisableRef = useRef(null);
   
@@ -314,8 +319,9 @@ const FlashDealsGridCards = ({ productInfo }) => {
           </div>
           
           }
-          <div className="view-hover-icon" role="button" title="view-product">
+          <div className="view-hover-icon " role="button" title="view-product" onClick={()=>{setQuickView(true)}}>
             <img src={viewIcon} className=" h-5" />
+            <QuickProductView open={quickView} setOpen={setQuickView} productDetails={productInfo} />
           </div>
         </div>
       </Link>
@@ -337,7 +343,7 @@ const ItemImageSlider = ({ productImages, mouseHover }) => {
       <div className="flash-grid-img h-40 w-40">
         <img
           src={productImages[0]}
-          alt=""
+          
           style={{ objectFit: "cover" }}
         />
       </div>

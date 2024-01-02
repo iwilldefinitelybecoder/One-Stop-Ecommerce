@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { addReview, getAllProductReviews, getAllProducts, publishProducts } from '../service/ProductServices';
+import { addReview, getAllProductReviews, getAllProducts, getProductDetails, getProductsByCategory, publishProducts } from '../service/ProductServices';
 
 const useProducts = () => {
   const [products, setProducts] = useState([]);
@@ -17,6 +17,7 @@ const useProducts = () => {
         fetchProducts();
     },[])
 
+  
     const getProducts = async () => {
         if (loading) return;
         setLoading(true);
@@ -73,6 +74,30 @@ const useProducts = () => {
         setLoading(false);
     }
 
+    const getProductDetailss = async (id) => {
+        if (loading) return;
+        setLoading(true);
+        const response = await getProductDetails(id);
+        setLoading(false);
+        return response;
+    }
+
+    const fetchProductsByCategory = async (category) => {
+        if (loading) return;
+        setLoading(true);
+        const response = await getProductsByCategory(category);
+        setProducts(response);
+        setLoading(false);
+    }
+
+    const updateProductInfo = async (id, product) => {
+        if (loading) return;
+        setLoading(true);
+        const response = await updateProducts(id, product);
+        setProducts(prev => Array.isArray(prev) && prev.map((product) => product.productId === id ? response : product));
+        setLoading(false);
+    }
+
     return {
         products,
         loading,
@@ -83,7 +108,10 @@ const useProducts = () => {
         // updateProduct,
         getAllproductsReview,
         addProductReview,
-        publishAproduct
+        publishAproduct,
+        getProductDetailss,
+        fetchProductsByCategory,
+        updateProductInfo
 
     }
 

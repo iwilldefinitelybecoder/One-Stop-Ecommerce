@@ -8,26 +8,25 @@ import { rightArrowIcon } from "../../../assets/icons/png/toolbar-icons/data";
 import { ordersList } from "../../../data/orderList";
 import { noOrderIcon } from "../../../assets/icons/img/randoms/data";
 import { Link, Outlet, useSearchParams } from "react-router-dom";
+import { useOrders } from "../../../context/OrderContext";
+import { formatDateFromTimestamp } from "../../../utils/DisplayFormatters";
 function Orders() {
-  const [orders, setOrders] = React.useState(ordersList);
+  // const [orders, setOrders] = React.useState(ordersList);
+  const {orders,setOrders} = useOrders();
   const [currnetPage, setCurrentPage] = React.useState(0);
-  const totalpages = Math.ceil(orders.length / 5);
+  const totalpages = Math.ceil(orders?.length / 5);
     const startIndex = currnetPage * 5;
     const endIndex = (currnetPage + 1) * 5;
-    const currentOrders = orders.slice(startIndex, endIndex);
+    const currentOrders = orders?.slice(startIndex, endIndex);
 
   const handelPageChange = (page) => {
     if (page < 0 || page > totalpages - 1) return;
     setCurrentPage(page);
   };
 
-  useEffect(()=>{
-    
-    setOrders(ordersList)
-  },[orders,currnetPage])
-
+  console.log(orders)
   const getOrderStatusClass = (status) => {
-    status = status.toLowerCase();
+    status = status?.toLowerCase();
     switch (status) {
       case "delivered":
         return "bg-green-200 text-green-600";
@@ -44,7 +43,7 @@ function Orders() {
     <>
    
       <div className="orders-main-cntr">
-        {orders.length !== 0 ? (
+        {orders?.length !== 0 ? (
         <div className="orders-top-cntr">
           <div className="orders-pg-header ">
             <img src={ShoppingBag3Icon} className=" h-6 mt-2 mr-2" />
@@ -67,26 +66,26 @@ function Orders() {
             </div>
           </div>
           <div className="order-table-rows-cntr">
-            {currentOrders.map((order, index) => (
-              <Link to={`/user/orders/${order.id}` } key={index}>
+            {currentOrders?.map((order, index) => (
+              <Link to={`/user/orders/${order.orderId}` } key={index}>
               <div className="order-table-rows shadow-md py-7 pl-5" >
                 <div className="order-table-row">
-                  <span className="font-semibold text-lg text-slate-600">{order.id}</span>
+                  <span className="font-semibold text-lg text-slate-600">{order.generatedOrderId}</span>
                 </div>
                 <div className="order-table-row">
                   <span
                     className={`${getOrderStatusClass(
-                      order.status
+                      order.orderStauts
                     )} px-3 py-1.5 rounded-2xl `}
                   >
-                    {order.status}
+                    {order.orderStatus}
                   </span>
                 </div>
                 <div className="order-table-row">
-                  <span>{order.date}</span>
+                  <span>{formatDateFromTimestamp(order.orderDate)}</span>
                 </div>
                 <div className="order-table-row">
-                  <span>{order.total}</span>
+                  <span>&#8377;{order.orderSummary.grandTotal}</span>
                 </div>
                 <div className="order-table-row-btn">
                   <img src={rightArrowIcon2} className="order-tbl-ar-icon h-5" />
@@ -134,14 +133,7 @@ function Orders() {
 
 export const OrderPaging = ({ currentPage, totalpages, updatePage }) => {
 
-  const [searchParams, setSearchParams] = useSearchParams();
   const pagenumbers = Array.from({ length: totalpages }, (_, i) => i + 1);
-  useEffect(() => {
-    searchParams.set("page", currentPage);
-    setSearchParams(searchParams);
-  }, [currentPage, searchParams, setSearchParams]);
-  
-  currentPage  = searchParams.get("page")? parseInt(searchParams.get("page")) : currentPage;
 
 
   return (

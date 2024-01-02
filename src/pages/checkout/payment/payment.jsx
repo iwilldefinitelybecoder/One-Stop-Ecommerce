@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { useOutletContext } from "react-router";
+import { useNavigate, useOutletContext } from "react-router";
 import RightElement from "../cart/rightElement";
 import { Link, useSearchParams } from "react-router-dom";
 import { rightArrowIcon2 } from "../../../assets/icons/png/user-page-icons/data";
@@ -10,6 +10,7 @@ import "./payment.css";
 
 const Payment = () => {
   const [topcntr] = useOutletContext();
+  const navigate  = useNavigate();
   const ref1 = React.useRef(null);
   const ref2 = React.useRef(null);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -24,6 +25,10 @@ const Payment = () => {
       setPaymentMethod(paymentMethod1);
     }
   }, [paymentMethod1]);
+
+  const goBack = () => {
+    navigate(-1);
+  }
   
   return (
     <>
@@ -35,21 +40,26 @@ const Payment = () => {
           </div>
         </div>
         <div className=" flex px-7 w-full justify-between">
-          <Link to="/checkout/details">
+         
           <div className="Btn2 flex space-x-2 items-center ">
             <img src={rightArrowIcon2} className="h-5 rotate-180"/>
-            <button>Back to Addresses</button>
+            <button onClick={goBack}>Back to Addresses</button>
           </div>
-          </Link>
+          
         {
           paymentMethod !== undefined ? 
           <Link to={moveToNextPage?'/checkout/review':''}>
           <div className=" flex space-x-2 items-center" >
             {
               paymentMethod === "DEBITCARD" ?
-               cardId === null ?<button disabled className="Btndisabled">Select A Card</button>:<button className="Btn3">Proceed And Pay</button>
+               cardId === null ?<button disabled className="Btndisabled">Select A Card</button>:
+               <Link to="/checkout/review">
+               <button className="Btn3">Review Order</button>
+                </Link>
                :
-            <button className="Btn3">{paymentMethod === "COD"?'Finish Ordering':'Proceed And Pay'}</button>
+               <Link to="/checkout/review">
+            <button className="Btn3">{paymentMethod === "COD"?'Review Order':'Proceed And pay '}</button>
+            </Link>
             }
             <img src={rightArrowIcon2} className="right-arrow h-5"/>
           </div>
@@ -65,7 +75,7 @@ const Payment = () => {
         </div>
       </div>
       <div className="checkout-pos-right-cntr mt-16 ml-5">
-        <RightContainer />
+        <RightContainer  />
       </div>
     </>
   );

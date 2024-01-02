@@ -9,6 +9,44 @@
   scroll-behavior: smooth;
 }
 
+.flex-column{
+  display: flex;
+  flex-direction: column;
+}
+
+  /* Tooltip container */
+
+
+  /* Tooltip text */
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 3px;
+
+    /* Position the tooltip text */
+    position: absolute;
+    z-index: 1;
+    top: 45px;
+    right:-40px;
+   
+
+    /* Fade-in animation */
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out 1s;
+  }
+
+  /* Show the tooltip text on hover */
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+  }
+
+
+
 /* Hide default scroll bars */
 ::-webkit-scrollbar {
   width: 0.5em; /* Adjust as needed */
@@ -90,6 +128,7 @@ input[type='radio']:checked:after {
 }
 
 
+
 @layer components {
   .max-container {
     max-width: 1440px;
@@ -148,5 +187,25 @@ input[type='radio']:checked:after {
   }
   .Btn4 {
     @apply   font-medium text-sm text-white rounded-8 px-6 py-1.5 h-[40px] w-[380px] ml-[-3px] flex justify-center items-center space-x-2 leading-7 tracking-wider  my-3;
+  }
+
+  .span-label{
+    @apply   text-slate-400;
+  }
+
+  .span-text{
+    @apply font-semibold ;
+  }
+
+  .h1-text{
+    @apply font-bold text-3xl ;
+  }
+
+  .h2-text{
+    @apply font-bold text-2xl ;
+  }
+
+  .loader{
+    @apply h-[40vh] my-4 bg-white flex items-center justify-center w-full
   }
 }

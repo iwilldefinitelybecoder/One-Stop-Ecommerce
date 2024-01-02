@@ -1,0 +1,8 @@
+.attribute-value-edit-icon {
+    opacity: 0;
+    transition: all 0.3s ease-in-out .5s;
+}
+
+.attribute-icon:hover .attribute-value-edit-icon {
+    opacity: 1;
+}

@@ -2,18 +2,30 @@ import React, { useEffect, useState } from "react";
 import { ordersListIcon } from "../../../assets/icons/png/user-page-icons/data";
 import "./addproduct.css";
 import { trashbinIcon } from "../../../assets/icons/png/toolbar1/data";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import MessagesBox from "../../../components/body/Messages/MessagesBox";
-import { addProduct } from "../../../service/ProductServices";
-import { Checkbox, FormControlLabel, MenuItem, Radio, RadioGroup, Select } from "@mui/material";
+import {
+  addProduct,
+  getProductDetails,
+  updateProductDetails,
+} from "../../../service/ProductServices";
+import {
+  Checkbox,
+  FormControlLabel,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Select,
+} from "@mui/material";
 import { getAllWarehouses } from "../../../service/LogisticServices/wareHouseService";
 import ExtraAttributes from "./ExtraAttributes";
-
 
 const AddProducts = () => {
   const inputRef = React.useRef(null);
   const submitRef = React.useRef(null);
+  const params = useParams().id;
 
+  const [editProduct, setEditProduct] = useState(false);
   const [errorFields, setErrorFields] = useState({});
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [image, setImage] = useState([]);
@@ -36,22 +48,33 @@ const AddProducts = () => {
     regularPrice: 0,
     images: [],
     salePrice: 0.0,
-    brand:"",
-    extraAttributes:{
-      "hello":""
+    brand: "",
+    extraAttributes: {
+      hello: "",
     },
-    wareHouse:{},
+    wareHouse: "",
     thumbnail: "",
   });
 
   useEffect(() => {
-    async function getWareHouse(){
-       let wareHouse = await getAllWarehouses()
-        setWareHouse(wareHouse)
+    if (params !== undefined) {
+      async function getProduct() {
+        let product = await fetchProductDetails(params);
+        setEditProduct(true);
+        feedDataToForm(product);
       }
-      getWareHouse()
-    }, []);
-    console.log(wareHouse)
+
+      getProduct();
+    }
+  }, [params]);
+
+  useEffect(() => {
+    async function getWareHouse() {
+      let wareHouse = await getAllWarehouses();
+      setWareHouse(wareHouse);
+    }
+    getWareHouse();
+  }, []);
 
   useEffect(() => {
     if (Object.keys(errorFields).length === 0) {
@@ -75,9 +98,9 @@ const AddProducts = () => {
         regularPrice: "",
         images: [],
         salePrice: 0.0,
-        extraAttributes:{},
-        wareHouse:{},
-        brand:"",
+        extraAttributes: {},
+        wareHouse: "",
+        brand: "",
         thumbnail: "",
       });
       setExtraAttributes([{}]);
@@ -86,6 +109,32 @@ const AddProducts = () => {
       setSalePriceActive(false);
     }
   }, [submitform]);
+
+  const fetchProductDetails = async (params) => {
+    return await getProductDetails(params);
+  };
+
+  const feedDataToForm = (product) => {
+    setFormData({
+      name: product?.name,
+      category: product?.category,
+      description: product?.description,
+      stock: product?.stock,
+      regularPrice: product?.regularPrice,
+      salePrice: product?.salePrice || 0,
+      wareHouse: product?.wareHouse,
+      brand: product?.brand,
+      thumbnail: product?.thumbnail,
+    });
+
+    setExtraAttributes(
+      Array.isArray(product?.extraAttributes) ? product?.extraAttributes : [{}]
+    );
+    setImage(product?.imagesURL);
+
+    setTag({ name: "tags", value: product?.tags });
+    setSalePriceActive(product?.salePrice !== 0);
+  };
 
   const handelDragOpen = (e) => {
     setDropField(true);
@@ -227,14 +276,14 @@ const AddProducts = () => {
   const fillExtraAttributes = (e) => {
     const combinedObject = {};
     extraAttributes.forEach((item) => {
-      if (typeof item === 'object' && item !== null) {
+      if (typeof item === "object" && item !== null) {
         Object.assign(combinedObject, item);
-      };
-    }
-    );
-    console.log(combinedObject)
+      }
+    });
+
     return combinedObject;
-}
+  };
+  console.log(wareHouse);
 
   async function postFormData() {
     const formsData = new FormData();
@@ -245,28 +294,33 @@ const AddProducts = () => {
     formsData.append("tags", JSON.stringify(formData.tags));
     formsData.append("regularPrice", formData.regularPrice);
     formsData.append("extraAttributes", formData.extraAttributes);
-    formsData.append("salePrice", formData.salePrice);   
+    formsData.append("salePrice", formData.salePrice);
     formsData.append("wareHouseId", formData.wareHouse);
     formsData.append("brand", formData.brand);
     formsData.append("extraAttributes", fillExtraAttributes());
     const imageData = new FormData();
-    console.log(fillExtraAttributes())
-
 
     formData.images.forEach((img, index) => {
       formsData.append(`images`, img);
     });
-    const response = await addProduct(formsData);
 
-    setResponseMessage("successfully added product");
-    setFormSubmitted(true);
-    let timerId;
-    timerId !== null && clearTimeout(timerId);
-    timerId = setTimeout(() => {
-      setFormSubmitted(false);
-    }, 10000);
-    console.log(response.data);
-   }
+    let response;
+
+    if (editProduct) {
+      response = await updateProductDetails(params, formsData);
+    } else {
+      response = await addProduct(formsData);
+    }
+    if (response) {
+      setResponseMessage("successfully added product");
+      setFormSubmitted(true);
+      let timerId;
+      timerId !== null && clearTimeout(timerId);
+      timerId = setTimeout(() => {
+        setFormSubmitted(false);
+      }, 10000);
+    }
+  }
 
   const formErrorHandelling = (e) => {
     let errorList = {};
@@ -296,14 +350,23 @@ const AddProducts = () => {
     if (salePriceActive && !formData.salePrice === 0) {
       errorList.salePrice = "Please enter a sale price";
     }
-    if(salePriceActive && parseFloat(formData.salePrice) > parseFloat(formData.regularPrice)){
+    if (
+      salePriceActive &&
+      parseFloat(formData.salePrice) > parseFloat(formData.regularPrice)
+    ) {
       errorList.salePrice = "Sale price cannot be greater than regular price";
     }
-    if(formData.brand === null || formData.brand === "") {
+    if (formData.brand === null || formData.brand === "") {
       errorList.brand = "Please enter a brand";
     }
-    if(formData.wareHouse === null || formData.wareHouse === "") {
+    if (formData.wareHouse === null || formData.wareHouse === "") {
       errorList.wareHouse = "Please select a warehouse";
+    }
+    if (
+      wareHouse?.find((item) => item.wareHouseId === formData.wareHouse)
+        ?.storageLeft < formData.stock
+    ) {
+      errorList.stock = "Stock cannot be greater than warehouse storage";
     }
     setErrorFields(errorList);
     return errorList;
@@ -314,7 +377,6 @@ const AddProducts = () => {
 
     const errorList = formErrorHandelling(e);
 
-   
     if (Object.keys(errorList).length === 0) {
       setSubmitForm(true);
     }
@@ -326,9 +388,7 @@ const AddProducts = () => {
 
   return (
     <>
-      {formSubmitted ? (
-        <MessagesBox newMessage={responseMessage} />
-      ) : null}
+      {formSubmitted ? <MessagesBox newMessage={responseMessage} /> : null}
       {viewImage && (
         <div className="image-viewer-cntr">
           <div
@@ -394,8 +454,6 @@ const AddProducts = () => {
                   </span>
                 )}
               </div>
-              
-            
             </div>
             <div className="upload-img-container mb-4">
               <div
@@ -448,19 +506,23 @@ const AddProducts = () => {
                   </div>
                 </div>
               </div>
-                {image.length !==0 &&
-              <div className="img-display-field space-y-2">
-              <span className=" font-semibold">Select An Image for Thumbnail</span>
+              {image?.length !== 0 && (
+                <div className="img-display-field space-y-2">
+                  <span className=" font-semibold">
+                    Select An Image for Thumbnail
+                  </span>
                   <RadioGroup
-                   aria-labelledby="demo-radio-buttons-group-label"
-                   name="set-thumbnail" 
-                   defaultValue={0}
-                   onChange={handelformChange}
-                   sx={{display:"flex",flexWrap:"wrap",flexDirection:"row"}}
-                  
-                   >
-                  {
-                    image?.map((img, index) => {
+                    aria-labelledby="demo-radio-buttons-group-label"
+                    name="set-thumbnail"
+                    defaultValue={0}
+                    onChange={handelformChange}
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      flexDirection: "row",
+                    }}
+                  >
+                    {image?.map((img, index) => {
                       return (
                         <div
                           className="img-cntr px-5 hover:bg-slate-100 hover:rounded-md flex-col py-2 h-24 w-40
@@ -470,11 +532,21 @@ const AddProducts = () => {
                             handelImageOpen(e, index);
                           }}
                         >
-                          <FormControlLabel value={index} control={<Radio sx={{":hover":{backgroundColor:"#FFF",},
-                        padding:"0px"}}  />} sx={{position:"absolute",right:"-13px"}} />
+                          <FormControlLabel
+                            value={index}
+                            control={
+                              <Radio
+                                sx={{
+                                  ":hover": { backgroundColor: "#FFF" },
+                                  padding: "0px",
+                                }}
+                              />
+                            }
+                            sx={{ position: "absolute", right: "-13px" }}
+                          />
                           <div className=" flex justify-center">
                             <img
-                              src={URL.createObjectURL(img)}
+                              src={editProduct ? img : URL.createObjectURL(img)}
                               alt=""
                               className="uploaded-img h-16"
                             />
@@ -492,9 +564,9 @@ const AddProducts = () => {
                         </div>
                       );
                     })}
-                    </RadioGroup>
-              </div>
-                }
+                  </RadioGroup>
+                </div>
+              )}
               {errorFields.images && (
                 <span className=" ml-4 text-red-500 font-semibold">
                   *Upload atleast one Image
@@ -516,7 +588,7 @@ const AddProducts = () => {
                   onChange={handelformChange}
                   value={formData.description}
                   rows={6}
-                  style={{padding:"15px"}}
+                  style={{ padding: "15px" }}
                 ></textarea>
               </div>
               {errorFields.description && (
@@ -543,21 +615,21 @@ const AddProducts = () => {
                   </span>
                 )}
               </div>
-              
+
               <div className="cat-div">
                 <label htmlFor="category">Category</label>
                 <Select
-                sx={{
-                  marginBottom: 2,
-                  maxWidth: 408,
-                  width: "100%",
-                  height: 45,
-                  marginTop: .5,
-                  borderRadius: 2,
-                  border: "1px solid #e5e5e5",
-                  ":focus":{border: "1px solid #e5e5e5",}
-                }}
-                placeholder="Select a Category"
+                  sx={{
+                    marginBottom: 2,
+                    maxWidth: 408,
+                    width: "100%",
+                    height: 45,
+                    marginTop: 0.5,
+                    borderRadius: 2,
+                    border: "1px solid #e5e5e5",
+                    ":focus": { border: "1px solid #e5e5e5" },
+                  }}
+                  placeholder="Select a Category"
                   name="category"
                   onChange={handelformChange}
                   value={formData.category}
@@ -575,9 +647,7 @@ const AddProducts = () => {
                   <MenuItem value="Children & Infant">
                     Children & Infant
                   </MenuItem>
-                  <MenuItem value="Electronic Goods">
-                    Electronic Goods
-                  </MenuItem>
+                  <MenuItem value="Electronic Goods">Electronic Goods</MenuItem>
                 </Select>
                 {errorFields.category && (
                   <span className=" ml-4 text-red-500 font-semibold">
@@ -585,7 +655,6 @@ const AddProducts = () => {
                   </span>
                 )}
               </div>
-            
             </div>
             <div className="price-sale-div">
               <div className="reg-price-div">
@@ -606,21 +675,21 @@ const AddProducts = () => {
                 )}
               </div>
               <Checkbox
-              sx={{":hover":{backgroundColor:"#FFF"},marginBottom: 5,}}
+                sx={{ ":hover": { backgroundColor: "#FFF" }, marginBottom: 5 }}
                 name="sale-price"
                 checked={salePriceActive}
                 onClick={(e) => {
                   setSalePriceActive(!salePriceActive);
                   handelSalePriceCheck(e);
                 }}
-              // <input
-              //   type="checkbox"
-              //   name="sale-price"
-              //   checked={salePriceActive}
-              //   onChange={(e) => {
-              //     setSalePriceActive(!salePriceActive);
-              //     handelSalePriceCheck(e);
-              //   }}
+                // <input
+                //   type="checkbox"
+                //   name="sale-price"
+                //   checked={salePriceActive}
+                //   onChange={(e) => {
+                //     setSalePriceActive(!salePriceActive);
+                //     handelSalePriceCheck(e);
+                //   }}
               />
               <div className="sale-div">
                 <div className="sale-div">
@@ -643,36 +712,46 @@ const AddProducts = () => {
                 )}
               </div>
             </div>
-            <div  className="stock-tag-div">
-            <div className="sale-div">
+            <div className="stock-tag-div">
+              <div className="sale-div">
                 <div className="sale-div">
                   <div>
                     <label htmlFor="sale-price">WareHouse</label>
                   </div>
                   <Select
-                  sx={{
-                        marginBottom: 2,     
-                       maxWidth: 408,
-                       width: "100%",
-                       height: 45,
-                       borderRadius: 2,
-                       border: "1px solid #e5e5e5",
-                      ":focus":{border: "1px solid #e5e5e5",}
-
-                     }}
-                     placeholder="Select a Warehouse"
+                   disabled={editProduct}
+                    sx={{
+                      marginBottom: 2,
+                      maxWidth: 408,
+                      width: "100%",
+                      height: 45,
+                      borderRadius: 2,
+                      border: "1px solid #e5e5e5",
+                      ":focus": { border: "1px solid #e5e5e5" },
+                    }}
+                    placeholder="Select a Warehouse"
                     name="wareHouse"
                     value={formData.wareHouse}
                     onChange={handelformChange}
                   >
-                  {
-                    wareHouse?.map((item,index)=>{return(
-                      <MenuItem value={item.warehouseId} key={index}>{item.wareHouseName}</MenuItem>
-                    )})
-                  }
-                 
+                    {wareHouse?.map((item, index) => {
+                      return (
+                        <MenuItem value={item.warehouseId} key={index}>
+                          {item.wareHouseName}
+                        </MenuItem>
+                      );
+                    })}
                   </Select>
-         
+                  {formData.wareHouse !== "" && !editProduct && (
+                    <span className=" font-semibold">
+                      {
+                        wareHouse?.find(
+                          (item) => item.warehouseId === formData.wareHouse
+                        )?.storageLeft
+                      }
+                      &nbsp;Storage Left
+                    </span>
+                  )}
                 </div>
                 {errorFields.wareHouse && (
                   <span className=" ml-4 text-red-500 font-semibold">
@@ -696,7 +775,7 @@ const AddProducts = () => {
                     *type some tags
                   </span>
                 )}
-                
+
                 <div className="add-tag-btn absolute">
                   <button className="shadow-none Btn" onClick={handelTagsAdd}>
                     Add
@@ -724,8 +803,13 @@ const AddProducts = () => {
                     })}
                 </div>
               </div>
-              </div>
-              <ExtraAttributes extraAttributes={extraAttributes} setExtraAttributes={setExtraAttributes} errorFields={errorFields} setErrorFields={setErrorFields}/>
+            </div>
+            <ExtraAttributes
+              extraAttributes={extraAttributes}
+              setExtraAttributes={setExtraAttributes}
+              errorFields={errorFields}
+              setErrorFields={setErrorFields}
+            />
             <div className="btn-div">
               <input
                 ref={submitRef}
@@ -733,7 +817,7 @@ const AddProducts = () => {
                 style={{ display: "none" }}
               />
               <button className="Btn" onClick={(e) => handelSubmitButton(e)}>
-                Add Product
+                {editProduct ? "Update Product" : "Add Product"}
               </button>
             </div>
           </form>

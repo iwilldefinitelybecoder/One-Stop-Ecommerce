@@ -1,0 +1,12 @@
+
+  
+  /* Define the animation */
+  @keyframes counting {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  

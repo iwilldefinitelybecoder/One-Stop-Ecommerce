@@ -1,10 +1,12 @@
 // useAddresses.js - Custom hook for address-related API operations
-import { useEffect, useState } from 'react'; 
+import { useContext, useEffect, useState } from 'react'; 
 import { addAddress, deleteAddress, getAddress, getAllAddresses, updateAddress } from '../service/CustomerServices/addressServices';
+import { AccountContext } from '../context/AccountProvider';
 
 const useAddresses = () => {
   const [loading, setLoading] = useState(false);
   const [addresses, setAddresses] = useState([]);
+  const {account} = useContext(AccountContext)
 
 
   useEffect(() => {
@@ -12,7 +14,9 @@ const useAddresses = () => {
   }, []);
 
   const getAllAddress = async () => {
+    if(!account)return
     setLoading(true);
+
     const data = await getAllAddresses();
     setAddresses(data);
     setLoading(false);

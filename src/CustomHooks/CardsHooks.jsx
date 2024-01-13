@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { addCardItem, deleteCardItem, getAllCards, getCardById, setDefaultCard, updateCardItem } from '../service/CustomerServices/CardServices';
+import { AccountContext } from '../context/AccountProvider';
 
 const useCard = () => {
     const [cards, setCards] = useState([]);
     const [loading,setLoading] = useState(false);
-  
+    const {account} = useContext(AccountContext)
     useEffect(() => {
       fetchAllCards();
     }, []); 
   
     const fetchAllCards = async () => {
+      if(!account)return
       const data = await getAllCards();
       setCards(data);
     };

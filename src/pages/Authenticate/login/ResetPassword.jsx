@@ -3,7 +3,7 @@ import { CSSTransition } from "react-transition-group";
 import { TextField, Button } from "@mui/material";
 import LinearProgress from "@mui/material/LinearProgress";
 // import { changePassword } from './api';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useMatch, useNavigate } from "react-router-dom";
 import "./login.css";
 import {
   ProfileIcon,
@@ -19,13 +19,16 @@ const ChangePassword = () => {
     newPassword: "",
     confirmPassword: "",
   });
+  const path = useMatch("/reset-password/:token");
+
   const [errorFields, setErrorFields] = useState({});
   const [isPending, setIsPending] = useState(false);
   const { account } = useContext(AccountContext);
   const [progress, setProgress] = useState(0);
   const [showProgress, setShowProgress] = useState(false);
-  const [phase, setPhase] = useState("old"); // 'old', 'new'
+  const [phase, setPhase] = useState(path?.params?"new":"old"); // 'old', 'new'
   const [eleHeight, setEleHeight] = useState(null);
+  
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -123,12 +126,12 @@ const ChangePassword = () => {
               }}
             />
           )}
-          <div className="flex-column items-center space-y-3 justify-center mb-8">
+          <div className="flex-column items-center space-y-3 justify-center mb-5">
             <ProfileIcon image={account?.userIcon} />
             <UserName
               firstName={account?.firstName}
               lastName={account?.lastName}
-              email={account.email}
+              email={account?.email}
             />
           </div>
           <h2 className="text-2xl text-center mb-4">Reset Password</h2>
@@ -183,9 +186,9 @@ const ChangePassword = () => {
               unmountOnExit
               onEnter={handleResize}
             >
-              <div className="menu">
+              <div className="menu ">
                 <form onSubmit={handleSubmit}>
-                  <div className=" space-y-3">
+                  <div className=" space-y-5">
                     <TextField
                       label="New Password"
                       type="password"
@@ -234,12 +237,15 @@ const ChangePassword = () => {
           </div>
         </div>
         <div className=" bg-slate-300  w-full flex items-center justify-center py-2 rounded-lg ">
-          <Link to="/">
-            <button>
-              {" "}
-              <span className=" underline font-semibold">Home</span>
-            </button>
-          </Link>
+          {path?.params && (
+            <Link to={`/login`}>
+              <button>
+                {" "}
+                <span className=" underline font-semibold">Login</span>
+              </button>
+            </Link>
+          )}
+       
         </div>
       </div>
     </div>

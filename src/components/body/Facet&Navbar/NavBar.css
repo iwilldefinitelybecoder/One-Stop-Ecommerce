@@ -1,0 +1,79 @@
+/* ReviewsFacet.css */
+
+.reviews-facet {
+    display: inline-flex;
+    position: relative;
+    overflow: hidden;
+    max-width: 100%;
+    background-color: #fff;
+    padding: 0 20px;
+    border-radius: 40px;
+    box-shadow: 0 10px 40px rgba(159, 162, 177, 0.8);
+    height: 60px;
+    align-items: center; /* Center the icon and text vertically */
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  .facet-icon {
+    margin-right: 10px; /* Adjust the spacing between the icon and text */
+  }
+  
+  .reviews-facet-item {
+    color: #83818c;
+    text-decoration: none;
+    transition: 0.3s;
+    z-index: 1;
+    font-family: "DM Sans", sans-serif;
+    font-weight: 500;
+    position: relative;
+  }
+  
+  .reviews-facet-item:before {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background-color: #dfe2ea;
+    border-radius: 8px 8px 0 0;
+    opacity: 0;
+    transition: 0.3s;
+  }
+  
+  .reviews-facet-item:not(.is-active):hover:before {
+    opacity: 1;
+    bottom: 0;
+  }
+  
+  .reviews-facet-item:not(.is-active):hover {
+    color: #333;
+  }
+  
+  .reviews-facet-indicator {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 4px;
+    transition: 0.4s;
+    height: 5px;
+    z-index: 1;
+    border-radius: 8px 8px 0 0;
+  }
+  
+  /* Custom styles for active and filtered-color icons */
+  .reviews-facet.is-active .facet-icon {
+    filter: brightness(1); /* Original color */
+  }
+  
+  .reviews-facet .facet-icon.filtered-color {
+    filter: brightness(0); /* Filtered color */
+  }
+  
+  @media (max-width: 580px) {
+    .reviews-facet {
+      overflow: auto;
+    }
+  }
+  

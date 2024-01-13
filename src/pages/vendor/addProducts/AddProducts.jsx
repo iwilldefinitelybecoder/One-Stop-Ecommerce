@@ -49,9 +49,7 @@ const AddProducts = () => {
     images: [],
     salePrice: 0.0,
     brand: "",
-    extraAttributes: {
-      hello: "",
-    },
+    extraAttributes: {},
     wareHouse: "",
     thumbnail: "",
   });

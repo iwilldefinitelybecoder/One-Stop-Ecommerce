@@ -23,6 +23,8 @@ const ProductInfo = ({ ProductInfo }) => {
 
   const productId = useParams().id;
 
+
+
   const exists = itemExist(productId);
 
   useEffect(() => {

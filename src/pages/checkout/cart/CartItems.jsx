@@ -10,10 +10,12 @@ import { useDispatch } from "react-redux";
 import { useCart } from "../../../CustomHooks/CartHook";
 import { Collapse } from "@mui/material";
 import useWishlist from "../../../CustomHooks/WishListHook";
+import useCoupons from "../../../CustomHooks/CouponHook";
 
 const CartItems = ({itemDetails}) => {
 
   const {cartInfo,removeItem,updateItem,loading} = useCart();
+  const {fetchAllCoupons} = useCoupons();
   const { moveAllItemsToWishlist,moveItemToWishlist } = useWishlist();
     const [itemDetail, setItemDetail] = useState(itemDetails);
     const [open, setOpen] = useState(true);
@@ -43,7 +45,7 @@ const CartItems = ({itemDetails}) => {
       }
     };
   
-    const calulateTotal = (total, cases) => {
+    const calulateTotal = async(total, cases) => {
       const itemTotal = itemDetail.salePrice !==null ?  itemDetail.salePrice * total: itemDetail.regularPrice * total;
       const formattedTotal = parseFloat(itemTotal.toFixed(2));
       const cartItem = {
@@ -58,8 +60,8 @@ const CartItems = ({itemDetails}) => {
          cartItemId: cartItem.cartItemsId
       }
       setItemDetail(cartItem);
-      updateItem(cartItemInfo);
-      console.log(cartItemInfo);
+      await updateItem(cartItemInfo);
+   
     };
   
   

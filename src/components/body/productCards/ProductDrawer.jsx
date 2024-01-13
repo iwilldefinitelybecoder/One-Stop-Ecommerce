@@ -37,25 +37,31 @@ const ProductDrawer = ({
   productDetails,
 }) => {
   const { publishAproduct,  loading,updateProductInfo } = useProducts();
+  const [orders, setOrders] = useState(productDetails);
   const [searchParams, setSearchParams] = useSearchParams();
   const [changes, setChanges] = useState(false);
   const [attributeValue, setAttributeValue] = useState({
-    quantity: "",
-    sponser: "" || "No Data",
-    price:"",
-    salePrice:"",
+    quantity: productDetails?.stock,
+    sponser: productDetails?.metaAttribute || "No Data",
+    price: productDetails?.regularPrice,
+    salePrice: productDetails?.salePrice,
   });
+  console.log(productDetails,orders)
 
   useEffect(() => {
     let changed = false;
     if (productDetails?.stock !== attributeValue.quantity) changed = true;
 
-    // if (productDetails?.sponser !== attributeValue.sponser) changed = true;
+    if (productDetails?.metaAttribute !== attributeValue.metaAttribute) changed = true;
     if (productDetails?.regularPrice !== attributeValue.price) changed = true;
 
     if (productDetails?.salePrice !== attributeValue.salePrice) changed = true;
     setChanges(changed);
   }, [attributeValue]);
+
+  useEffect(() => {
+    setOrders(productDetails);
+  }, [productDetails]);
 
 
 
@@ -71,7 +77,7 @@ const ProductDrawer = ({
   }, [productDetails]);
 
 
-  console.log(attributeValue);
+
   const [attributeEdit, setAttributeEdit] = useState(Array(6).fill(false));
 
   const handelAttributeValueChange = (e) => {
@@ -91,14 +97,14 @@ const ProductDrawer = ({
     });
   };
 
-  const [orders, setOrders] = useState(order);
-  console.log(productDetails, searchParams.get("productId"));
+ 
 
   const handelProductUpdate = async (e) => {
     e.stopPropagation();
     e.preventDefault();
     if(changes){
       updateProductInfo(productDetails?.productId,attributeValue)
+
     }
   };
   
@@ -114,7 +120,7 @@ const ProductDrawer = ({
     e.stopPropagation();
     sleep(500)
     setOrders((prev) => {
-      const updatedOrders = { ...prev, enabled: !prev.enabled };
+      const updatedOrders = { ...prev, published: !prev.published };
       publishAproduct(updatedOrders.productId);
       return updatedOrders;
     });
@@ -220,10 +226,10 @@ const ProductDrawer = ({
                   <CustomizedSwitch
                     onClick={handelPublishChange}
                     i
-                    checked={orders.enabled}
+                    checked={orders?.published}
                     />
                   }
-                  label={orders.enabled ? "Published" : "concealed"}
+                  label={orders?.published ? "Published" : "concealed"}
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();

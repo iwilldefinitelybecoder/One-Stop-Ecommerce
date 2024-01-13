@@ -46,6 +46,8 @@ export const createOrder = async (request) => {
     setToken(Cookies.get('JWT'))
     try {
         const response = await instance.post('/createOrder', request);
+
+        
         return response.data;
     } catch (error) {
         handleError(error);

@@ -20,7 +20,7 @@ export const login = async (data) => {
       return { success: false, message: "No Server Response" };
     } else if (error?.response.status === 400) {
       return { success: false, message: "Missing Username or Password" };
-    } else if (error?.response.status === 401) {
+    } else if (error?.response.data === "Bad credentials") {
       return { success: false, message: "Invalid Username or Password" };
     } else if (error?.response.status === 403) {
       return { success: false, message: "Email or Password is incorrect" };
@@ -261,7 +261,7 @@ export const validateOldPassword = async (data) => {
   const token = Cookies.get("JWT");
   try {
     const response = await axios.post(
-      `${URI}/user/validateOldPassword`,
+      `${URI}/auth/validateOldPassword`,
       data,
       {
         headers: {
@@ -287,15 +287,15 @@ export const changePassword = async (data) => {
   const token = Cookies.get("JWT");
   try {
     const response = await axios.post(
-      `${URI}/user/changePassword`,
+      `${URI}/auth/resetPassword`,
       data,
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+ 
         },
       },
-      { withCredentials: true }
+
     );
     if (response.status === 200) {
       return { success: true, message: "Password Changed" };
@@ -305,6 +305,70 @@ export const changePassword = async (data) => {
       return { success: false, message: "No Server Response" };
     } else if (error?.response.status === 400) {
       return { success: false, message: "Fatal error" };
+    }
+  }
+};
+
+
+export const requestResetPassword = async (email) => {
+  try {
+    const response = await axios.post(
+      `${URI}/auth/requestResetPassword`,
+      {},
+      {
+        params: { email },
+        headers: {
+          "Content-Type": "application/json",
+          "x-host-url": `${host}/reset-password`,
+        },
+        
+     
+      }
+    );
+    return { success: true, response };
+  } catch (error) {
+    if (!error.response) {
+      return { success: false, message: 'No Server Response' };
+    } else if (error.response.status === 400) {
+      return { success: false, message: error.response };
+    } else {
+      return { success: false, message: 'Error in sending token' };
+    }
+  }
+};
+
+export const verifyResetPasswordToken = async (token) => {
+  try {
+    const response = await axios.get(`${URI}/auth/verifyResetPasswordToken`, {
+      params: { token },
+      headers: { 'Content-Type': 'application/json' },
+   
+    });
+    return { success: true, response };
+  } catch (error) {
+    console.log(error)
+    if (!error.response) {
+      return { success: false, message: 'No Server Response' };
+    } else if (error.response.status === 400 && error.response.data === 'Token Expired') {
+      return { success: false, message: 'Token Expired' };
+    } else {
+      return { success: false, message: 'Invalid Token' };
+    }
+  }
+};
+
+export const resetPassword = async (email, password) => {
+  try {
+    const response = await axios.post(`${URI}/resetPassword`, { email, password }, {
+      headers: { 'Content-Type': 'application/json' },
+      withCredentials: true,
+    });
+    return { success: true, response };
+  } catch (error) {
+    if (!error.response) {
+      return { success: false, message: 'No Server Response' };
+    } else {
+      return { success: false, message: 'Error in updating password' };
     }
   }
 };

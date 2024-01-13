@@ -80,7 +80,7 @@ export const upgradeToVendor = async (data) => {
       export const getVendorProductList = async () => {
         setToken(Cookies.get('JWT'));
           try {
-              const response = await instance.get('/getAll', {
+              const response = await instance.get('/getVendorProducts', {
                   headers: {
                       'Content-Type': 'application/json',
                   },

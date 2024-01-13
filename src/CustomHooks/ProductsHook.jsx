@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { addReview, getAllProductReviews, getAllProducts, getProductDetails, getProductsByCategory, publishProducts } from '../service/ProductServices';
+import { addReview, getAllProductReviews, getAllProducts, getProductDetails, getProductMajorDetails, getProductsByCategory, publishProducts, updateProductInfos } from '../service/ProductServices';
 
 const useProducts = () => {
   const [products, setProducts] = useState([]);
@@ -93,10 +93,19 @@ const useProducts = () => {
     const updateProductInfo = async (id, product) => {
         if (loading) return;
         setLoading(true);
-        const response = await updateProducts(id, product);
+        const response = await updateProductInfos(id, product);
         setProducts(prev => Array.isArray(prev) && prev.map((product) => product.productId === id ? response : product));
         setLoading(false);
     }
+
+    const getProductMajorDetailss = async (id) => {
+        if (loading) return;
+        setLoading(true);
+        const response = await getProductMajorDetails(id);
+        setLoading(false);
+        return response;
+    }
+
 
     return {
         products,
@@ -111,6 +120,7 @@ const useProducts = () => {
         publishAproduct,
         getProductDetailss,
         fetchProductsByCategory,
+        getProductMajorDetailss,
         updateProductInfo
 
     }

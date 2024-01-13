@@ -7,8 +7,10 @@ import {
     getAllMessages,
     updateMessage
 } from '../service/messageServices';
+import Cookies from 'js-cookie';
 
 const useMessage = () => {
+    if(Cookies.get('JWT') === undefined)return
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
 

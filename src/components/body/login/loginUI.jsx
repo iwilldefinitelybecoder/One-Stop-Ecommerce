@@ -125,7 +125,7 @@ const LoginUI = () => {
       >
         <span>
           Forgot Password?&nbsp;
-          <Link to={"/"}>
+          <Link to={"/request-reset"}>
             <span className=" underline text-md font-semibold text-black">
               Reset
             </span>
@@ -190,6 +190,7 @@ const LoginInput = ({ isPending, setIsPending,gLoginRef,fbLoginRef }) => {
     formsData.append("email", formData.email);
     formsData.append("password", formData.password);
     const auth = await login(formsData);
+    console.log(auth)
     if (auth?.success === true) {
 
       Cookies.set("JWT", auth.response.data.token);
@@ -205,6 +206,7 @@ const LoginInput = ({ isPending, setIsPending,gLoginRef,fbLoginRef }) => {
       setErrorFields({ ...errorFields, response: auth?.message });
       setIsPending(false);
       setFormSubmitted(false);
+      console.log(auth)
       inputRef.current.focus();
     }
   }
@@ -441,7 +443,8 @@ function generateColors(strength) {
   return result;
 }
 
-export   function CheckPasswordStrength({ password }) {
+export   function CheckPasswordStrength({ password,strengthText }) {
+  const textVisible = strengthText !== undefined?strengthText:true;
   const passwordStrength = testingPasswordStrength(password);
   const Icon = getIcon(passwordStrength);
   const colors = generateColors(passwordStrength);
@@ -466,7 +469,9 @@ export   function CheckPasswordStrength({ password }) {
           ></Box>
         ))}
       </Box>
-      <Box
+      {
+         strengthText && 
+        <Box
         display="flex"
         alignItems="center"
         justifyContent="center"
@@ -477,6 +482,7 @@ export   function CheckPasswordStrength({ password }) {
 
         <Typography color={colors[0]}>{passwordStrength}</Typography>
       </Box>
+      }
       {/* {passwordStrength !== PasswordStrength.STRONG && (
         <>
           <Typography

@@ -21,6 +21,8 @@ import sponser from './sponser.png';
 import quantity from './quantity.png';
 import sale from './sale.png';
 import productSold from './productsold.png';
+import padlock from './padlock.png';
+import recoverPassword from './recover-password.png';
 
 export const flashIcon = flash;
 export const rightTriangleArrowIcon = rightTriangleArrow;
@@ -45,3 +47,5 @@ export const sponserIcon = sponser
 export const quantityIcon = quantity
 export const saleIcon = sale
 export const productSoldIcon = productSold
+export const padlockIcon = padlock
+export const recoverPasswordIcon = recoverPassword

@@ -107,6 +107,19 @@
    
 }
 
+.order-table-row-deflt-btn{
+  position: absolute;
+  height: 30px;
+  width: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  opacity: 0;
+  font-weight: 500;
+  right: 30px;
+}
+
 .order-table-rows:hover .order-table-row-btn-static{
   
     transition: all 0.3s ease-in-out;
@@ -118,6 +131,15 @@
 .order-table-rows:hover .order-table-row-btn{
     opacity: 1;
     transition: all 0.3s ease-in-out;
+}
+
+.order-table-rows:hover .order-table-row-deflt-btn{
+  opacity: 1;
+  transition: all 0.3s ease-in-out;
+}
+
+.visible-btn{
+  opacity: 1;
 }
 
 .order-table-row-btn-static:hover{
@@ -162,7 +184,8 @@
   } 
 
   .order-tbl-ar-icon:hover{
-    filter:brightness(0) invert(1)
+    filter:brightness(0) invert(1);
+
   }
 
   .invert-img-1,.invert-img-2,.invert-img-3,.invert-img-4{
@@ -172,6 +195,7 @@
 
     .invert-img-1 {
         animation-delay: .5s;
+        
     }
     .invert-img-2 {
         animation-delay: 2.5s;

@@ -1,11 +1,18 @@
 import axios from 'axios';
+import axiosRetry from 'axios-retry';
 import Cookies from 'js-cookie';
 
-const baseURL = 'http://localhost:8000/api/v1/messages'; // Your API base URL
+const baseURL = 'http://localhost:8000/api/v1/products/coupons'; // Your API base URL
 
 const instance = axios.create({
     baseURL,
     timeout: 5000,
+});
+
+axiosRetry(instance, {
+    retries: 2,
+    retryDelay: axiosRetry.exponentialDelay, // Exponential back-off strategy
+    shouldResetTimeout: true,
 });
 
 // Set JWT token in request headers
@@ -18,14 +25,14 @@ const clearToken = () => {
     delete instance.defaults.headers.common['Authorization'];
 };
 
-// GET all messages
-export const getAllMessages = async (page,size) => {
+
+// GET all coupons
+export const getAllCoupons = async (email) => {
     setToken(Cookies.get("JWT"));
     try {
         const response = await instance.get('/getAll', {
             params: {
-                page: page,
-                size: size,
+                userEmail: email,
             },
         });
         return response.data;
@@ -34,13 +41,13 @@ export const getAllMessages = async (page,size) => {
     }
 };
 
-// DELETE message by identifier
-export const deleteMessage = async (identifier) => {
+// DELETE coupon by ID
+export const deleteCoupon = async (couponId) => {
     setToken(Cookies.get("JWT"));
     try {
         const response = await instance.delete('/delete', {
             params: {
-                identifier: identifier,
+                couponId: couponId,
             },
         });
         return response.data;
@@ -49,13 +56,13 @@ export const deleteMessage = async (identifier) => {
     }
 };
 
-// DELETE all messages for the authenticated user
-export const deleteAllMessages = async (userEmail) => {
+// PUT (Update) coupon by ID
+export const updateCoupon = async (couponId, updateData) => {
     setToken(Cookies.get("JWT"));
     try {
-        const response = await instance.delete('/deleteAll', {
+        const response = await instance.put('/update', updateData, {
             params: {
-                userEmail: userEmail,
+                couponId: couponId,
             },
         });
         return response.data;
@@ -64,16 +71,17 @@ export const deleteAllMessages = async (userEmail) => {
     }
 };
 
-// PUT (Update) message by identifier
-export const updateMessage = async (messageId) => {
+// POST (Apply) coupon by ID and email
+export const applyCoupon = async (couponId, email) => {
     setToken(Cookies.get("JWT"));
     try {
-        const response = await instance.put('/update', {
+        const response = await instance.post('/validateCoupon', null, {
             params: {
-                messageId: messageId,
+                couponId: couponId,
+                email: email,
             },
         });
-        return response.data;
+        return response.data.message;
     } catch (error) {
         handleError(error);
     }
@@ -97,9 +105,8 @@ const handleError = (error) => {
 export default {
     setToken,
     clearToken,
-    getAllMessages,
-    deleteMessage,
-    deleteAllMessages,
-    updateMessage,
-
+    getAllCoupons,
+    deleteCoupon,
+    updateCoupon,
+    applyCoupon,
 };

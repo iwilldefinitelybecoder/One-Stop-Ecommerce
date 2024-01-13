@@ -15,22 +15,28 @@ const OrderProvider = ({children}) => {
     const [orderDetails, setOrderDetails] = useState({
         orderId: '',
         orderTotal: 0,
-        billingAddress: '',
-        shippingAddress: '',
+        billingAddressId: '',
+        shippingAddressId: '',
         cardId: '',
-        customerId: '',
+        customerId: account?.email,
         paymentMethod: '',
         paymentProcessId: '',
         paymentDetails: '',
         products: [],
+        couponId: '',
+        useWallet: false,
+        buyNow: false,
     })
 
-    console.log(orderDetails)
+    
+
+  
 
     useEffect(()=>{
       if(loading)return
         setLoading(true)
         async function fetchOrders(){
+          if(!account)return
            const response  = await getAllOrders()
             setOrders(response)
             setLoading(false)
@@ -39,19 +45,55 @@ const OrderProvider = ({children}) => {
     }
     ,[account])
 
+    useEffect(()=>{
+      resetOrderDetails()
+    }
+    ,[account])
+
+    const resetOrderDetails = ()=>{
+      setOrderDetails({
+        orderId: '',
+        orderTotal: 0,
+        billingAddressId: '',
+        shippingAddressId: '',
+        cardId: '',
+        customerId: account?.email,
+        paymentMethod: '',
+        paymentProcessId: '',
+        paymentDetails: '',
+        products: [],
+        couponId: '',
+        useWallet: false,
+        buyNow: false,
+    })
+    }
+
+
+
+    const getOrders = async ()=>{
+      if(loading)return
+        setLoading(true)
+        const response = await getAllOrders()
+        setOrders(response)
+        setLoading(false)
+      }
+
     const createOrders = async ()=>{
       if(loading)return
         setLoading(true)
         const response = await createOrder(orderDetails)
-        setOrders([...orders, response])
+        console.log(response)
         setLoading(false)
+        getOrders()
       }
 
       const getorderById = async (id)=>{
         if(loading)return
           setLoading(true)
           const response = await getOrderById(id)
+          console.log(response)
           setLoading(false)
+          getOrders()
           return response
         }
 
@@ -65,7 +107,8 @@ const OrderProvider = ({children}) => {
                                     setOrderDetails,
                                     loading,
                                     createOrders,
-                                    getorderById
+                                    getorderById,
+                                    resetOrderDetails
                                     }}>
     {children}
     </OrderContext.Provider>

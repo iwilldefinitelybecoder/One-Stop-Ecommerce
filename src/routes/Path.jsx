@@ -25,6 +25,7 @@ import Review from "../pages/checkout/review/Review";
 import Login from "../pages/Authenticate/login/Login";
 import SignUp from "../pages/Authenticate/Signup/SignUp";
 import RequireAuth, {
+  CheckOutAuth,
   RequireAuth2,
   RequireAuth3,
   ValidateAuth,
@@ -34,13 +35,16 @@ import Logout from "../pages/Authenticate/Logout";
 import UpgradeToVendor from "../pages/Authenticate/vendor/UpgradeTOVendor";
 import Auth from "../pages/Authenticate/Auth";
 import VerifyEmail from "../pages/Authenticate/extraAuthpages/VerifyEmail";
-import Container1 from "../pages/checkout/Details/Container1";
+
 import ProductDetails from "../pages/product/ProductDetails";
 import EditProfile from "../pages/user/userProfile/EditProfile";
 import OrderDetails from "../pages/user/orders/OrderDetails";
 import WriteReview from "../pages/product/WriteReview";
 import ChangePassword from "../pages/Authenticate/login/ResetPassword";
 import ResetPassword from "../pages/Authenticate/login/ResetPassword";
+import PasswordResetRequest from "../pages/Authenticate/extraAuthpages/PasswordResetRequest";
+import ForgotPassword from "../pages/Authenticate/extraAuthpages/ForgotPassword";
+import Playground from "../pages/Authenticate/Playground";
 
 export const roles = {
   USER: "USER",
@@ -49,30 +53,45 @@ export const roles = {
 };
 
 export const routes = {
-  entry: ["/login", "/signup"],
+  entry: ["/login", "/signup", "/request-reset", "/reset-password"],
   exit: ["/logout"],
+};
+
+export const details = {
+  shipping: "shippingAddressId",
+  billing: "billingAddressId",
+  payment: "paymentMethod",
 };
 
 function Path() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/Auth" element={<Auth />}>
+        <Route path="/Auth"  element={<Auth />}>
           <Route path="verify-email" element={<VerifyEmail />} />
           <Route path="change-password" element={<ChangePassword />} />
         </Route>
+
+    <Route path="/playground" element={<Playground />} />
 
         <Route element={<RequireAuth3 unAllowedRoutes={routes.exit} />}>
           <Route path="/logout" element={<Logout />} />
         </Route>
         <Route element={<RequireAuth2 unAllowedRoutes={routes.entry} />}>
-          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/request-reset" element={<PasswordResetRequest />} />
+          <Route path="/reset-password" element={<ForgotPassword />} />
         </Route>
         <Route element={<RequireAuth allowedRoles={roles.USER} />}>
           <Route path="/register-vendor" element={<UpgradeToVendor />} />
         </Route>
+
+        <Route
+            element={<ValidateAuth allowedRoles={[roles.USER, roles.VENDOR]} />}
+          >
+           
+          </Route>
 
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
@@ -91,7 +110,12 @@ function Path() {
               <Route index element={<Cart />} />
               <Route path="cart" element={<Cart />} />
               <Route path="details" element={<Details />} />
+              <Route element={<CheckOutAuth currentPage={"/checkout/payment"} requiredValues={[details.shipping,details.billing]}/>} >
               <Route path="payment" element={<Payment />} />
+              </Route>
+              <Route element={<CheckOutAuth currentPage={"/checkout/review"} requiredValues={[details.payment]} />} >
+                dad
+              </Route>
               <Route path="review" element={<Review />} />
               <Route path="*" element={<NotFound />} />
             </Route>

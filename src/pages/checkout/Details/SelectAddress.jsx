@@ -18,6 +18,7 @@ const SelectAddress = () => {
   const { addresses } = useAddresses();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  console.log(orderDetails);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,17 +28,17 @@ const SelectAddress = () => {
 
   };
 
-  const shippingAddress1 = searchParams.get("shippingAddress");
-  const billingAddress = searchParams.get("billingAddress");
-  const shippingAddress  = orderDetails.shippingAddress;
+  const shippingAddress1 = searchParams.get("shippingAddressId");
+  const billingAddress = searchParams.get("billingAddressId");
+  const shippingAddress  = orderDetails.shippingAddressId;
 
 
   useEffect(() => {
     if (shippingAddress1) {
-      setOrderDetails((prev) => ({ ...prev, shippingAddress:shippingAddress1 }));
+      setOrderDetails((prev) => ({ ...prev, shippingAddressId:shippingAddress1 }));
     }
     if (billingAddress) {
-      setOrderDetails((prev) => ({ ...prev, billingAddress }));
+      setOrderDetails((prev) => ({ ...prev, billingAddressId: billingAddress }));
     }
   }, [shippingAddress, billingAddress]);
 
@@ -45,8 +46,9 @@ const SelectAddress = () => {
 
   const handelBack = (e)=>{
     e.preventDefault();
-    setOrderDetails({...orderDetails, shippingAddress:'', billingAddress:''})
-    searchParams.delete("shippingAddress");
+    setOrderDetails({...orderDetails, shippingAddressId:'', billingAddressId:''})
+    searchParams.delete("shippingAddressId");
+    searchParams.delete("billingAddressId");
     setSearchParams(searchParams);
   }
 
@@ -65,8 +67,8 @@ const SelectAddress = () => {
             <div className=" shipping-address-cntr  bg-main-bg rounded-md mt-2   w-[804px] ">
               <RadioGroup
                 aria-label="shippingAddress"
-                name="shippingAddress"
-                value={orderDetails.shippingAddress}
+                name="shippingAddressId"
+                value={orderDetails.shippingAddressId}
                 onChange={handleChange}
               >
                 {addresses?.map((address, index) => (
@@ -98,8 +100,8 @@ const SelectAddress = () => {
             <div className=" shipping-address-cntr  bg-main-bg rounded-md mt-2   w-[804px] ">
               <RadioGroup
                 aria-label="billingAddress"
-                name="billingAddress"
-                value={orderDetails.billingAddress}
+                name="billingAddressId"
+                value={orderDetails.billingAddressId}
                 onChange={handleChange}
               >
                 {addresses?.map((address, index) => (

@@ -18,6 +18,7 @@ const CardsListPanel = ({ setPaymentMethod }) => {
   const { setOrderDetails, orderDetails } = useOrders();
   const { cards, loading } = useCard();
   const [searchParams, setSearchParams] = useSearchParams();
+  console.log(orderDetails);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

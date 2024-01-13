@@ -84,6 +84,20 @@ export const getCardById = async (cardId) => {
     }
 };
 
+
+export const paymentDetails= async (cardId) => {
+    setToken(Cookies.get("JWT"))
+    try {
+        const response = await instance.get(`/paymentDetails?cardId=${cardId}`);
+        return response.data;
+    } catch (error) {
+        handleError(error);
+    }
+};
+
+
+
+
 // Handle API call errors
 const handleError = (error) => {
     if (error.response) {

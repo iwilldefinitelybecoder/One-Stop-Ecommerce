@@ -23,8 +23,8 @@ const Details = () => {
     
   }
 
-  const shippingAddress1 = searchParams.get("shippingAddress");
-  const billingAddress = searchParams.get("billingAddress");
+  const shippingAddress1 = searchParams.get("shippingAddressId");
+  const billingAddress = searchParams.get("billingAddressId");
   useEffect(() => {
     if (shippingAddress1 && billingAddress) {
       setMoveToNextPage(true);

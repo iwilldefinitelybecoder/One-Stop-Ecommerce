@@ -30,13 +30,26 @@
     /* Position the tooltip text */
     position: absolute;
     z-index: 1;
-    top: 45px;
-    right:-40px;
+    top: 50px;
+    right:-37px;
    
 
     /* Fade-in animation */
     opacity: 0;
     transition: opacity 0.3s ease-in-out 1s;
+  }
+
+  .tooltip .tooltiptext::after {
+    content: " ";
+    position: absolute;
+    right: 40%;
+    top: -8px;
+    border-top: none;
+    border-right: 8px solid transparent;
+    border-left: 8px solid transparent;
+    border-bottom: 8px solid #333;
+    transition: opacity 0.3s ease-in-out 1s;
+
   }
 
   /* Show the tooltip text on hover */

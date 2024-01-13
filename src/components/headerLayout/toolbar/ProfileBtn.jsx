@@ -24,6 +24,7 @@ import MessagesBox from "../../body/Messages/MessagesBox";
 import { binaryToDataURL } from "../../../utils/binaryToUrl";
 import { CSSTransition } from "react-transition-group";
 import useMessage from "../../../CustomHooks/MessageHook";
+import Notifications from "./Notifications";
 
 const imageType = ["image/png", "image/jpeg", "image/jpg"];
 
@@ -113,8 +114,8 @@ const ProfileMenu = (props) => {
       <div
         className={`profile-menu absolute ${
           windowWidth < 1300 ? "right-0" : ""
-        } top-14 h-[365px] overflow-scroll w-72  rounded-xl cursor-default shadow-lg bg-white pb-5  px-4  py-2 overflow-hidden `}
-        style={{ boxShadow: "0 0 10px 0 rgba(0,0,0,0.3)",height:eleHeight }}
+        } top-14 h-[365px] ${activeMenu ==="notification"?"overflow-hidden w-80":"overflow-scroll"} w-72  rounded-xl cursor-default shadow-lg bg-white pb-5  px-4  py-2  `}
+        style={{ boxShadow: "0 0 10px 0 rgba(0,0,0,0.3)",height:eleHeight}}
       >
         <CSSTransition
           in={activeMenu === "main"}
@@ -141,7 +142,7 @@ const ProfileMenu = (props) => {
                 onClick={handleShowLoginButton}
                 image1={profileIcon}
               >
-                Your Account
+                Your Account 
               </MenuItem>
               <MenuItem
                 link="/user/profile"
@@ -177,21 +178,15 @@ const ProfileMenu = (props) => {
           classNames="menu-secondary"
           onEnter={handleResize}
         >
-          <div className="menu">
+          <div className="menu h-96" >
             <MenuItem
-              link="/user/profile"
               image1={rightArrowIcon2}
               goToMenu="main"
             >
               <h2>Notification</h2>
             </MenuItem>
         
-            {
-                messages.length > 0 ? messages.map((messag,index) => 
-                  <span>{messag.message}</span>
-                  
-                ) : <span>No Notification</span>
-          }
+            <Notifications open={activeMenu === "notification"} />
           </div>
         </CSSTransition>
       </div>
@@ -199,38 +194,41 @@ const ProfileMenu = (props) => {
   );
 };
 
-export const ProfileIcon = (props) => {
-  const [displayEditIcon, setDisplayEditIcon] = useState(false);
+export const ProfileIcon = ({image,edit}) => {
+  const [displayEditIcon, setDisplayEditIcon] = useState(edit || true);
+  const [editProfileIcon, setEditProfileIcon] = useState(false);
 
   return (
     <>
       <div className="profile-icons rounded-full relative flex justify-center items-center ring-4 ring-slate-300  overflow-visible h-24 w-24 bg-slate-100 ml-3 shadow-lg">
         <img
-          src={props?.image || userIcon}
+          src={image || userIcon}
           alt=""
           className="profile-img  rounded-full   "
         />
+        {displayEditIcon && (
         <div className="profile-icon-edit-cntr tooltip  h-20  absolute top-[60px] right-[-5px]">
-          <div onClick={() => setDisplayEditIcon(!displayEditIcon)} className=" bg-slate-300 p-3 rounded-full">
+          <div onClick={() => setEditProfileIcon(!editProfileIcon)} className=" bg-slate-300 p-3 rounded-full">
             <img
               src={cameraIcon}
               className={`user-icon-edit h-4 }`}
-              style={{ display: displayEditIcon ? "block" : "" }}
+              style={{ display: editProfileIcon ? "block" : "" }}
               title="edit-icon"
             />
             {
-               !displayEditIcon && 
+               !editProfileIcon  && 
               <span className="tooltiptext">Edit-profile-icon</span>
 
             }
           </div>
-          {displayEditIcon && (
+          {editProfileIcon && (
             <EditProfileIcon
-              setdisplayBtn={setDisplayEditIcon}
+              setdisplayBtn={setEditProfileIcon}
               displayBtn={displayEditIcon}
             />
           )}
         </div>
+        )}
       </div>
     </>
   );

@@ -1,7 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Navigate, Outlet, useLocation, useParams } from 'react-router'
+import { Navigate, Outlet, useLocation, useOutletContext, useParams } from 'react-router'
 import { AccountContext } from '../../context/AccountProvider';
 import MessagesBox from '../../components/body/Messages/MessagesBox';
+import { useSearchParams } from 'react-router-dom';
+import { useOrders } from '../../context/OrderContext';
 
 const RequireAuth = ({allowedRoles}) => {
     const { account } = useContext(AccountContext);
@@ -95,6 +97,26 @@ export const RequireAuth2 = ({unAllowedRoutes}) => {
       return <Navigate to={'/unauthorized'} state={{ from: location }} replace />;
     }
   };
+
+  export const CheckOutAuth  = ({currentPage,requiredValues})=>{
+    const [topcntr] = useOutletContext();
+    const {orderDetails} = useOrders();
+    const location = useLocation();
+
+    const route = location.pathname;
+    const page = currentPage;
+    
+
+    return (
+      route === page &&
+      requiredValues.every((value)=>orderDetails[value] !== '')?
+      <Outlet context={[topcntr]} />
+      :
+      <Navigate to={'/checkout'} state={{from:location}} replace />
+      
+    )
+     
+  }
   
     
   

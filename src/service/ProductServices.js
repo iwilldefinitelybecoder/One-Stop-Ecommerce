@@ -105,7 +105,7 @@ export const getAllProductReviews = async (productId) => {
 export const addReview = async (request) => {
   setToken(Cookies.get('JWT'));
     try {
-        const response = await instance.post('/addReview', request);
+        const response = await instance.post('/addReview', request,);
         return response.data;
     } catch (error) {
         handleError(error);
@@ -151,6 +151,19 @@ export const getProductDetails  = async (productId) =>{
         }
     }
 
+    export const getProductMajorDetails  = async (productId) =>{
+        
+        setToken(Cookies.get('JWT'));
+        try {
+            const response = await instance.get('/getProductMajorDetails', {
+                params: {productId:productId},
+            });
+            return response.data;
+        } catch (error) {
+            handleError(error);
+        }
+    }
+
 export const validateReview  = async (purchaseId) =>{
         
         setToken(Cookies.get('JWT'));
@@ -168,9 +181,7 @@ export const validateReviewExist  = async (purchaseId) =>{
             
             setToken(Cookies.get('JWT'));
             try {
-                const response = await instance.get('/validateReviewExist', {
-                    params: {purchaseId:purchaseId},
-                });
+                const response = await instance.get('/validateReviewExist', {params: {purchaseId:purchaseId}});
                 return response
             } catch (error) {
                 return handleError(error);
@@ -181,7 +192,7 @@ export const updateProductInfos  = async (data,productId) =>{
             
             setToken(Cookies.get('JWT'));
             try {
-                const response = await instance.post('/updateInfo',data, 
+                const response = await instance.post('/updateMajorDetails',data, 
                    {params: {productId:productId}},
 
                 );

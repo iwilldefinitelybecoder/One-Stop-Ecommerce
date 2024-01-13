@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
   getWishList,
   deleteFromWishList,
@@ -9,13 +9,14 @@ import {
   moveProductToWishList,
   emptyWishList,
 } from '../service/CustomerServices/wishListServices';
+import { AccountContext } from '../context/AccountProvider';
 
 const useWishlist = () => {
   const [loading, setLoading] = useState(false);
   const [wishlist, setWishlist] = useState([]);
   const [wishlistInfo, setWishlistInfo] = useState({});
   const [productId, setProductId] = useState([]);
-
+  const {account} = useContext(AccountContext)
   
   
   useEffect(() => {
@@ -33,6 +34,7 @@ const useWishlist = () => {
 
 
   const getWishlistItems = async () => {
+    if(!account)return
     setLoading(true);
     const data = await getWishList();
     setWishlistInfo(data);

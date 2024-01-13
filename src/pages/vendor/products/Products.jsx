@@ -16,15 +16,15 @@ import { CircularProgress, FormControlLabel, Switch } from "@mui/material";
 import ProductDrawer from "../../../components/body/productCards/ProductDrawer";
 import { userIcon } from "../../../assets/icons/png/toolbar1/data";
 import useProducts from "../../../CustomHooks/ProductsHook";
+import { formatDateFromTimestamp, formatOrderedDate } from "../../../utils/DisplayFormatters";
 
 function ProductList() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [orders, setOrders] = React.useState([]);
   const [currnetPage, setCurrentPage] = React.useState(searchParams.get("page") || 0);
   const [loadings, setLoadings] = React.useState(true);
-  const { getProductDetailss, loading } = useProducts();
 
-  const [productDetails, setProductDetails] = React.useState();
+
 
   const totalpages = Math.ceil(orders.length / 5);
   const startIndex = currnetPage * 5;
@@ -37,15 +37,6 @@ function ProductList() {
     searchParams.set("page", currnetPage);
     setSearchParams(searchParams);
   };
-
-  useEffect(() => {
-    async function fetchData() {
-
-        const data = await getProductDetailss(searchParams.get("productId"));
-        setProductDetails(data);
-    }
-    fetchData();
-  }, [searchParams.get("productId")]);
 
 
 
@@ -72,7 +63,7 @@ function ProductList() {
         <div className="orders-main-cntr">
           {orders.length !== 0 ?
             (<Suspense fallback={<div>Loading...</div>}>
-              <ProductList2 currentOrders={currentOrders} productDetails={productDetails} />
+              <ProductList2 currentOrders={currentOrders}  />
             </Suspense>
             ) : (
               <div className="orders-empty-cntr">
@@ -110,12 +101,13 @@ function ProductList() {
   );
 }
 
-const ProductList2 = ({ currentOrders,productDetails }) => {
+const ProductList2 = ({ currentOrders }) => {
   const [open, setOpen] = React.useState(false);
   const [productContainerIndex, setProductContainerIndex] = React.useState( Array.isArray(currentOrders) ? Array(currentOrders.length).fill(false):[]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const { getProductDetailss, loading,getProductMajorDetailss } = useProducts();
 
-
+  const [productDetails, setProductDetails] = React.useState();
 
   const subStringName = (name) => {
     if (name.length > 10) {
@@ -129,6 +121,18 @@ const ProductList2 = ({ currentOrders,productDetails }) => {
   useEffect(() => {
     setProductContainerIndex(Array(currentOrders.length).fill(false))
   }, [page])
+
+  
+  useEffect(() => {
+    async function fetchData() {
+
+        const data = await getProductMajorDetailss(searchParams.get("productId"));
+        console.log(data,searchParams.get("productId"))
+        setProductDetails(data);
+    }
+    fetchData();
+  }, [searchParams.get("productId"),productContainerIndex]);
+
 
 
   const handelDrawerOpen = (e,index) => {
@@ -166,6 +170,8 @@ const ProductList2 = ({ currentOrders,productDetails }) => {
     temp.fill(false);
     setProductContainerIndex(temp);
   }
+
+
 
 
   return (
@@ -215,7 +221,7 @@ const ProductList2 = ({ currentOrders,productDetails }) => {
                     </span>
                   </div>
                   <div className="order-table-row">
-                    <span>{order.innDate || "---"}</span>
+                    <span>{formatDateFromTimestamp(order.innDate) || "---"}</span>
                   </div>
                   <div className="order-table-row">
                     <span>{order.stock}</span>

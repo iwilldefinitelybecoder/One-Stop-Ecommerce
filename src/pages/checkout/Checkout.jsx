@@ -16,7 +16,7 @@ const Checkout = () => {
   const details = useMatch("/checkout/details");
   const payment = useMatch("/checkout/payment");
   const review = useMatch("/checkout/review");
-
+  console.log(cart)
 
 useEffect(() => {
   if(cart || details || payment || review){

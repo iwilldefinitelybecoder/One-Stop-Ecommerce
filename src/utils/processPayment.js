@@ -1,24 +1,38 @@
 import { loadStripe } from "@stripe/stripe-js"
-import { getCardById } from "../service/CustomerServices/CardServices"
+import { getCardById, paymentDetails } from "../service/CustomerServices/CardServices"
+
+const getExpireMonthAndYear = (expire) => {
+    const expireDate = new Date(expire)
+
+    const month = expireDate.getMonth() + 1
+    const year = expireDate.getFullYear()
+
+    return {month, year}
+}
 
 export const processPayment = async (cardId) => {
-
-    const cardDetails = await getCardById(cardId)
-
-    const stripe = await loadStripe(import.meta.env.VITE_OAUTH_STRIPE_PAYMENT_ID)
+    const cardDetails = await paymentDetails(cardId)
+    const { month, year } = getExpireMonthAndYear(cardDetails.expireDate);
+  
+    const stripe = await loadStripe(import.meta.env.VITE_OAUTH_STRIPE_PAYMENT_ID);
+  
     try {
-        const { token} = await stripe.createToken('card',cardDetails)
-        return token
-        
+      const { paymentMethod } = await stripe.createPaymentMethod({
+        type: 'card',
+        card: {
+          number: cardDetails.cardNumber,
+          exp_month: month,
+          exp_year: year,
+          cvc: cardDetails.cvc,
+        },
+      });
+  
+      return paymentMethod.id;
     } catch (error) {
-        console.log(error)
-        return {status :'error', message: error.message}
-
-        
+      console.error("Stripe Error:", error);
+      return { status: 'error', message: error.message };
     }
-
-
-    }
+  };
 
     // const createPaymentIntent = async () => {
     //     try {

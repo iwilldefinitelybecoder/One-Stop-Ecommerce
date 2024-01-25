@@ -32,7 +32,7 @@ const useAddresses = () => {
   const addAddresses = async (address) => {
     setLoading(true);
     await addAddress(address);
-    await getAllAddress(); // Refresh addresses after addition
+    await getAllAddress(); 
     setLoading(false);
   };
 

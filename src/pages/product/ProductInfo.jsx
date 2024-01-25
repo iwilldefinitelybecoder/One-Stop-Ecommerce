@@ -14,14 +14,31 @@ import NumberCount from "../../components/body/UtilsComponent/NumberCount";
 import ProductDescription from "./ProductDescription";
 import { productTagStringIcon } from "../../assets/icons/png/Rareicons/data";
 import RatingPanel from "./RatingPanel";
+import useMessageHandler from "../../components/body/Messages/NewMessagingComponent";
+import QuantityBtn from "../../components/body/productCards/QuantityBtn";
+import { useOrders } from "../../context/OrderContext";
+import { Link } from "react-router-dom";
 
-const ProductInfo = ({ ProductInfo }) => {
+const ProductInfo = ({ ProductInfo, detailedReview, setOpen,
+  feature = {
+    addToCartBtn: false,
+    buyNow: false,
+    ratingPanel: false,
+    checkoutBtn: false,
+  }
+
+}) => {
+console.log(ProductInfo)
   const { addItemToCart, itemExist } = useCart();
   const { moveItemToWishlist } = useWishlist();
   const [itemDetail, setItemDetail] = useState({});
-  const ratingData = { '5': 30, '4': 25, '3': 15, '2': 10, '1': 5 };
-
+  const { handleMessage, getMessageComponents } = useMessageHandler();
   const productId = useParams().id;
+  const [productRating, setProductRating] = useState(detailedReview);
+  const ratingData = productRating?.ratingData;
+  const totalRatings = productRating?.totalRating;
+  const averageRating = productRating?.averageRating;
+
 
 
 
@@ -31,20 +48,27 @@ const ProductInfo = ({ ProductInfo }) => {
     setItemDetail(exists);
   }, [exists]);
 
+  useEffect(() => {
+    setProductRating(detailedReview);
+  }, [detailedReview]);
+
+
   const offerPercentage = ProductInfo?.salePrice
     ? (
-        ((ProductInfo.regularPrice - ProductInfo.salePrice) /
-          ProductInfo.regularPrice) *
-        100
-      ).toFixed(0)
+      ((ProductInfo.regularPrice - ProductInfo.salePrice) /
+        ProductInfo.regularPrice) *
+      100
+    ).toFixed(0)
     : 0;
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     const data = {
       productId: productId,
       quantity: 1,
     };
-    addItemToCart(data);
+    await addItemToCart(data);
+    handleMessage(`Added ${ProductInfo.name} to cart`, "success");
+
   };
 
   const handelMoveToWishlist = () => {
@@ -54,10 +78,13 @@ const ProductInfo = ({ ProductInfo }) => {
     moveItemToWishlist(cartItemId, productId);
   };
 
-  console.log(ProductInfo);
+
 
   return (
     <>
+      {
+        getMessageComponents()
+      }
       <div className="space-y-4 ml-10 mt-10">
         <div className="product-title text-3xl font-semibold ">
           <span>{char0ToUpper(ProductInfo?.name)}</span>
@@ -70,27 +97,32 @@ const ProductInfo = ({ ProductInfo }) => {
           <span className=" text-slate-500">Rated:</span>
           <Rating
             name="read-only"
-            value={parseInt(ProductInfo?.Rating)}
+            value={parseInt(ProductInfo?.rating)}
+
             readOnly
           />
           <span className=" font-semibold">
             &#40;{ProductInfo?.numberOfRatings}&#41;
           </span>
-          <RatingPanel
-            averageRating={4.2}
-            totalRatings={85}
-            ratingData={ratingData}
-            
-          />
+          {
+            feature?.ratingPanel &&
+            <RatingPanel
+              averageRating={averageRating?.toFixed(1)}
+              totalRatings={totalRatings}
+              ratingData={ratingData}
+
+            />
+          }
         </div>
         {!ProductInfo?.published ? (
+
           <div className="text-2xl font-semibold text-red-500">
             <span>Product No Longer sold by The Seller Anymore!!</span>
           </div>
         ) : (
           <>
             <div>
-              {ProductInfo?.hasOwnProperty("salePrice") ? (
+              {ProductInfo?.salePrice > 0 ? (
                 <div className=" space-y-2">
                   <div className=" w-full h-6 flex space-x-3 items-center">
                     <span className="product-title text-2xl text-light-pink font-bold ">
@@ -100,9 +132,8 @@ const ProductInfo = ({ ProductInfo }) => {
                     <div
                       className={`flsh-grd-ofr-prcnt relative bg-light-pink text-white font-normal text-xs rounded-xl px-3 py-1 flex justify-center items-center space-x-2 w-20 rotate-[-5deg]`}
                       style={{
-                        display: `${
-                          ProductInfo?.salePrice > 0 ? "flex" : " none"
-                        }`,
+                        display: `${ProductInfo?.salePrice > 0 ? "flex" : " none"
+                          }`,
                       }}
                     >
                       <div className="h-1 w-1 bg-white ring-2 ring-black rounded-full"></div>
@@ -138,21 +169,41 @@ const ProductInfo = ({ ProductInfo }) => {
             </div>
 
             <div className="h-[115px] ">
-              <button className="Btn2">Buy Now</button>
-              <br />
-              <div>
-                {exists !== undefined ? (
-                  <ProductQuantitybtn
-                    itemDetail={itemDetail}
-                    stock={ProductInfo.stock}
-                    setItemDetail={setItemDetail}
-                  />
-                ) : (
-                  <button className="Btn3" onClick={handleAddToCart}>
-                    Add To Cart
-                  </button>
-                )}
-              </div>
+
+              {ProductInfo?.stock > 0 ?
+                feature?.addToCartBtn &&
+                <>
+                  <button className="Btn2" onClick={() => { setOpen(true) }}>Buy Now</button>
+                  <br />
+                  <div>
+                    {exists !== undefined ? (
+                      <ProductQuantitybtn
+                        itemDetail={itemDetail}
+                        stock={ProductInfo.stock}
+                        setItemDetail={setItemDetail}
+                      />
+                    ) : (
+                      <button className="Btn3" onClick={handleAddToCart}>
+                        Add To Cart
+                      </button>
+                    )}
+                  </div>
+                </>
+                :
+                (
+                  <div className="text-2xl font-semibold text-red-500">
+                  <span>We Don't know When The Product Will Be Back In Stock!!</span>
+                </div>
+                )
+              }
+              {
+                feature?.buyNow &&
+                <BuyNowCardQuantity
+                  itemDetail={itemDetail}
+                  stock={ProductInfo.stock}
+                  setItemDetail={setItemDetail}
+                />
+              }
             </div>
           </>
         )}
@@ -166,6 +217,16 @@ const ProductInfo = ({ ProductInfo }) => {
             <ProductDescription description={ProductInfo?.description} />
           </p>
         </div>
+        {
+          feature.checkoutBtn &&
+          <div className="optional-checkout-btn">
+            <Link to={"/checkout/details"}>
+              <button className="Btn3">
+                Checkout
+              </button>
+            </Link>
+          </div>
+        }
       </div>
     </>
   );
@@ -237,34 +298,94 @@ const ProductQuantitybtn = ({ itemDetail, setItemDetail, stock }) => {
   };
 
   return (
-    <div className="cart-quantity space-x-4 mt-4">
-      <button
-        className={`quantity-btn ring-1  ring-light-pink rounded-md p-3 hover:bg-light-pink hover:text-white transition-colors`}
-        onClick={handelMinusQuantity}
-        ref={buttonDisableRef}
-      >
-        <img src={minusIcon} alt="" className="quantity-icon" />
-      </button>
-
-      {/* <span className=" font-semibold ml-2.5 focus:ring-1 focus:ring-light-pink">{itemDetail.itemQuantity}</span> */}
-      <input
-        type="number"
-        className="quantity-input w-10 py-1 rounded-lg text-[20px] font-semibold text-center focus:ring-1 focus:ring-light-pink  "
-        pattern="[0-9]{0,1}"
-        maxLength={1}
-        value={itemDetail?.productQuantity}
-        onChange={(e) => {
-          handleChange(e, itemDetail?.productQuantity);
-        }}
-      />
-      <button
-        className="quantity-btn  ring-1 ring-light-pink rounded-md p-3 hover:bg-light-pink hover:text-white transition-colors"
-        onClick={handelAddQuantity}
-      >
-        <img src={plusIcon} alt="" className="quantity-icon" />
-      </button>
-    </div>
+    <QuantityBtn
+      handelAddQuantity={handelAddQuantity}
+      handelMinusQuantity={handelMinusQuantity}
+      handleChange={handleChange}
+      itemDetail={itemDetail}
+      buttonDisableRef={buttonDisableRef}
+    />
   );
 };
+
+
+const BuyNowCardQuantity = ({ stock }) => {
+
+  const buttonDisableRef = useRef(null);
+  const { orderDetails, setOrderDetails } = useOrders();
+  const [itemDetail, setItemDetail] = useState({
+    productQuantity: orderDetails?.products?.quantity
+  })
+
+  const handelAddQuantity = () => {
+    if (itemDetail.productQuantity <= stock) {
+      const total = itemDetail.productQuantity + 1;
+
+      const cases = "ADD";
+
+      calulateTotal(total, cases);
+    }
+  };
+
+  const handelMinusQuantity = () => {
+    if (itemDetail.productQuantity > 1) {
+      // buttonDisableRef.current.disabled = true;
+      const total = itemDetail.productQuantity - 1;
+
+      const cases = "MINUS";
+      calulateTotal(total, cases);
+    }
+
+  };
+
+  const calulateTotal = (total, cases) => {
+    // const itemTotal =
+    //   itemDetail.salePrice !== null
+    //     ? itemDetail.salePrice * total
+    //     : itemDetail.regularPrice * total;
+    // const formattedTotal = parseFloat(itemTotal.toFixed(2));
+    // const cartItem = {
+    //   ...itemDetail,
+    //   productQuantity: total,
+    //   productTotal: formattedTotal,
+    // };
+
+    setItemDetail({ ...itemDetail, productQuantity: total });
+    setOrderDetails((prev) => ({
+      ...prev,
+      products: { ...prev.products, quantity: total }
+    }
+    ))
+  };
+
+  const handleChange = (e, quantity) => {
+    let value = e.target.value;
+
+    value = value.replace(/\D/g, "").slice(0, 2);
+    if (value === "" || value === "0") {
+      value = 1;
+    }
+    const values = parseInt(value, 10);
+
+    if (values > stock) {
+      setItemDetail({ ...itemDetail, productQuantity: stock });
+      calulateTotal(stock);
+    } else {
+      setItemDetail({ ...itemDetail, productQuantity: values });
+      calulateTotal(values);
+    }
+  };
+  return (
+    <>
+      <QuantityBtn
+        handelAddQuantity={handelAddQuantity}
+        handelMinusQuantity={handelMinusQuantity}
+        handleChange={handleChange}
+        itemDetail={itemDetail}
+        buttonDisableRef={buttonDisableRef}
+      />
+    </>
+  )
+}
 
 export default ProductInfo;

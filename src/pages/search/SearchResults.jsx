@@ -7,7 +7,7 @@ import { useSearchParams } from "react-router-dom";
 
 const SearchResults = () => {
     const [searchParams, setSearchParams] = useSearchParams();
-  const { fetchProductsByCategory, products,loading } = useProducts();
+  const { searchResults, products,loading } = useProducts();
   const [currnetPage, setCurrentPage] = React.useState(searchParams.get("page") || 0);
   let totalpages = Math.ceil(products?.length / 10);
   let startIndex = currnetPage * 10;
@@ -15,8 +15,11 @@ const SearchResults = () => {
   let currentOrders = products?.slice(startIndex, endIndex);
 
   useEffect(() => {
+    // fetch results 
+    const keyword = searchParams.get('q');
+    
     async function fetchProducts() {
-      await fetchProductsByCategory();
+      await searchResults(keyword,null,currnetPage);
        totalpages = Math.ceil(products?.length / 10);
       startIndex = currnetPage * 10;
       endIndex = (currnetPage + 1) * 10;

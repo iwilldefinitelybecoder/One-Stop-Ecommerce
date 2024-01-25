@@ -2,6 +2,7 @@ import React, { Suspense, lazy, useEffect } from "react";
 import "./productDetails.css";
 import Loader from "../../components/body/Loader";
 import useProducts from "../../CustomHooks/ProductsHook";
+import useMessageHandler from "../../components/body/Messages/NewMessagingComponent";
 
 
 
@@ -9,6 +10,7 @@ const ProductDetail  = lazy(() => import("./ProductDetail"));
 
 function ProductDetails() {
 
+  const {getMessageComponents} = useMessageHandler();
 
 
 
@@ -19,6 +21,7 @@ function ProductDetails() {
           <div className="product-Details-cntr">
             <Suspense fallback={<Loader/>}>
             <ProductDetail/>
+            {getMessageComponents()}
             </Suspense>
           </div>
         </div>

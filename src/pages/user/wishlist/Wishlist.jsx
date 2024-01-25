@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import './wishlist.css'
 import { noDataImg } from '../../../assets/icons/img/Illistrations/data';
 import { useMatch, useNavigate } from 'react-router';
+import Loader from '../../../components/body/Loader';
 
 const CustomGridItem = styled(Grid)(({ theme }) => ({
   border: '1px solid transparent', // Initial border
@@ -22,7 +23,7 @@ const CustomGridItem = styled(Grid)(({ theme }) => ({
 }));
 
 function Wishlist() {
-  const { wishlist, wishlistInfo, moveAllItemsToCart } = useWishlist();
+  const { wishlist, wishlistInfo, moveAllItemsToCart,loading,clearWishlist } = useWishlist();
   useNavigate();
 
 
@@ -30,11 +31,20 @@ function Wishlist() {
     moveAllItemsToCart();
   }
 
+  const handelClearWishlist=()=>{
+    clearWishlist();
+  }
+
 
   return (
     <>
+    {
+      loading?
+      <Loader/>
+      :
+      <>
       {
-        wishlistInfo.totalItems === 0 ? (
+        wishlistInfo?.totalItems === 0 ? (
           <div className=' w-full h-[70vh] bg-white flex justify-center items-center' >
             <span className=' font-semibold text-2xl'>WishList Is Empty</span>
             <img src={noDataImg} alt="" />
@@ -58,13 +68,16 @@ function Wishlist() {
                   })}
                 </div>
               </div>
-              <div className="w-full flex justify-end mr-14 ">
+              <div className="w-full flex justify-end mr-14 space-x-5 ">
+                <button className="Btn2" onClick={handelClearWishlist}>Clear WhishList</button>
                 <button className="Btn3" onClick={handelMoveAllToCart}>Move All To Cart</button>
 
               </div>
             </div>
           )
       }
+      </>
+    }
     </>
   )
 }

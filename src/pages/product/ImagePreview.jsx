@@ -2,7 +2,7 @@ import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
 import React, { useState } from "react";
 import { trashbinIcon } from "../../assets/icons/png/toolbar1/data";
 
-function ImagePreview({ image, setImage,setFormData }) {
+function ImagePreview({ image, setImage,setFormData,viewCategory }) {
   // const isVideo = file.type.startsWith("video/");
   // const isImage = file.type.startsWith("image/");
 

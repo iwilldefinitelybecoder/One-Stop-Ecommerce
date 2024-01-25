@@ -69,7 +69,11 @@ function Path() {
       <Routes>
         <Route path="/Auth"  element={<Auth />}>
           <Route path="verify-email" element={<VerifyEmail />} />
+          <Route
+            element={<RequireAuth allowedRoles={[roles.USER, roles.VENDOR]} />}
+          >
           <Route path="change-password" element={<ChangePassword />} />
+        </Route>
         </Route>
 
     <Route path="/playground" element={<Playground />} />
@@ -87,11 +91,7 @@ function Path() {
           <Route path="/register-vendor" element={<UpgradeToVendor />} />
         </Route>
 
-        <Route
-            element={<ValidateAuth allowedRoles={[roles.USER, roles.VENDOR]} />}
-          >
-           
-          </Route>
+        
 
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
@@ -114,9 +114,9 @@ function Path() {
               <Route path="payment" element={<Payment />} />
               </Route>
               <Route element={<CheckOutAuth currentPage={"/checkout/review"} requiredValues={[details.payment]} />} >
-                dad
-              </Route>
+                
               <Route path="review" element={<Review />} />
+              </Route>
               <Route path="*" element={<NotFound />} />
             </Route>
           </Route>

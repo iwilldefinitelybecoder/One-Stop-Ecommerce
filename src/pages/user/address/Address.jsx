@@ -108,6 +108,26 @@ function Address() {
                             <div className="order-table-row font-semibold text-lg text-slate-600">
                               <span>{address?.phone}</span>
                             </div>
+                            {/* set address default  */}
+                            {/* {order.defaultCard ? (
+                              <div
+                                className="order-table-row-deflt-btn visible-btn mr-40 bg-light-pink p-3 rounded-md shadow-md hover:bg-dark-pink hover:cursor-pointer"
+                                onClick={(e) =>
+                                  handelSetDefault(e, order.cardId)
+                                }
+                              >
+                                Default
+                              </div>
+                            ) : (
+                              <div
+                                className="order-table-row-deflt-btn mr-40 bg-light-pink p-3 rounded-md shadow-md hover:bg-dark-pink hover:cursor-pointer"
+                                onClick={(e) =>
+                                  handelSetDefault(e, order.cardId,index)
+                                }
+                              >
+                                Set As Default
+                              </div>
+                            )} */}
 
                             <div
                               className="order-table-row-btn mr-16"
@@ -151,7 +171,6 @@ function Address() {
                           setAddNewCard = {setAddnewCard}
                           addnewCard={addNewCard}
                         />
-                        </Collapse>
                         <div className="add-new-method flex justify-end items-center mt-3">
                           <div
                             className="add-mehtods-Btn Btn3 "
@@ -161,6 +180,7 @@ function Address() {
                             <span>Cancel</span>
                           </div>
                         </div>
+                        </Collapse>
                       </>
                     
                   </div>

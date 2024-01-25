@@ -10,6 +10,7 @@ import {
   emptyWishList,
 } from '../service/CustomerServices/wishListServices';
 import { AccountContext } from '../context/AccountProvider';
+import { sleep } from '../utils/utils';
 
 const useWishlist = () => {
   const [loading, setLoading] = useState(false);
@@ -87,6 +88,7 @@ const useWishlist = () => {
     setLoading(true);
     await emptyWishList();
     await getWishlistItems(); // Refresh wishlist after clearing
+    await sleep(200);
     setLoading(false);
   };
 

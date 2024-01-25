@@ -32,7 +32,7 @@ import React, {
   
 import { ErrorMessage } from "../../../components/body/login/loginUI";
 import { ProfileIcon, UserName } from "../../../components/headerLayout/toolbar/ProfileBtn";
-import { upgradeToVendor } from "../../../service/vendorServices";
+import { AuthVendor, upgradeToVendor } from "../../../service/vendorServices";
 import { LinearProgress } from "@mui/material";
 
 const UpgradeToVendor = () => {
@@ -143,11 +143,15 @@ const UpgradeToVendor = () => {
       formsData.append("vendorName", formData.vendorName);
       const auth = await upgradeToVendor(formsData);
       if (auth?.success === true) {
-    
+        const response = await AuthVendor()
         
         setIsPending(false);
+        Cookies.set("JWT", response?.response?.data?.token);
         navigate("/");
         setTimeout(() => {
+          setAccount(response.response.data);
+          const data = response.response.data;
+          saveData(data, "account");
           setFormData({
             email: "",
             vendorName: "",

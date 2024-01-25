@@ -12,7 +12,7 @@ import { useOrders } from "../../../context/OrderContext";
 import { formatDateFromTimestamp } from "../../../utils/DisplayFormatters";
 function Orders() {
   // const [orders, setOrders] = React.useState(ordersList);
-  const {orders,setOrders} = useOrders();
+  const {orders,setOrders,get} = useOrders();
   const [currnetPage, setCurrentPage] = React.useState(0);
   const totalpages = Math.ceil(orders?.length / 5);
     const startIndex = currnetPage * 5;
@@ -75,17 +75,17 @@ function Orders() {
                 <div className="order-table-row">
                   <span
                     className={`${getOrderStatusClass(
-                      order.orderStauts
+                      order.orderStatus
                     )} px-3 py-1.5 rounded-2xl `}
                   >
                     {order.orderStatus}
                   </span>
                 </div>
                 <div className="order-table-row">
-                  <span>{formatDateFromTimestamp(order.orderDate)}</span>
+                  <span>{formatDateFromTimestamp(order?.orderDate)}</span>
                 </div>
                 <div className="order-table-row">
-                  <span>&#8377;{order.orderSummary.grandTotal}</span>
+                  <span>&#8377;{order?.grandTotal}</span>
                 </div>
                 <div className="order-table-row-btn">
                   <img src={rightArrowIcon2} className="order-tbl-ar-icon h-5" />

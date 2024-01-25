@@ -13,13 +13,14 @@ import {
 
 const TrackingShipment = ({ open, onClose, trackingData }) => {
   const handleClose = () => {
-    onClose();
+    onClose(false);
   };
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-      <DialogTitle>Shipment Tracking Updates</DialogTitle>
-      <DialogContent>
+    <DialogTitle>Shipment Tracking Updates</DialogTitle>
+    <DialogContent>
+      {Object.keys(trackingData).length > 0 ? (
         <TableContainer>
           <Table>
             <TableBody>
@@ -47,8 +48,12 @@ const TrackingShipment = ({ open, onClose, trackingData }) => {
             </TableBody>
           </Table>
         </TableContainer>
-      </DialogContent>
-    </Dialog>
+      ) : (
+        <div>No tracking data yet.</div>
+      )}
+    </DialogContent>
+  </Dialog>
+  
   );
 };
 

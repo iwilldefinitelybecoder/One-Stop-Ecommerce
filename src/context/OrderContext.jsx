@@ -1,16 +1,29 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { createOrder, getAllOrders, getOrderById } from '../service/CustomerServices/OrderServices';
+import { createOrder, fetchTrackingData, getAllOrders, getOrderById, getOrderDetailsById } from '../service/CustomerServices/OrderServices';
 import { AccountContext } from './AccountProvider';
+import { useMatch, useNavigate } from 'react-router';
+import { useCart } from '../CustomHooks/CartHook';
+import { sleep } from '../utils/utils';
 
 export const OrderContext = createContext();
 
 export const useOrders = ()=>{
     return useContext(OrderContext)
 }
+ 
 
 const OrderProvider = ({children}) => {
   const {account} = useContext(AccountContext)
+
+  
     const [orders, setOrders] = useState([])
+    const [message, setMessage] = useState({
+      type: '',
+      message: '',
+    
+    })
+    
+  
     const [loading, setLoading] = useState(false)
     const [orderDetails, setOrderDetails] = useState({
         orderId: '',
@@ -22,37 +35,63 @@ const OrderProvider = ({children}) => {
         paymentMethod: '',
         paymentProcessId: '',
         paymentDetails: '',
-        products: [],
+        products: {productId:"",quantity:0,price:0},
         couponId: '',
         useWallet: false,
         buyNow: false,
+        shippingType:'',
+        
+    })
+    const [orderSummary,setOrderSummary] = useState({
+      cartTotal:0,
+      tax:0.03,
+      shipping:0.02,
+      grandTotal:0,
+      discount:0
     })
 
+
+    useEffect(()=>{
+      const product = orderDetails?.products
+      if(product?.productId !== undefined){
+          setOrderSummary(prev=>{
+            let cartTotal = product?.quantity*product?.price;
+            let tax = 0.03 * product?.quantity * product?.price /100;
+            let shipping = 0.02 * product?.quantity * product?.price /100;
+           
+            let grandTotal = cartTotal + tax + shipping;
+
+            return{...prev,cartTotal,tax,shipping,grandTotal}
+          })
+      }
+
+    },[orderDetails?.products?.productId,orderDetails?.products.quantity])
+
+
+    // useEffect(()=>{
+
+    //   if(!page1 || !page2){
+    //     resetOrderDetails()
+    //   }
+    // },[page1,page2])
     
 
   
 
     useEffect(()=>{
       if(loading)return
-        setLoading(true)
-        async function fetchOrders(){
-          if(!account)return
-           const response  = await getAllOrders()
-            setOrders(response)
-            setLoading(false)
-        }
-        fetchOrders()
+     getOrders();
     }
     ,[account])
 
     useEffect(()=>{
       resetOrderDetails()
+
     }
     ,[account])
 
     const resetOrderDetails = ()=>{
       setOrderDetails({
-        orderId: '',
         orderTotal: 0,
         billingAddressId: '',
         shippingAddressId: '',
@@ -61,10 +100,17 @@ const OrderProvider = ({children}) => {
         paymentMethod: '',
         paymentProcessId: '',
         paymentDetails: '',
-        products: [],
+        products: {productId:"",quantity:0,price:0},
         couponId: '',
         useWallet: false,
         buyNow: false,
+    })
+    setOrderSummary({
+      subTotal:0,
+      tax:0.03,
+      shipping:0.02,
+      grandTotal:0,
+      discount:0
     })
     }
 
@@ -82,9 +128,21 @@ const OrderProvider = ({children}) => {
       if(loading)return
         setLoading(true)
         const response = await createOrder(orderDetails)
-        console.log(response)
+        if(response === "ORDER_PLACED"){
         setLoading(false)
         getOrders()
+        setMessage
+        ({type: 'success', message: 'Order Placed Successfully'})
+        await sleep(3000);
+        resetOrderDetails()
+        }
+        else{
+          setMessage
+          ({type: 'error', message: 'Something Went Wrong'})
+          setLoading(false)
+        
+        }
+      
       }
 
       const getorderById = async (id)=>{
@@ -97,6 +155,24 @@ const OrderProvider = ({children}) => {
           return response
         }
 
+        const getOrderDetails = async (id)=>{
+          if(loading)return
+            setLoading(true)
+            const response = await getOrderDetailsById(id);
+            setLoading(false)
+            getOrders()
+            return response
+          }
+
+const getTrackingData = async (id)=>{
+          if(loading)return
+            setLoading(true)
+            const response = await fetchTrackingData(id);
+            setLoading(false)
+            getOrders()
+            return response
+          }
+
 
 
   return (
@@ -108,7 +184,13 @@ const OrderProvider = ({children}) => {
                                     loading,
                                     createOrders,
                                     getorderById,
-                                    resetOrderDetails
+                                    getTrackingData,
+                                    resetOrderDetails,
+                                    message,
+                                    getOrderDetails,
+                                    setOrderSummary,
+                                    orderSummary,
+                                    setMessage
                                     }}>
     {children}
     </OrderContext.Provider>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useProducts from "../../CustomHooks/ProductsHook";
-import { LinearProgress } from "@material-ui/core";
+import { LinearProgress } from "@mui/material";
 import { Rating } from "@mui/material";
 import { getTimeDifference } from "../../utils/validateDate";
 import { fetchUserIcon } from "../../service/AuthenticateServices";
@@ -19,6 +19,7 @@ const ReviewContainer = ({ review }) => {
     }
     fetchUserIconn();
   }, []);
+  
 
   return (
     <div
@@ -45,8 +46,9 @@ const ReviewContainer = ({ review }) => {
           </div>
         </div>
       </div>
-      <div className="review-description">
-        <p className=" text-slate-600 pt-2">{review?.review}</p>
+      <div className="review-description mt-5">
+        <span className=" pb-2 font-semibold ">{review?.headline}</span><br />
+        <p className=" text-slate-600 pt-1">{review?.review}</p>
       </div>
     </div>
   );

@@ -7,55 +7,53 @@ import { rightArrowIcon } from '../../assets/icons/png/toolbar-icons/data'
 import ProductInfo from './ProductInfo'
 import MIddleContainer from './MIddleContainer'
 import AdditionalContainer from './AdditionalContainer'
+import BuyNowCard from '../../components/body/productCards/BuyNowCard'
+
+
+export const productInfoFeatures = {
+  addToCartBtn:true,
+  buyNow:false,
+  ratingPanel:true,
+  checkoutBtn:false,
+}
+
 
 const ProductDetail = () => {
 
   const productId = useMatch('/product/:id').params.id;
-  const {getProductDetailss}= useProducts();
-  const [productDetails, setProductDetails] = useState({
-    // productImages: [shoppingCartIcon,rightArrowIcon],
-    // specifications:{
-    //   title:"title",
-    //   camera:"camera",
-    //   ram:"ram",
-    //   storage:"storage",
-    //   description:"description"
-    // },
-    // regularPrice:2000,
-    // salePrice:1000,
-    // rating:4,
-    // numberOfRatings:100,
-    // productName:"productName",
-    // description:"descriptiond jnandknj la ndjn d redn d  e hfor ndnjnc edddddddd ddddddddddd ddddddddddddddddd ddddddddddddddddddd f",
-    
-  });
+  const {getProductDetailss ,getProductReviewDetail,reviewData}= useProducts();
+  const [productDetails, setProductDetails] = useState({});
+  const [open,setOpen] = useState();
 
   useEffect(()=>{
     async function fetchProductDetails(){
       const response = await getProductDetailss(productId);
+      getProductReviewDetail(productId);
       setProductDetails(response);
     }
     fetchProductDetails();
   }
   ,[productId])
 
-    
+  
+  
   return (
     <>
     <div>
         <div className='product-cntr h-[680px]  flex mb-20'>
+          <BuyNowCard open={open} setOpen={setOpen} productDetails={productDetails}/>
           <div className='product-img w-[556px]'>
-            <ProductImage productDetails={productDetails} />
+            <ProductImage productDetails={productDetails} viewCategory={true} />
           </div>
           <div className='product-info w-[556px]'>
-            <ProductInfo ProductInfo={productDetails} />
+            <ProductInfo ProductInfo={productDetails} setOpen={setOpen} detailedReview={reviewData}  feature={productInfoFeatures}/>
           </div>
         </div>
         <div className='facet'>
           <MIddleContainer productInfo={productDetails}/>
         </div>
         <div className='extra-cntr'>
-          <AdditionalContainer category={productDetails?.category}/>
+          <AdditionalContainer productDetails={productDetails}/>
         </div>
     </div>
     </>

@@ -62,3 +62,13 @@ export const productCategories = [
   "Watches",
   "Handmade",
 ];
+
+export const categoryTagMapping = {
+  "Apparel & Accessories": ["Clothing", "Fashion Trends", "Accessories"],
+  "style & Fashion": ["Fashion Trends", "Clothing", "Apparel", "Style Inspiration", "Fashion Accessories"],
+  "home & Gardening": ["Home Decor", "Interior Design", "Garden Accessories", "Outdoor Living", "DIY Home Projects"],
+  "Health & Wellness": ["Wellness Tips", "Healthy Living", "Fitness", "Nutrition", "Mental Health", "Exercise", "Meditation", "Mindfulness"],
+  "medical Health": ["Medical Conditions", "Healthcare", "Wellness"],
+  "Children & Infant": ["Baby Clothing", "Toys & Games", "Nursery Decor", "Parenting Tips", "Kids Fashion", "Children's Books", "Educational Toys", "Kids Activities"],
+  "Electronic Goods": ["Gadgets", "Tech Trends", "Smart Devices", "Home Appliances", "Audio & Headphones", "Cameras & Photography", "Gaming"]
+};

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import "./flashGrid.css";
 import Rating from "@mui/material/Rating";
 import { connect, useDispatch } from "react-redux";
@@ -29,30 +29,31 @@ const FlashDealsGridCards = ({ productInfo }) => {
   const {cart,itemExist,updateItem,addItemToCart,removeItem} = useCart()
   const {setShowLoginButton,showLoginButton,account} = useContext(AccountContext)
   const {productId,addToWishlist,removeFromWishlist,moveToCart} = useWishlist();
+  
   const productExist =productId!==0? productId?.includes(productInfo?.productId):false
   const page = useMatch('/user/Wishlist')
 
-
+  
 
   const [quickView, setQuickView] = useState(false);
 
   const buttonDisableRef = useRef(null);
   
 
-  const offerPercentage = productInfo.salePrice
-    ? (
-        ((productInfo.regularPrice - productInfo.salePrice) / productInfo.regularPrice) *
+  const offerPercentage = useMemo(()=>{return productInfo?.salePrice? (
+        ((productInfo.regularPrice - productInfo?.salePrice) / productInfo?.regularPrice) *
         100
-      ).toFixed(0)
+      )?.toFixed(0)
       : 0;
+  },[productInfo])
       
-      const exists = itemExist(productInfo.productId)
+      const exists = itemExist(productInfo?.productId)
   const [itemDetail, setItemDetail] = useState(
     exists !==undefined?
       exists
       : {
           ...productInfo,
-          images:[...productInfo.imageURL],
+          images:[...productInfo?.imageURL],
           productQuantity: 0,
           productTotal: 0,
         }
@@ -90,7 +91,9 @@ const FlashDealsGridCards = ({ productInfo }) => {
     );
   }, [cart]);
 
-
+const handelQuickViewClose=()=>{
+  setQuickView(false);
+}
 
 
   const handelAddQuantity = (e) => {
@@ -205,7 +208,7 @@ const FlashDealsGridCards = ({ productInfo }) => {
                 display: `${productInfo?.salePrice > 0 ? "flex" : " none"}`,
               }}
             >
-              <h5 className=" ">{offerPercentage}% off</h5>
+              <h5 className=" ">{offerPercentage !== undefined?`${offerPercentage}`:null}% off</h5>
             </div>
           </div>
           <ItemImageSlider
@@ -229,7 +232,7 @@ const FlashDealsGridCards = ({ productInfo }) => {
             )}
             <div className="flsh-grd-prdt-price-add-crt  items-center">
               <div className="flsh-grd-prdt-price flex space-x-2">
-                {productInfo.hasOwnProperty("salePrice") ? (
+                {productInfo.salePrice  > 0 ? (
                   <>
                     <h5 className=" text-base font-semibold text-light-pink">
                       &#8377;{productInfo.salePrice}
@@ -319,9 +322,12 @@ const FlashDealsGridCards = ({ productInfo }) => {
           </div>
           
           }
-          <div className="view-hover-icon " role="button" title="view-product" onClick={()=>{setQuickView(true)}}>
+          <div className="view-hover-icon " role="button" title="view-product" onClick={(e)=>{
+            e.preventDefault()
+            e.stopPropagation()
+            setQuickView(true)}}>
             <img src={viewIcon} className=" h-5" />
-            <QuickProductView open={quickView} setOpen={setQuickView} productDetails={productInfo} />
+            <QuickProductView open={quickView} handelClose={handelQuickViewClose} productDetails={productInfo} />
           </div>
         </div>
       </Link>
@@ -342,7 +348,7 @@ const ItemImageSlider = ({ productImages, mouseHover }) => {
     >
       <div className="flash-grid-img h-40 w-40">
         <img
-          src={productImages[0]}
+          src={ productImages && productImages[0]}
           
           style={{ objectFit: "cover" }}
         />

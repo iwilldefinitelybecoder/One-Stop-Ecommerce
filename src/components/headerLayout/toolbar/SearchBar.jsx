@@ -37,7 +37,7 @@ function SearchBar() {
       const category = categoryValue === "All Categories"?null:categoryValue;
       const results = await searchProducts(query,category);
 
-      if (results.length > 0) {
+      if (results?.length > 0) {
         const arr = [undefined, ...results];
         setSearchResults(arr);
         setLoading(false);
@@ -50,7 +50,6 @@ function SearchBar() {
   }, [query]);
 
   useEffect(() => {
-    console.log(page);
     if (page === null && !focued) {
       setSearchValue("");
     }
@@ -141,7 +140,6 @@ function SearchBar() {
 
     return modifiedSearchTerm;
   };
-  console.log(focusedIndex);
 
   const handleKeyDownn = (event) => {
     if (event.key === "ArrowDown") {

@@ -68,11 +68,7 @@ export const deleteAllMessages = async (userEmail) => {
 export const updateMessage = async (messageId) => {
     setToken(Cookies.get("JWT"));
     try {
-        const response = await instance.put('/update', {
-            params: {
-                messageId: messageId,
-            },
-        });
+        const response = await instance.post('/update',messageId);
         return response.data;
     } catch (error) {
         handleError(error);

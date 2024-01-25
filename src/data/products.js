@@ -55,3 +55,16 @@ export const products = [
     
   },
 ];
+
+
+export const productTypes = {
+  TOP_RATED: "TOP_RATED",
+  BEST_SELLER: "BEST_SELLER",
+  FEATURED: "FEATURED",
+  NEW_PRODUCT: "NEW_PRODUCT",
+  ON_SALE: "ON_SALE",
+  NEW_ARRIVAL: "NEW_ARRIVAL",
+  BIG_DISCOUNT: "BIG_DISCOUNT",
+  FLASH_DEAL: "FLASH_DEAL",
+  NOT_SPONSORED: "NOT_SPONSORED"
+}

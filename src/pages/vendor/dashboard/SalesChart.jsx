@@ -44,7 +44,7 @@ const SalesChart = ({ data }) => {
           break;
 
         case "year":
-          filteredData = data.filter((item) => {
+          filteredData = data?.filter((item) => {
             const itemDate = new Date(item.date.split("T")[0]); // Extracting date part
             return itemDate.getFullYear() === currentYear;
           });

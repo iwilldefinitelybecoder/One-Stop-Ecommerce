@@ -19,6 +19,8 @@ import {
 } from "@mui/material";
 import { getAllWarehouses } from "../../../service/LogisticServices/wareHouseService";
 import ExtraAttributes from "./ExtraAttributes";
+import { categoryTagMapping } from "../../../data/cartproducts";
+
 
 const AddProducts = () => {
   const inputRef = React.useRef(null);
@@ -38,7 +40,9 @@ const AddProducts = () => {
   const [submitform, setSubmitForm] = useState(false);
   const [wareHouse, setWareHouse] = useState([]);
   const [extraAttributes, setExtraAttributes] = useState([{}]);
+  const [productTagsList,setProductTagsList] = useState([]);
 
+  
   const [formData, setFormData] = useState({
     name: "",
     category: "",
@@ -53,6 +57,16 @@ const AddProducts = () => {
     wareHouse: "",
     thumbnail: "",
   });
+
+  useEffect(()=>{
+      setProductTagsList(categoryTagMapping[formData.category])
+      setFormData(prev=>({...prev,tags:[]}))
+  },[formData.category])
+
+  useEffect(()=>{
+    const newArr = categoryTagMapping[formData.category]?.filter(tag=>!formData?.tags?.includes(tag))
+    setProductTagsList(newArr)
+  },[formData.tags])
 
   useEffect(() => {
     if (params !== undefined) {
@@ -244,7 +258,8 @@ const AddProducts = () => {
 
   const handelTagsAdd = (e) => {
     e.preventDefault();
-    if (tag.value === "") {
+    const {name,value} = e.target;
+    if (value === "") {
       setErrorFields((prev) => ({ ...prev, tags: "Please enter a tag" }));
       return;
     }
@@ -253,21 +268,22 @@ const AddProducts = () => {
     }
     setFormData((prev) => ({
       ...prev,
-      [tag.name]: Array.isArray(prev.tags)
-        ? [...prev.tags, tag.value]
-        : [tag.value],
+      [name]: Array.isArray(prev.tags)
+        ? [...prev.tags, value]
+        : [value],
     }));
-    setTag((prev) => ({
-      ...prev,
-      value: "",
-    }));
+    // setTag((prev) => ({
+    //   ...prev,
+    //   value: "",
+    // }));
   };
 
   const handelTagsDelete = (e, index) => {
     e.preventDefault();
+    
     setFormData((prev) => ({
       ...prev,
-      [tag.name]: prev.tags.filter((_, i) => i !== index),
+      tags: prev.tags.filter((_, i) => i !== index),
     }));
   };
 
@@ -289,7 +305,7 @@ const AddProducts = () => {
     formsData.append("category", formData.category);
     formsData.append("description", formData.description);
     formsData.append("stock", formData.stock);
-    formsData.append("tags", JSON.stringify(formData.tags));
+    formsData.append("tags", formData.tags);
     formsData.append("regularPrice", formData.regularPrice);
     formsData.append("extraAttributes", formData.extraAttributes);
     formsData.append("salePrice", formData.salePrice);
@@ -759,14 +775,34 @@ const AddProducts = () => {
               </div>
               <div className="tag-div relative">
                 <div className="tag-div">
+                  
                   <label htmlFor="tag">Tags</label>
-                  <input
-                    type="text"
+                <Select
+                   disabled={editProduct}
+                    sx={{
+                      marginBottom: 2,
+                      maxWidth: 408,
+                      width: "100%",
+                      height: 45,
+                      borderRadius: 2,
+                      border: "1px solid #e5e5e5",
+                      ":focus": { border: "1px solid #e5e5e5" },
+                    }}
+                    placeholder="Select a Warehouse"
                     name="tags"
-                    placeholder="tags"
-                    onChange={handelTagsInput}
                     value={tag?.value}
-                  />
+                    onChange={handelTagsAdd}
+                  >
+                    {productTagsList?.map((item, index) => {
+                      return (
+                        <MenuItem value={item} key={index}>
+                          {item}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                 
+                  
                 </div>
                 {errorFields.tags && (
                   <span className=" ml-4 text-red-500 font-semibold">
@@ -774,16 +810,16 @@ const AddProducts = () => {
                   </span>
                 )}
 
-                <div className="add-tag-btn absolute">
+                {/* <div className="add-tag-btn absolute">
                   <button className="shadow-none Btn" onClick={handelTagsAdd}>
                     Add
                   </button>
-                </div>
-                <div className="tags-list-cntr flex flex-wrap px-2  m-2">
+                </div> */}
+                <div className="tags-list-cntr flex flex-wrap px-2 items-center  m-2">
                   {Array.isArray(formData.tags) &&
                     formData.tags.map((tag, index) => {
                       return (
-                        <div className="actual-tags shadow-md " key={index}>
+                        <div className="actual-tags shadow-md flex items-center " key={index}>
                           <div className="tag-dot">
                             <div className="dot"></div>
                           </div>

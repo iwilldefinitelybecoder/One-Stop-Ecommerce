@@ -19,7 +19,7 @@ function CartBtn({ cartToggle }) {
         className="profile-icon bg-slate-100 ml-6 shadow-md"
         onClick={toggleCart} 
       >
-        {totalItems() !== 0 && <div className="alerts">{totalItems()}</div>}
+        {totalItems() > 0 && <div className="alerts">{totalItems()}</div>}
         <img src={shoppingbagIcon} alt="" className="user-icon" />
       </div>
     </>

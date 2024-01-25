@@ -13,6 +13,23 @@ const PasswordResetRequest = () => {
   const [emailSent, setEmailSent] = useState(false);
   const [error, setError] = useState(null);
 
+  const responseMessage = (responseMessage)=>{
+
+  switch (responseMessage) {
+    case "USER_NOT_FOUND":
+        return "User not found. Please check your credentials.";
+        break;
+    case "ERROR_IN_SENDING_EMAIL":
+      return"An email has already been sent to this address. Please check your inbox.";
+      break;
+      case "EMAIL_ALREADY_SENT":
+      return "Error occurred while sending the email. Please try again later.";
+        break;
+    default:
+        return "Unknown response. Please contact support for assistance.";
+        break;
+}
+  }
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsPending(true);
@@ -28,13 +45,13 @@ const PasswordResetRequest = () => {
       return;
     }
     const response = await requestResetPassword(email);
-    console.log(response);
+  
     if (response.success) {
       setEmailSent(true);
       setError(null);
       setIsPending(false);
     } else {
-      setError(response.message);
+      setError(responseMessage(response.message.data));
       setIsPending(false);
     }
   };
@@ -86,7 +103,7 @@ const PasswordResetRequest = () => {
                 >
                   Send Reset Link
                 </button>
-                {error && <div className="text-red-500 ">{error}</div>}
+                {error && <div className="text-red-500 text-center ">{error}</div>}
               </form>
             ) : (
               <div className="flex-column items-center mb-5">
@@ -108,7 +125,7 @@ const PasswordResetRequest = () => {
             <div className=" w-full flex justify-center bg-slate-200 rounded-full py-3">
 
             <span>
-                <span className="text-md text-slate-500 text-black">
+                <span className="text-md text-slate-500 ">
                     Remember your password?
                 </span>
               <Link to={"/login"}>

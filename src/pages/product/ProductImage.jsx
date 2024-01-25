@@ -10,14 +10,20 @@ import { wishListIcon2 } from "../../assets/icons/png/Rareicons/data";
 import { rightArrowIcon } from "../../assets/icons/png/toolbar-icons/data";
 import { Link } from "react-router-dom";
 
-const ProductImage = ({ productDetails }) => {
+const ProductImage = ({ productDetails,viewCategory }) => {
+ 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [mainImage, setMainImage] = useState();
+  const [mainImage, setMainImage] = useState(Array.isArray(productDetails?.imageURL) && productDetails?.imageURL[0]);
   const { productExistsInWishlist,addToWishlist,removeFromWishlist } = useWishlist();
   const productId = useMatch("/product/:id")?.params.id;
   useEffect(() => {
     setMainImage(productDetails?.imageURL && productDetails?.imageURL[currentIndex]);
   }, [currentIndex]);
+
+  useEffect(() => {
+    setMainImage(productDetails?.imageURL && productDetails?.imageURL[0]);
+
+  }, [productDetails?.imageURL]);
 
   const exists = productExistsInWishlist(productId);
 
@@ -29,14 +35,14 @@ const ProductImage = ({ productDetails }) => {
     }
   };
 
- console.log(productDetails)
   return (
     <div
       style={{ display: "flex", flexDirection: "column" }}
       className=" items-center px-10 py-8  space-y-8 w-full h-max relative "
     >
       <div  onClick={handelWishList}>
-   
+   {
+    viewCategory &&
     <div className="category-flow absolute left-0 flex items-center space-x-1 w-full justify-start underline text-facebook-blue hover:cursor-pointer hover:text-blue-900">
        <Link to="/">
         <span className="text-lg font-semibold">Home</span>
@@ -51,6 +57,7 @@ const ProductImage = ({ productDetails }) => {
         <span className="text-lg font-semibold ">{productDetails?.name}</span>
         </Link>
     </div>
+    }
 
 
         <div className=" w-full flex justify-end tooltip "> 
@@ -71,7 +78,7 @@ const ProductImage = ({ productDetails }) => {
               </div>
           ) : (
             <div className=" absolute right-10 top-[55px] hover:bg-slate-200 rounded-full p-2 hover:cursor-pointer"  title="Add To Wishlist"> 
-                 <span class="tooltiptext">Add To PlayList</span>
+                 <span class="tooltiptext">Add To WishList</span>
                 <img src={wishListIcon2} className=" h-7" />
             </div>
           )}

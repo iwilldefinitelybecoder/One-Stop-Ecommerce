@@ -38,11 +38,13 @@ function ProfileBtn() {
   } = useContext(AccountContext);
 
   const location = useLocation();
+  const {messages} = useMessage();
 
   return showLogoutButton ? (
     <Navigate to="/logout" state={{ from: location }} replace />
   ) : (
     <div className="profile-icon rounded-full bg-slate-100 ml-3 shadow-md cursor-default ">
+       {messages?.unseen > 0 && <div className="alerts">{messages?.unseen}</div>}
       <button onClick={() => setShowLoginButton(!showLoginButton)}>
         <img src={account?.userIcon || userIcon} alt="" className="user-icon" />
       </button>
@@ -87,12 +89,12 @@ const ProfileMenu = (props) => {
   };
     
 
-  const MenuItem = ({ link, image1, image2, children, onClick, goToMenu }) => {
+  const MenuItem = ({ link, image1, image2, children, onClick, goToMenu,count=0 }) => {
     return (
       <>
         <Link to={link} role="menuitem">
           <div
-            className="menu-item flex w-full   px-2 py-3 items-center border-b-[1px] hover:text-white  hover:bg-light-pink transition-all rounded-md active:bg-dark-pink "
+            className="menu-item flex w-full relative   px-2 py-3 items-center border-b-[1px] hover:text-white  hover:bg-light-pink transition-all rounded-md active:bg-dark-pink "
             onClick={() => {
               onClick();
             }}
@@ -100,6 +102,7 @@ const ProfileMenu = (props) => {
             <img src={image1} alt="" className="h-7 mr-2 " />
             <span className=" text-lg font-semibold">{children}</span>
             <div className=" ml-auto" onClick={e=>{e.preventDefault();e.stopPropagation();goToMenu && setActiveMenu(goToMenu);}}>
+            {count !== 0 && <div className="alert-relative">{count}</div>}
             <img src={image2} alt="" className="h-5 ml-auto" />
 
             </div>
@@ -156,6 +159,7 @@ const ProfileMenu = (props) => {
                 image1={NotificationIcon}
                 goToMenu={"notification"}
                 image2={rightArrowIcon2}
+                count={messages?.unseen}
               >
                 Notifications
               </MenuItem>

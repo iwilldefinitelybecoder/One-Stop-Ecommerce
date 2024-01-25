@@ -2,11 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { TextField, Rating, Button, Grid, Dialog, CircularProgress } from "@mui/material";
 import { flashIcon } from "../../assets/icons/png/Rareicons/data";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { truncateString } from "../../utils/DisplayFormatters";
+import { formatDateFromTimestamp, formatOrderedDate, truncateString } from "../../utils/DisplayFormatters";
 import UploadTray from "./UploadTray";
 import useProducts from "../../CustomHooks/ProductsHook";
 import { sleep } from "../../utils/utils";
 import {
+  doesReviewExist,
+  getReviewData,
+  getWriteReviewMetaInfo,
   validateReview,
   validateReviewExist,
 } from "../../service/ProductServices";
@@ -23,6 +26,7 @@ function ReviewSubmission() {
   const headlineRef = useRef(null);
   const reviewTextRef = useRef(null);
   const [reviewSubmit, setReviewSubmit] = useState(false);
+  const [productDetails,setproductDetails] = useState({});
   const [reviewData, setReviewData] = useState({
     rating: 0,
     headline: "",
@@ -34,30 +38,43 @@ function ReviewSubmission() {
     async function fetchReview() {
       if (purchaseId) {
         setLoading(true);
-        const response = await validateReviewExist(purchaseId);
-        setLoading(false);
-        if (response.status === 200) {
-          const review = response.data.review;
+        const response = await doesReviewExist(purchaseId);
+        
+        if (response === "invalid") {
+
+          const review = await getReviewData(purchaseId);
           setReviewSubmit(true);
+          if(ratingRef.current){
           ratingRef.current.disabled = true;
           headlineRef.current.disabled = true;
           reviewTextRef.current.disabled = true;
+          } 
           setReviewData({
             rating: review.rating,
             headline: review.headline,
             reviewText: review.reviewText,
             images: review.images,
           });
-          sleep(7000);
-          navigate("/");
+          setproductDetails(review);
+          await sleep(500);
+          setLoading(false);
+
+          // sleep(7000);
+          // navigate("/");
+        }else {
+          const response1  = await getWriteReviewMetaInfo(purchaseId)
+          setReviewSubmit(false);
+          setproductDetails(response1);
+          await sleep(500);
+          setLoading(false);
         }
       }
     }
     fetchReview();
   }, []);
 
-  console.log(errorFields, reviewData);
-
+ 
+console.log(productDetails)
   const handleSubmit = (event) => {
     event.preventDefault();
   };
@@ -91,19 +108,21 @@ function ReviewSubmission() {
       const formData = new FormData();
       formData.append("rating", reviewData.rating);
       formData.append("headline", reviewData.headline);
-      formData.append("reviewText", reviewData.reviewText);
-      formData.append("productId", productId);
+      formData.append("review", reviewData.reviewText);
+      formData.append("productId", productDetails.productId);
+      formData.append("purchaseId",purchaseId);
       reviewData.images.forEach((img) => {
-        formData.append("images", img);
+        formData.append("reviewImages", img);
       });
 
       const response = await addProductReview(formData);
-      if (response === 200) {
+      console.log(response)
+      if (response === "success") {
         setReviewSubmit(true);
         ratingRef.current.disabled = true;
         headlineRef.current.disabled = true;
         reviewTextRef.current.disabled = true;
-        sleep(7000);
+        await sleep(7000);
         navigate("/");
       }
     }
@@ -123,21 +142,24 @@ function ReviewSubmission() {
       <div className=" ">
         <div style={{ backgroundColor: "white", padding: "20px" }}>
           <h1 className="h1-text">Create Review</h1>
+          <div className="border-b-2 pb-4">
 
-          <div className="product-detail flex items-center space-x-3 m-4 border-b-2 py-4">
-            <div className="product-img p-3 w-20 h-20  flex items-center justify-center bg-slate-200">
-              <img src={flashIcon} alt="" className="object-cover" />
+          <div className="product-detail flex items-center space-x-3 m-4  py-4">
+            <div className="product-img p-3 w-36 h-36  flex items-center justify-center ">
+              <img src={productDetails?.productImage} alt="" className="object-cover" />
             </div>
             <div>
-              <Link to={`/product/${12}`}>
+              <Link to={`/product/${productDetails?.productId}`}>
                 <span className="font-semibold hover:underline hover:cursor-pointer ">
                   {truncateString(
-                    "dawdawdadaddadadddddddddddddd d wwwwwwwwww wd dad adaw w awd wdawdddd dw aw a wad awdwadddada",
+                    productDetails?.productName,
                     90
                   )}
                 </span>
               </Link>
             </div>
+          </div>
+          <span className=" text-slate-400 italic font-semibold">Purchased On</span><span className="font-semibold">&nbsp;{formatOrderedDate(11231209831)}</span>
           </div>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
@@ -150,6 +172,7 @@ function ReviewSubmission() {
                         name="rating"
                         value={reviewData.rating}
                         size="large"
+                        readOnly={reviewSubmit}
                         ref={ratingRef}
                         onChange={(event) => {
                           handelformChange(event);
@@ -167,17 +190,20 @@ function ReviewSubmission() {
                           "Excellent product, highly recommended"}
                       </span>
                     </div>
+                    {
+                      !reviewSubmit &&
                     <Button
-                      variant="outlined"
-                      color="primary"
-                      ref={ratingRef}
-                      style={{ borderColor: "#e94560", color: "#e94560" }}
-                      onClick={() => {
-                        setReviewData((prev) => ({ ...prev, rating: 0 }));
-                      }}
+                    variant="outlined"
+                    color="primary"
+                    ref={ratingRef}
+                    style={{ borderColor: "#e94560", color: "#e94560" }}
+                    onClick={() => {
+                      setReviewData((prev) => ({ ...prev, rating: 0 }));
+                    }}
                     >
                       Clear
                     </Button>
+                    }
                   </div>
                   {errorFields.rating && (
                     <span className="ml-4 text-red-500 font-semibold">
@@ -222,7 +248,7 @@ function ReviewSubmission() {
                   name="headline"
                   value={reviewData.headline}
                   onChange={handelformChange}
-                  InputProps={{ style: { borderColor: "#e94560" } }}
+                  InputProps={{ style: { borderColor: "#e94560" }, readOnly: reviewSubmit }}
                   InputLabelProps={{
                     shrink: true,
                     focused: false,
@@ -246,7 +272,7 @@ function ReviewSubmission() {
                   fullWidth
                   value={reviewData.reviewText}
                   onChange={handelformChange}
-                  InputProps={{ style: { borderColor: "#e94560" } }}
+                  InputProps={{ style: { borderColor: "#e94560" }, readOnly: reviewSubmit }}
                   InputLabelProps={{
                     shrink: true,
                     focused: false,

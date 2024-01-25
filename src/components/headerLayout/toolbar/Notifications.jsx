@@ -147,10 +147,11 @@ const Notifications = ({ open }) => {
   }, [notifications]);
 
   useEffect(() => {
-    console.log(messageUnseen)
+   
       const markNotificationAsSeen = async (notificationId) => {
-        console.log(open);
+   
       const messageId = notificationId.map((notification) => notification.notificationId);
+     
       await updateMessage(messageId);
     };
     if (messageUnseen.length > 0 && open) markNotificationAsSeen(messageUnseen);
@@ -242,8 +243,8 @@ const Notifications = ({ open }) => {
               onClick={() => handleMessageBoxClick(message)} 
             >
               <MessageContent>
-                {message.status === "UNSEEN" || message.status === "SENT" && <Dot />}
-                <MessageText>{message.message}</MessageText>
+                {message.status === "UNSEEN" && <Dot />}
+                <MessageText className="simple-message-box" dangerouslySetInnerHTML={{__html:message.message}}/>
               </MessageContent>
               <Timestamp>{formatTimeAmPm(message.createdAt)}</Timestamp>
             </MessageBox>
@@ -257,18 +258,18 @@ const Notifications = ({ open }) => {
       }
     </NotificationContainer>
 
-      <PopupContainer isVisible={isPopupVisible} >
+      {/* <PopupContainer isVisible={isPopupVisible} >
         <PopupContent>
-          {/* Display detailed message content here */}
+        
           {selectedMessage && (
             <div>
               <p>{selectedMessage.message}</p>
               <p>{selectedMessage.createdAt}</p>
-              {/* Add more details as needed */}
+           
             </div>
           )}
         </PopupContent>
-      </PopupContainer>
+      </PopupContainer> */}
     </div>
   ) : (
     <span>No Notification</span>

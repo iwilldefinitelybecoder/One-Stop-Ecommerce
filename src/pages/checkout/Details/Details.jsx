@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { useOutletContext } from "react-router";
 import RightElement from "../cart/rightElement";
@@ -12,15 +12,18 @@ import SelectAddress from "./SelectAddress.jsx";
 
 const Details = () => {
   const [topcntr] = useOutletContext();
-  const ref1 = React.useRef(null);
-  const ref2 = React.useRef(null);
-  const {addresses} = useAddresses();
+  const ref1 = useRef(null);
+  const ref2 = useRef(null);
+  const { addresses } = useAddresses();
+  const [moveToNextPage, setMoveToNextPage] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [moveToNextPage, setMoveToNextPage] = React.useState(false);
+  const [addNewCard, setAddnewCard] = useState(false);
+  const forwardRef = useRef();
+  const [save, setSave] = useState();
 
-  const handelPushBtn = () => { 
+  const handelPushBtn = () => {
     ref1?.current?.click();
-    
+
   }
 
   const shippingAddress1 = searchParams.get("shippingAddressId");
@@ -29,42 +32,41 @@ const Details = () => {
     if (shippingAddress1 && billingAddress) {
       setMoveToNextPage(true);
     }
-    
 
   }
-  , [shippingAddress1, billingAddress]);
+    , [shippingAddress1, billingAddress]);
 
   return (
     <>
-   
+
       <div className="checkout-pos-left-cntr">
         <div className="checkout-left-top-cntr">{topcntr}</div>
         <div className="checkout-left-btm-cntr ">
-          {addresses.length === 0?
-           
-          <div className="btm-cntr1">
-            <Container1 forwardRef={ref1} grantPermision={setMoveToNextPage} />
-          </div>
-          :
-           <div className=" btm-cntr2 mt-5">
-            <SelectAddress />
-          </div> 
-          
+          {addresses.length === 0 ?
+
+            <div className="btm-cntr1">
+              <Container1 forwardRef={forwardRef} grantPermission={setSave} setAddNewCard={setAddnewCard} addnewCard={addNewCard} />
+            </div>
+            :
+            <div className=" btm-cntr2 mt-5">
+              <SelectAddress />
+            </div>
+
           }
-          </div>
+        </div>
         <div className=" flex px-7 w-full justify-between">
           <Link to="/checkout/cart">
-          <div className="Btn2 flex space-x-2 items-center ">
-            <img src={rightArrowIcon2} className="h-5 rotate-180"/>
-            <button>Back to Cart</button>
-          </div>
+            <div className="Btn2 flex space-x-2 items-center ">
+              <img src={rightArrowIcon2} className="h-5 rotate-180" />
+              <button>Back to Cart</button>
+            </div>
           </Link>
-        <Link to={moveToNextPage?'/checkout/payment':''}>
-          <div className="Btn3 flex space-x-2 items-center" onClick={handelPushBtn}>
-            <button>Proceed to Payment</button>
-            <img src={rightArrowIcon2} className="right-arrow h-5"/>
-          </div>
-        </Link>
+          <Link to={moveToNextPage ? '/checkout/payment' : ''}>
+            <div className="Btn3 flex space-x-2 items-center" onClick={handelPushBtn}>
+              <button>Proceed to Payment</button>
+              <img src={rightArrowIcon2} className="right-arrow h-5" />
+            </div>
+          </Link>
         </div>
       </div>
       <div className="checkout-pos-right-cntr mt-16 ml-5"></div>

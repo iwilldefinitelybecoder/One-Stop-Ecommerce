@@ -22,7 +22,7 @@ const clearToken = () => {
 export const getAllOrders = async () => {
     setToken(Cookies.get('JWT'))
     try {
-        const response = await instance.get('/getAll');
+        const response = await instance.get('/getOrderBasicDetails');
         return response.data;
     } catch (error) {
         handleError(error);
@@ -70,6 +70,28 @@ export const applyCouponCode = async (couponCode) => {
     try {
         const response = await instance.get(`/applyCoupon`,
             { params: { couponCode } });
+        return response.data;
+    } catch (error) {
+        handleError(error);
+    }
+}
+
+export const getOrderDetailsById = async (Id) => {
+    setToken(Cookies.get('JWT'))
+    try {
+        const response = await instance.get(`/getOrderDetailsById`,
+            { params: { orderId:Id } });
+        return response.data;
+    } catch (error) {
+        handleError(error);
+    }
+}
+
+export const fetchTrackingData = async (Id) => {
+    setToken(Cookies.get('JWT'))
+    try {
+        const response = await instance.get(`/getTrackingData`,
+            { params: { orderItem:Id } });
         return response.data;
     } catch (error) {
         handleError(error);

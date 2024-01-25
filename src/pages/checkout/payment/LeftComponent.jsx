@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import MessagesBox from "../../../components/body/Messages/MessagesBox";
 import {
   americanExpressIcon,
@@ -17,7 +17,7 @@ import useCard from "../../../CustomHooks/CardsHooks";
 import CardsListPanel from "./CardsListPanel";
 import PaymentCardsList from "../../../components/body/checkoutComponents/PaymentCardsList";
 import { useSearchParams } from "react-router-dom";
-import { FormControl, FormControlLabel, Radio, RadioGroup } from "@mui/material";
+import { Collapse, FormControl, FormControlLabel, Radio, RadioGroup } from "@mui/material";
 
 const LeftComponent = ({
   setPaymentMethod,
@@ -27,6 +27,8 @@ const LeftComponent = ({
   const { ordersDetails, setOrderDetails } = useOrders();
   const { cards } = useCard();
 const [searchParams, setSearchParams] = useSearchParams();
+const [save, setSave] = useState(false);
+const [paymentType, setPaymentType] = useState(0);
   const handelPaymentMethod = (e) => {
     const { name, value } = e.target;
     setOrderDetails(prevOrderItems =>( { ...prevOrderItems, [name]: value }));
@@ -46,14 +48,19 @@ const [searchParams, setSearchParams] = useSearchParams();
           onChange={handelPaymentMethod}
         >
         
-        {cards.length > 0 ? (
+        { cards &&
+        cards.length > 0 ? (
+       
           <CardsListPanel setPaymentMethod={handelPaymentMethod} />
+         
         ) : (
+          
           <CardDetails
-            grantPermission={grantPermission}
-            paymentMethod={paymentMethod}
-            setPaymentMethod={handelPaymentMethod}
-          />
+          setPaymentMethod={setPaymentType}
+          paymentMethod={paymentType}
+          grantPermission={setSave}
+        />
+      
         )}
         <div className="payment-body-header1 rounded-md bg-white px-6 py-6 shadow-lg border-b-2 border-b-slate-300">
           <div className=" font-bold">

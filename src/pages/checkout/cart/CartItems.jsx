@@ -11,11 +11,13 @@ import { useCart } from "../../../CustomHooks/CartHook";
 import { Collapse } from "@mui/material";
 import useWishlist from "../../../CustomHooks/WishListHook";
 import useCoupons from "../../../CustomHooks/CouponHook";
+import useMessageHandler from "../../../components/body/Messages/NewMessagingComponent";
 
 const CartItems = ({itemDetails}) => {
 
   const {cartInfo,removeItem,updateItem,loading} = useCart();
   const {fetchAllCoupons} = useCoupons();
+  const {handleMessage,getMessageComponents} = useMessageHandler();
   const { moveAllItemsToWishlist,moveItemToWishlist } = useWishlist();
     const [itemDetail, setItemDetail] = useState(itemDetails);
     const [open, setOpen] = useState(true);
@@ -23,6 +25,10 @@ const CartItems = ({itemDetails}) => {
     const buttonDisableRef = useRef(null);
   
     const handelAddQuantity = () => {
+      if(itemDetail?.stock <= itemDetail.productQuantity){
+          handleMessage(`can't add More of ${itemDetail?.productName}`,'success')
+          return;
+      }
       const total = itemDetail.productQuantity + 1;
    
       const cases = "ADD";
@@ -36,7 +42,7 @@ const CartItems = ({itemDetails}) => {
     }, [itemDetails]);
    
     const handelMinusQuantity = () => {
-      if (itemDetail.itemQuantity > 1) {
+      if (itemDetail.productQuantity > 1) {
         // buttonDisableRef.current.disabled = true;
         const total = itemDetail.productQuantity - 1;
        
@@ -46,7 +52,7 @@ const CartItems = ({itemDetails}) => {
     };
   
     const calulateTotal = async(total, cases) => {
-      const itemTotal = itemDetail.salePrice !==null ?  itemDetail.salePrice * total: itemDetail.regularPrice * total;
+      const itemTotal = itemDetail.salePrice >0 ?  itemDetail.salePrice * total: itemDetail.regularPrice * total;
       const formattedTotal = parseFloat(itemTotal.toFixed(2));
       const cartItem = {
         ...itemDetail,
@@ -96,6 +102,7 @@ const CartItems = ({itemDetails}) => {
   return (
     <>
     <Collapse in={open} timeout={600}>
+      {getMessageComponents()}
     <div className={`"checkout-left-btm-prdct-cntr flex justify-start ${loading?"bg-slate-100":"bg-white"} px-5 py-5  rounded-md shadow-md `}>
             <div className="checkout-product-image">
               <img src={itemDetail?.productImageURL[0]} className="h-28 ml-3" />

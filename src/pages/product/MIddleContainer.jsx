@@ -10,32 +10,15 @@ import {
   TableCell,
   TableContainer,
   TableRow,
-} from "@material-ui/core";
+} from "@mui/material";
+
+
 import { char0ToUpper, formatNumber } from "../../utils/utils";
 
 const MIddleContainer = ({ productInfo }) => {
   const [activeTab, setActiveTab] = useState("description");
   const { reviews, loading,getAllproductsReview } = useProducts();
-  const review = [
-    {
-      id: 1,
-      firstName: "Sai",
-      lastName: "Kiran",
-      profileIconId: 1,
-      review: "This is a review",
-      date: "2021-10-13T06:56:55.000Z",
-      rating: 4,
-    },
-    {
-      id: 1,
-      firstName: "Sai",
-      lastName: "Kiran",
-      profileIconId: 1,
-      review: "This is a review",
-      date: "2021-10-13T06:56:55.000Z",
-      rating: 4,
-    },
-  ];
+  console.log("working")
 
   useEffect(() => {
     getAllproductsReview(productInfo?.productId);
@@ -148,7 +131,7 @@ const MIddleContainer = ({ productInfo }) => {
                 </div>
               ) : (
                 <div className=" my-3 h-[432px] overflow-scroll">
-                  {review?.map((review, index) => {
+                  {reviews?.map((review, index) => {
                     return (
                       <div key={index} className=" px-2 py-3">
                         <ReviewContainer key={index} review={review} />

@@ -10,15 +10,15 @@ import {
 import Cookies from 'js-cookie';
 
 const useMessage = () => {
-    if(Cookies.get('JWT') === undefined)return
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
-
+    
     useEffect(() => {
         fetchAllMessages();
     }, []);
-
+    
     const fetchAllMessages = async () => {
+        if(Cookies.get('JWT') === undefined)return
         const data = await getAllMessages();
         setMessages(data);
     };

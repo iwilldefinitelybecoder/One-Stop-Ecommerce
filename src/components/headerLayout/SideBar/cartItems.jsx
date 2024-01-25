@@ -7,6 +7,7 @@ import {
 } from "../../../assets/icons/img/products/data";
 import { useDispatch } from "react-redux";
 import {useCart} from "../../../CustomHooks/CartHook";
+import useMessageHandler from "../../body/Messages/NewMessagingComponent";
 
 
 const cartItems = ({index,updateValue,itemDetails ,setDeleteToggle, setDeleteItem}) => {
@@ -15,9 +16,19 @@ const cartItems = ({index,updateValue,itemDetails ,setDeleteToggle, setDeleteIte
   const [editItem, setEditItem] = useState(false); 
   const { updateItem , removeItem, loading } = useCart();
   const buttonDisableRef = useRef(null);
+  const {handleMessage,getMessageComponents} = useMessageHandler();
   const dispatch = useDispatch();
 
+  useEffect(()=>{
+    setItemDetail(itemDetails);
+  },[itemDetails])
+
   const handelAddQuantity = () => {
+    if(itemDetail?.stock <= itemDetail?.productQuantity)
+    {
+      // handleMessage(`can't add more of ${itemDetail?.productName}`,'success');
+      return;
+    }
     const total = itemDetail.productQuantity + 1;
     const cases = "ADD"
 
@@ -42,7 +53,7 @@ const cartItems = ({index,updateValue,itemDetails ,setDeleteToggle, setDeleteIte
     }
 
     setItemDetail((prevItemDetail) => {
-      const itemTotal = prevItemDetail.hasOwnProperty("salePrice") ? prevItemDetail.discountPrice * total : prevItemDetail.price;
+      const itemTotal = prevItemDetail.salePrice > 0 ? prevItemDetail.salePrice * total : prevItemDetail.regularPrice;
       const formattedTotal = parseFloat(itemTotal?.toFixed(2));
       updateItem(data);
 
@@ -88,6 +99,9 @@ const cartItems = ({index,updateValue,itemDetails ,setDeleteToggle, setDeleteIte
    
     <>
       <div className={`${loading? "bg-slate-100":null} cart-item-container flex`}>
+        {
+          getMessageComponents()
+        }
         {!editItem ? (
         <div className="edit-item cursor-pointer" title="edit-item" role="button" onClick={handelEditItem}>
             <img src={editIcon} alt="edit-icon" className="edit-icon h-5 mt-12 mr-5 ml-2 " />
@@ -135,7 +149,7 @@ const cartItems = ({index,updateValue,itemDetails ,setDeleteToggle, setDeleteIte
         <div className="item-description">
           <span className=" text-md font-semibold py-1">{itemDetail.productName}</span>
           <span className=" text-slate-400 text-sm ">
-            &#8377;{itemDetail.salePrice || itemDetail.regularprice}&nbsp;x&nbsp;{itemDetail.productQuantity}
+            &#8377;{itemDetail.salePrice || itemDetail.regularPrice}&nbsp;x&nbsp;{itemDetail.productQuantity}
           </span>
           <span className=" text-light-pink font-semibold py-1">
             &#8377;{itemDetail.productTotal}

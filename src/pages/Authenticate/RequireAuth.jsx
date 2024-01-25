@@ -1,9 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Navigate, Outlet, useLocation, useOutletContext, useParams } from 'react-router'
 import { AccountContext } from '../../context/AccountProvider';
 import MessagesBox from '../../components/body/Messages/MessagesBox';
 import { useSearchParams } from 'react-router-dom';
 import { useOrders } from '../../context/OrderContext';
+import { validatePurchase } from '../../service/ProductServices';
+import Loader from '../../components/body/Loader';
 
 const RequireAuth = ({allowedRoles}) => {
     const { account } = useContext(AccountContext);
@@ -60,44 +62,67 @@ export const RequireAuth2 = ({unAllowedRoutes}) => {
   }
 
   export const ValidateAuth = ({ allowedRoles }) => {
-    const [serverResponse, setServerResponse] = useState("valid");
+    const [serverResponse, setServerResponse] = useState(null);
+    const [loading, setLoading] = useState(true);
     const { account } = useContext(AccountContext);
     const location = useLocation();
     const purchaseId = useParams().id;
   
     useEffect(() => {
-      async function fetchData() {
+      let isMounted = true;
+  
+      async function fetchData(purchaseId) {
         try {
           const response = await validatePurchase(purchaseId);
-          setServerResponse(response.valid ? 'valid' : 'invalid');
+  
+          // Check if the component is still mounted before updating state
+          if (isMounted) {
+            setServerResponse(response);
+            setLoading(false);
+          }
         } catch (error) {
           console.error('Error:', error);
-          setServerResponse('invalid');
+  
+          // Check if the component is still mounted before updating state
+          if (isMounted) {
+            setServerResponse('invalid');
+            setLoading(false);
+          }
         }
-        setServerResponse("valid")
       }
   
-      fetchData();
-    }, [purchaseId]);
+      fetchData(purchaseId);
   
-    if (account?.roles.find((role) => allowedRoles.includes(role))) {
-      return serverResponse === 'valid' ? (
-        <Outlet />
-      ) : (
-        <Navigate to={'/unauthorized'} state={{ from: location }} replace />
-      );
-    } else if (account?.email) {
-      return (
+      // Cleanup function to set isMounted to false when the component unmounts
+      return () => {
+        isMounted = false;
+      };
+    }, [purchaseId]);
+
+    
+     return loading ? (
+        <Loader />
+      ) : account?.roles.find((role) => allowedRoles.includes(role)) ? (
+        serverResponse === 'valid' ? (
+          <Outlet />
+        ) : (
+          <Navigate to={'/unauthorized'} state={{ from: location }} replace />
+        )
+      ) : account?.email ? (
         <>
           <Navigate to={'/login'} state={{ from: location }} replace />
           <MessagesBox newMessage={'Please Login to continue'} />
         </>
-      );
-    } else {
-      return <Navigate to={'/unauthorized'} state={{ from: location }} replace />;
-    }
+      ) : (
+        <Navigate to={'/unauthorized'} state={{ from: location }} replace />
+      )
+     
+   
+    
   };
 
+
+  
   export const CheckOutAuth  = ({currentPage,requiredValues})=>{
     const [topcntr] = useOutletContext();
     const {orderDetails} = useOrders();

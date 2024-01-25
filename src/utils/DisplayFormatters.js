@@ -8,9 +8,9 @@ export function formatDateFromTimestamp(timestamp) {
     return `${day}/${month}/${year}`;
   }
 
-  export function getDateRange() {
-    const today = new Date();
-    const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000); // 7 days ago
+  export function getDateRange(from,to) {
+    const today = new Date(to);
+    const oneWeekAgo = new Date(from); // 7 days ago
   
     const formatDate = date => {
       const dd = String(date.getDate()).padStart(2, '0');
@@ -28,11 +28,11 @@ export function formatDateFromTimestamp(timestamp) {
   export function formatOrderedDate(timestamp) {
     const date = new Date(timestamp);
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
-    return new Intl.DateTimeFormat('en-US', options).format(date);
+    return new Intl.DateTimeFormat('en-US', options)?.format(date);
 }
 
 export function truncateString(str, maxLength) {
-  if (str.length > maxLength) {
+  if (str?.length > maxLength) {
     return str.substring(0, maxLength - 3) + '...';
   }
   return str;
@@ -83,5 +83,16 @@ export function formatMessageDate(timestamp) {
   }
 }
 
+
+export function convertToTimestamp() {
+  
+  const timestamp = Math.floor(Date.now() / 1000);
+
+  
+  const date = new Date(timestamp * 1000);
+
+  const formattedDate = date.toISOString().split('T')[0];
+ return formattedDate;
+}
 
 

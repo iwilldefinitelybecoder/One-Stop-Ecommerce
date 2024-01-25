@@ -10,6 +10,8 @@ import {
 import Cookies from "js-cookie";
 import { AccountContext } from "../context/AccountProvider";
 import useCoupons from "./CouponHook";
+import { useOrders } from "../context/OrderContext";
+import { sleep } from "../utils/utils";
 export const cartContext = React.createContext();
 
 export const useCart = () => {
@@ -21,6 +23,7 @@ const CartProvider = ({ children }) => {
   const { account } = useContext(AccountContext);
   const [cartInfo, setCartInfo] = useState([]);
   const [cart, setCart] = useState([]);
+
   const [discountedSummary, setDiscountedSummary] = useState({
     cartTotal: 0,
     tax: 0,
@@ -92,6 +95,7 @@ const CartProvider = ({ children }) => {
     await getAllCartItemss();
 
     await fetchAllCoupons(account.email);
+    await sleep(200);
     setLoading(false);
   };
 
@@ -130,7 +134,7 @@ const CartProvider = ({ children }) => {
     tax = cartInfo?.tax,
     shipping= cartInfo?.shippingCharges
   ) {
-    console.log(cartTotal, tax, shipping);
+    
     const totalBeforeDiscount = cartTotal + tax + shipping;
     const discountAmount = (offerPercentage / 100) * totalBeforeDiscount;
     const applicableDiscount = Math.min(discountAmount, maxDiscountPrice);
@@ -168,6 +172,7 @@ const CartProvider = ({ children }) => {
       value={{
         cartInfo,
         cart,
+        getAllCartItemss,
         addItemToCart,
         updateItem,
         removeItem,

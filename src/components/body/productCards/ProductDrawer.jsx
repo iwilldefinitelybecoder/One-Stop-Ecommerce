@@ -27,7 +27,8 @@ import { editIcon } from "../../../assets/icons/png/toolbar1/data";
 import "./productDrawer.css";
 import Loader from "../Loader";
 import { sleep } from "../../../utils/utils";
-import { getAttributes, getProductAttributes } from "../../../service/ProductServices";
+import { getAttributes } from "../../../service/ProductServices";
+import { truncateString } from "../../../utils/DisplayFormatters";
 
 const ProductDrawer = ({
   order,
@@ -42,11 +43,11 @@ const ProductDrawer = ({
   const [changes, setChanges] = useState(false);
   const [attributeValue, setAttributeValue] = useState({
     quantity: productDetails?.stock,
-    sponser: productDetails?.metaAttribute || "No Data",
-    price: productDetails?.regularPrice,
+    sponser: productDetails?.metaAttribute,
+    regularPrice: productDetails?.regularPrice,
     salePrice: productDetails?.salePrice,
   });
-  console.log(productDetails,orders)
+
 
   useEffect(() => {
     let changed = false;
@@ -69,8 +70,8 @@ const ProductDrawer = ({
     setAttributeValue({
       quantity: productDetails?.stock,
 
-    sponser: productDetails?.sponser || "Not Sponsered",
-    price: productDetails?.regularPrice,
+    sponser: productDetails?.metaAttribute,
+    regularPrice: productDetails?.regularPrice,
 
     salePrice: productDetails?.salePrice,
     });
@@ -102,8 +103,13 @@ const ProductDrawer = ({
   const handelProductUpdate = async (e) => {
     e.stopPropagation();
     e.preventDefault();
+
+    const formData = {...attributeValue,attributes:attributeValue.sponser}
+    delete formData['sponser'];
+
+    console.log(formData)
     if(changes){
-      updateProductInfo(productDetails?.productId,attributeValue)
+      updateProductInfo(productDetails?.productId,formData)
 
     }
   };
@@ -190,8 +196,8 @@ const ProductDrawer = ({
                   handelChange={handelAttributeValueChange}
                 />
                 <Attribute
-                  label="Price"
-                  value={attributeValue.price}
+                  label="Regular Price"
+                  value={attributeValue.regularPrice}
                   icon={priceIcon}
                   handelEdit={() => handelAttributeEdit(3)}
                   edit={attributeEdit[3]}
@@ -282,7 +288,7 @@ const AttributeIcon = ({
       {!edit ? (
         <>
           <span className="product-drawer-value text-slate-400 break-words font-semibold text-lg">
-            {value}
+            {truncateString(value,12)}
           </span>
           <div
             className="attribute-value-edit-icon hover:cursor-pointer h-10 w-10
@@ -320,7 +326,7 @@ const EditProduct = ({ label, handelChange, value }) => {
   useEffect(() => {
     async function fetchProductAttribites() {
       const response = await getAttributes();
-      console.log(response);
+ 
       setAttributes(response);
     }
     fetchProductAttribites();
@@ -344,7 +350,7 @@ const EditProduct = ({ label, handelChange, value }) => {
           >
             <MenuItem value={"Not Sponsered"}>Not Sponsered</MenuItem>
             {attributes?.map((attribute) => (
-              <MenuItem value={attribute}>{attribute}</MenuItem>
+              <MenuItem key={attribute} value={attribute}>{attribute}</MenuItem>
             ))}
           </Select>
         </FormControl>

@@ -13,16 +13,21 @@ import { flashIcon, rightTriangleArrowIcon } from '../../assets/icons/png/Rareic
 import { Link } from 'react-router-dom';
 
 
-const AdditionalContainer = ({category}) => {
+const AdditionalContainer = ({productDetails}) => {
   const {fetchProductsByCategory,loading,products} = useProducts()
   const [swiperRef, setSwiperRef] = useState(null);
-  const params = useParams()
-  const {id} = params
+  const id = useParams().id
+    
 
   useEffect(()=>{
-    fetchProductsByCategory(category)
-  },[id])
+    
+    fetchProductsByCategory(productDetails.category,productDetails?.productId)
+    
+    
+  },[productDetails,id])
 
+
+  
   return (
     <>
      <div className="flash-grid-header flex justify-between">

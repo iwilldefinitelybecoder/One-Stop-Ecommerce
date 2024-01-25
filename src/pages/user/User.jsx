@@ -15,7 +15,7 @@ const User = ({ children }) => {
     const profile  = useMatch("/user/profile");
     const payment  = useMatch("/user/Payment-methods") 
     const editPayment =  useMatch("/user/edit-payment-method/:id");
-    const addresses  = useMatch("/user/address");
+    const addressess  = useMatch("/user/address");
     const editAddress = useMatch("/user/edit-address/:id");
     const editProfile = useMatch("/user/edit-profile");
     const OrderDetails = useMatch("/user/orders/:id");
@@ -23,7 +23,8 @@ const User = ({ children }) => {
     const {wishlistInfo} = useWishlist(); 
     const {orders} = useOrders();
     const {cards} = useCard();
-    const {address} = useAddresses();
+    const {addresses} = useAddresses();
+   
   return (
 
     <>
@@ -117,7 +118,7 @@ const User = ({ children }) => {
                 </div>
                 </Link>
                 <Link to={`/user/address`}>
-                <div className={`user-dashboard-items ${editAddress || addresses?'user-dashboard-items-active':''}  flex justify-between`}>
+                <div className={`user-dashboard-items ${editAddress || addressess?'user-dashboard-items-active':''}  flex justify-between`}>
                   <div className="items-icon-name flex space-x-3">
                     <div className="item-icon">
                       <img src={locationIcon} alt="" className="  dashboard-icons h-5" />
@@ -127,7 +128,7 @@ const User = ({ children }) => {
                     </div>
                   </div>
                   <div className="item-count">
-                    <span>{address?.length}</span>
+                    <span>{addresses?.length}</span>
                   </div>
                 </div>
                 </Link>

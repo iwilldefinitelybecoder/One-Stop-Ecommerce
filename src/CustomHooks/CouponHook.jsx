@@ -13,10 +13,12 @@ const useCoupons = () => {
         fetchAllCoupons(account?.email);
     }, []);
 
+    
     const fetchAllCoupons = async () => {
         if(!account)return
         setLoading(true);
         const response = await getAllCoupons(account?.email);
+       
         const data = response?.sort((a,b)=>b.discountPercentage - a.discountPercentage)
         setCoupons(data);
         setLoading(false);

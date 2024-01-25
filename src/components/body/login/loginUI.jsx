@@ -190,7 +190,7 @@ const LoginInput = ({ isPending, setIsPending,gLoginRef,fbLoginRef }) => {
     formsData.append("email", formData.email);
     formsData.append("password", formData.password);
     const auth = await login(formsData);
-    console.log(auth)
+   
     if (auth?.success === true) {
 
       Cookies.set("JWT", auth.response.data.token);

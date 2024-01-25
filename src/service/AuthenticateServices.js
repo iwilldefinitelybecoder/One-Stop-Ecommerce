@@ -257,23 +257,22 @@ export const resendVerificationEmail = async (data) => {
   }
 }
 
-export const validateOldPassword = async (data) => {
+export const validateOldPassword = async (password) => {
   const token = Cookies.get("JWT");
   try {
-    const response = await axios.post(
+    const response = await axios.get(
       `${URI}/auth/validateOldPassword`,
-      data,
+      
       {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
+        params:{oldPassword:password}
       },
       { withCredentials: true }
     );
-    if (response.status === 200) {
-      return { success: true, message: "Password Validated" };
-    }
+    return response.data;
   } catch (error) {
     if (!error?.response) {
       return { success: false, message: "No Server Response" };
@@ -292,10 +291,10 @@ export const changePassword = async (data) => {
       {
         headers: {
           "Content-Type": "application/json",
- 
+    
         },
       },
-
+    
     );
     if (response.status === 200) {
       return { success: true, message: "Password Changed" };
@@ -308,6 +307,34 @@ export const changePassword = async (data) => {
     }
   }
 };
+
+export const updatePassword = async (data) => {
+  const token = Cookies.get("JWT");
+  try {
+    const response = await axios.post(
+      `${URI}/auth/updatePassword`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+      { withCredentials: true }
+    );
+    console.log(response)
+    if (response.status === 200) {
+      return { success: true, message: "Password Changed" };
+    }
+  } catch (error) {
+    if (!error?.response) {
+      return { success: false, message: "No Server Response" };
+    } else if (error?.response.status === 400) {
+      return { success: false, message: "Fatal error" };
+    }
+  }
+};
+
 
 
 export const requestResetPassword = async (email) => {

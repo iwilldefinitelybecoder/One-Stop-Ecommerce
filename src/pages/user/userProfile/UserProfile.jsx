@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { editIcon, userIcon } from "../../../assets/icons/png/toolbar1/data";
 import { CircularProgress } from "@mui/material";
@@ -7,17 +7,44 @@ import { EditProfileIcon, ProfileIcon } from "../../../components/headerLayout/t
 import NumberCount from "../../../components/body/UtilsComponent/NumberCount";
 import { formatNumber } from "../../../utils/utils";
 import { rightArrowIcon2 } from "../../../assets/icons/png/user-page-icons/data";
-import { formatDateFromTimestamp } from "../../../utils/DisplayFormatters";
+import { convertToTimestamp, formatDateFromTimestamp } from "../../../utils/DisplayFormatters";
 import AccountProvider, { AccountContext } from "../../../context/AccountProvider";
 import { fetchUserIcon } from "../../../service/AuthenticateServices";
 import { cameraIcon } from "../../../assets/icons/png/toolbar-icons/data";
+import { getOrderInfo, getUserInfo } from "../../../service/CustomerServices/CustomerServices";
 
 function UserProfile() {
   const params = useParams();
   const {account} = useContext(AccountContext)
+  const [orderInfo,setOrderInfo] = useState();
+  const [userInfo,setUserInfo] = useState();
+  const [loading,setLoading]  = useState(false);
+
+  useEffect(()=>{
+    async function fetchOrdersInfo(){
+      setLoading(true);
+    const response = await getOrderInfo();
+   
+    setOrderInfo(response);
+    setLoading(false);
+    }
+    fetchOrdersInfo();
+  },[])
+
+  useEffect(()=>{
+    async function fetchUserDetails(){
+      setLoading(true);
+      const response = await getUserInfo();
+      setUserInfo(response)
+      setLoading(false);
+    }
+    fetchUserDetails();
+  },[])
+
+
   return (
     <>
-      {false ? (
+      {loading ? (
         <div className=" h-[100vh] w-full flex justify-center items-center">
           <CircularProgress />
         </div>
@@ -43,27 +70,27 @@ function UserProfile() {
                   </div>
                   <div>
                     <div className=" user-name-div flex font-semibold">
-                      <span>{account.firstName}</span>&nbsp;
-                      <span>{account.lastName}</span>
+                      <span>{userInfo?.firstName}</span>&nbsp;
+                      <span>{userInfo?.lastName}</span>
                     </div>
                     <div className="flex">
                       <span className=" text-sm text-slate-500">Balance:</span>
-                      <span className=" text-sm text-light-pink">{account?.wallet}₹ 2000</span>
+                      <span className=" text-sm text-light-pink">₹{userInfo?.walletBalance}</span>
                     </div>
                   </div>
                 </div>
                 <div className="customer-type">
                   <span className=" uppercase tracking-wider font-medium text-slate-400">
-                    {account?.membership}Silver User
+                    {userInfo?.membership}
                   </span>
                 </div>
               </div>
               <div className=" flex ml-5">
 
-              <InfoBox content={'00'} subContent={'All Orders'} height={'114px'} width={'105px'} />
-              <InfoBox content={'00'} subContent={'Awaiting Payments'} height={'114px'} width={'105px'} />
-              <InfoBox content={'00'} subContent={'Awaiting Shipmenr'} height={'114px'} width={'105px'} />
-              <InfoBox content={'00'} subContent={'Awaiting Delivery'} height={'114px'} width={'105px'} />
+              <InfoBox content={orderInfo?.allOrders || "00"} subContent={'All Orders'} height={'114px'} width={'105px'} />
+              <InfoBox content={orderInfo?.awaitingPayment || "00"} subContent={'Awaiting Payments'} height={'114px'} width={'105px'} />
+              <InfoBox content={orderInfo?.awaitingShipment || "00"} subContent={'Awaiting Shipment'} height={'114px'} width={'105px'} />
+              <InfoBox content={orderInfo?.awaitingDelivery || "00"} subContent={'Awaiting Delivery'} height={'114px'} width={'105px'} />
               </div>
 
 
@@ -72,28 +99,33 @@ function UserProfile() {
           <div className="order-table-rows shadow-md py-12 pl-5 " >
                 <div className="order-table-row w-32 ">
                   <span className=" text-sm text-slate-400">First Name</span><br />
-                  <span className="font-semibold text-lg text-slate-600">{account.firstName}</span>
+                  <span className="font-semibold text-lg text-slate-600">{userInfo?.firstName}</span>
                 </div>
                 <div className="order-table-row w-32">
                 <span className=" text-sm text-slate-400">Last Name</span><br />
                   <span
                     className={` px-3 py-1.5 rounded-2xl `}
                   >
-                    {account.lastName}
+                    {userInfo?.lastName}
                   </span>
                 </div>
                 <div className="order-table-row w-64">
                 <span className=" text-sm text-slate-400">Email</span><br />
-                  <span>{account.email}</span>
+                  <span>{userInfo?.email}</span>
                 </div>
                 <div className="order-table-row">
                 <span className=" text-sm text-slate-400">Phone</span><br />
-                  <span>{account?.phone}dw</span>
+                  <span>{userInfo?.phoneNumber}</span>
                 </div>
                 <div className="order-table-row">
                 <span className=" text-sm text-slate-400">DOB</span><br />
-                  <span>{formatDateFromTimestamp(account?.dob)}</span>
+                  <span>{convertToTimestamp(userInfo?.dob)}</span>
                 </div>
+              </div>
+              <div className=" w-full flex justify-end space-x-3 px-5 py-8 ">
+                <Link to={"/Auth/change-password"}>
+              <button className="Btn3" >Change Password</button>
+              </Link>
               </div>
         </>
       )}

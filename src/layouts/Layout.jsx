@@ -2,12 +2,13 @@ import React, { useContext, useEffect } from "react";
 import Header from "./header/Header";
 
 import FooterLayout from "./footer/FooterLayout";
-import { Outlet, useLocation, useNavigate } from "react-router";
+import { Outlet, useLocation, useMatch, useNavigate } from "react-router";
 import { AccountContext } from "../context/AccountProvider";
 import { getData } from "../utils/encryptData";
 import Cookies from "js-cookie";
 import { Authenticate } from "../service/AuthenticateServices";
 import {jwtDecode} from "jwt-decode"
+import { useOrders } from "../context/OrderContext";
 const tokens = Cookies.get("JWT");
 
 
@@ -17,9 +18,12 @@ const tokens = Cookies.get("JWT");
 function Layout({ children }) {
   const { account, setShowLogoutButton,setAuthErrors,authErrors } = useContext(AccountContext);
   const location = useLocation();
+  const {resetOrderDetails} = useOrders();
   const { pathname,search } = location;
 
   const navigate = useNavigate();
+  const page  = useMatch('/checkout/*');
+  console.log(page)
 
   const token = Cookies.get("JWT");
 
@@ -54,6 +58,10 @@ function Layout({ children }) {
     window.scrollTo(0, 0);
   }
     , [pathname,search]);
+
+  useEffect(()=>{
+    resetOrderDetails();
+  },[page?.pathnameBase])
 
 
  

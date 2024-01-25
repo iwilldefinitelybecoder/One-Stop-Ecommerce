@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 
 const MagnifiedImg = ({ image }) => {
-    console.log(image);
+    
   const imgRef = useRef(null);
   const lensRef = useRef(null);
   const resultRef = useRef(null);

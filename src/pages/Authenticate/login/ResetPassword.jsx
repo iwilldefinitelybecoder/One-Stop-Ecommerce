@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import { TextField, Button } from "@mui/material";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -10,7 +10,8 @@ import {
   UserName,
 } from "../../../components/headerLayout/toolbar/ProfileBtn";
 import { AccountContext } from "../../../context/AccountProvider";
-import { changePassword, validateOldPassword } from "../../../service/AuthenticateServices";
+import { changePassword, updatePassword, validateOldPassword } from "../../../service/AuthenticateServices";
+import useMessageHandler from "../../../components/body/Messages/NewMessagingComponent";
 
 const ChangePassword = () => {
   const navigate = useNavigate();
@@ -23,12 +24,14 @@ const ChangePassword = () => {
 
   const [errorFields, setErrorFields] = useState({});
   const [isPending, setIsPending] = useState(false);
+  const [formSubmitted,setFormSubmitted] = useState();
   const { account } = useContext(AccountContext);
   const [progress, setProgress] = useState(0);
   const [showProgress, setShowProgress] = useState(false);
-  const [phase, setPhase] = useState(path?.params?"new":"old"); // 'old', 'new'
+  const [phase, setPhase] = useState("old");
   const [eleHeight, setEleHeight] = useState(null);
-  
+  const {handleMessage,getMessageComponents} = useMessageHandler();
+  const inputRef = useRef();
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -40,7 +43,8 @@ const ChangePassword = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    console.log(phase ==="old" && formData.oldPassword ==="")
+    if(validateForm())return
     setIsPending(true);
     setErrorFields({});
 
@@ -57,12 +61,8 @@ const ChangePassword = () => {
       if (response.success) {
         if (phase === "old") {
           setPhase("new");
-          setFormData({
-            oldPassword: "",
-            newPassword: "",
-            confirmPassword: "",
-          });
         } else {
+          handleMessage("Password Changed Successfully","success");
           setTimeout(() => {
             navigate("/");
           }, 2000);
@@ -77,23 +77,44 @@ const ChangePassword = () => {
   };
 
   const validateOldPasswrd = async () => {
-    const response = await validateOldPassword(formData);
-    if (!response?.success) {
     
-        return { success: false, message: response.message };
-    }      
-    return { success: true };
+    const response = await validateOldPassword(formData.oldPassword);
+    if (response === "success") {
+    
+      return { success: true };
+    }else if(response === "failure")
+    {
+      return { success: false, message:"Incorrect Password"};
+    }
+    return { success: false, message:response.message};
 }
 
   
+const validateForm = ()=>{
+  const errors = {}
+  if(phase ==="old" && formData.oldPassword ==="")errors.oldPassword = "password cannot be empty"
+  if(phase ==="new" && formData.newPassword ==="")errors.newPassword = "new cannot be empty"
+  if(phase ==="new" && formData.confirmPassword ==="")
+  {errors.confirmPassword = "Confirm password cannot be empty"}
+  else{
+
+    if(phase ==="new" && formData.newPassword !== formData.confirmPassword)errors.mismatch = "passwords Don't match"
+  }
+  setErrorFields(errors)
+  
+  return Object.keys(errors).length > 0
+}
 
   const setNewPassword = async () => {
-    const response = await changePassword(formData);
-    if (!response.success) {
-      return { success: false, message: response.message };
-    }
 
-    return { success: true };
+
+    const response = await updatePassword(formData);
+    console.log(response)
+    if (response?.success) {
+      return { success: true };
+    }
+    return { success: false, message: response?.message };
+
   };
 
   const handleResize = (el) => {
@@ -110,7 +131,8 @@ const ChangePassword = () => {
       <div
         className=" shadow-xl rounded-lg overflow-hidden"
         //    style={{ height: eleHeight }}
-      >
+        >
+        {getMessageComponents()}
         <div className="w-[500px] reset-password-cntr relative bg-white   z-50 p-8 overflow-hidden">
           {isPending && (
             <LinearProgress
@@ -144,7 +166,7 @@ const ChangePassword = () => {
               onEnter={handleResize}
             >
               <div className="menu">
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit}  noValidate autoCorrect="false">
                   <div className=" space-y-3">
                     <TextField
                       label="Old Password"
@@ -152,6 +174,7 @@ const ChangePassword = () => {
                       name="oldPassword"
                       value={formData.oldPassword}
                       onChange={handleFormChange}
+                      ref={inputRef}
                       fullWidth
                       required
                       InputProps={{
@@ -172,7 +195,12 @@ const ChangePassword = () => {
 
                     {errorFields.response && (
                       <span className="text-red-500">
-                        {errorFields.response}
+                        {errorFields?.response}
+                      </span>
+                    )}
+                     {errorFields.oldPassword && (
+                      <span className="text-red-500">
+                        {errorFields?.oldPassword}
                       </span>
                     )}
                   </div>
@@ -187,7 +215,7 @@ const ChangePassword = () => {
               onEnter={handleResize}
             >
               <div className="menu ">
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} noValidate autoCorrect="false" >
                   <div className=" space-y-5">
                     <TextField
                       label="New Password"
@@ -231,19 +259,32 @@ const ChangePassword = () => {
                   {errorFields.response && (
                     <span className="text-red-500">{errorFields.response}</span>
                   )}
+                   {errorFields.newPassword&& (
+                    <span className="text-red-500">{errorFields.newPassword}</span>
+                  )}
+                   {errorFields.mismatch  && (
+                    <span className="text-red-500">{errorFields.mismatch}</span>
+                  )}
                 </form>
               </div>
             </CSSTransition>
           </div>
         </div>
         <div className=" bg-slate-300  w-full flex items-center justify-center py-2 rounded-lg ">
-          {path?.params && (
+          {path?.params ? (
             <Link to={`/login`}>
               <button>
-                {" "}
+                
                 <span className=" underline font-semibold">Login</span>
               </button>
             </Link>
+          ):(
+            <Link to={`/home`}>
+            <button>
+              
+              <span className=" underline font-semibold">Home</span>
+            </button>
+          </Link>
           )}
        
         </div>

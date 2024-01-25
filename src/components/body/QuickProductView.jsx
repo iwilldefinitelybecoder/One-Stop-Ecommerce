@@ -1,21 +1,20 @@
 import { Dialog,DialogContent,makeStyles } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import ProductImage from "../../pages/product/ProductImage";
 import ProductInfo from "../../pages/product/ProductInfo";
 import "./quickViewProduct.css";
+import { productInfoFeatures } from "../../pages/product/ProductDetail";
 
 
-const QuickProductView = ({ open, setOpen, productDetails }) => {
+const QuickProductView = ({ open, handelClose, productDetails }) => {
     
-  const handelClose = () => {
-    setOpen(false);
-  };
 
 
 
   return (
-    <>
-      <Dialog open={open} onClose={() => setOpen(false)} 
+
+
+      <Dialog open={open} onClose={handelClose} 
         sx={{
             "& .MuiDialog-container": {
               "& .MuiPaper-root": {
@@ -29,14 +28,14 @@ const QuickProductView = ({ open, setOpen, productDetails }) => {
       >
         <DialogContent sx={{ padding: '0px', margin: '0px',display:"flex",justifyContent:'center',alignItems:'start' }}>
           <div className="product-img w-[650px]">
-            <ProductImage images={productDetails?.imageURL} />
+            <ProductImage productDetails={productDetails} viewCategory={false} />
           </div>
           <div className="product-info w-[556px]">
-            <ProductInfo ProductInfo={productDetails} />
+            <ProductInfo ProductInfo={productDetails} feature={productInfoFeatures} />
           </div>
         </DialogContent>
       </Dialog>
-    </>
+    
   );
 };
 

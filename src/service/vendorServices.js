@@ -90,4 +90,21 @@ export const upgradeToVendor = async (data) => {
               handleError(error);
           }
       };
+
+      
+      export const getDashboardData = async () => {
+        setToken(Cookies.get('JWT'));
+          try {
+              const response = await instance.get('/getDashboardData', {
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+              });
+              return response.data;
+          } catch (error) {
+              handleError(error);
+          }
+      };
+
+
     

@@ -1,12 +1,13 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../../../CustomHooks/CartHook";
 import { Box, Button, Collapse, Typography } from "@mui/material";
 import { CSSTransition } from "react-transition-group";
-import { ArrowDropDown, ArrowDropDownCircle } from "@material-ui/icons";
+
 import { applyCouponCode } from "../../../service/CustomerServices/OrderServices";
 import { LoadingButton } from "@mui/lab";
 import {
+  ArrowDropDownCircle,
   ArrowRightAltSharp,
   SwipeLeftAltSharp,
   SwipeRightAltRounded,
@@ -21,12 +22,14 @@ import ConfettiAnimation from "../../../components/body/UtilsComponent/ConfettiA
 import { useOrders } from "../../../context/OrderContext";
 
 const RightElement = () => {
-  const { estimatedCosts,discountedSummary } = useCart();
-  const cartEstimate = estimatedCosts();
+  const { estimatedCosts,discountedSummary,cartInfo } = useCart();
+  let cartEstimate = estimatedCosts();
   const {orderDetails,setOrderDetails} = useOrders();
   const [open, setOpen] = React.useState(false);
 
-
+useEffect(()=>{
+    cartEstimate = estimatedCosts();
+})
   const handleOpen = () => {
     setOpen(true);
   };
@@ -39,7 +42,7 @@ const RightElement = () => {
     setOrderDetails({ ...orderDetails, couponId: "" });
   }
 
-  console.log(orderDetails);
+
   return (
     <>
       <div className="checkout-right-sub-cntr bg-white rounded-md px-4 py-5 flex-col shadow-md">
@@ -57,7 +60,7 @@ const RightElement = () => {
                   <div className="shipping-section flex justify-between  my-2 mx-2">
                     <span className="text-slate-500 ">Shipping:</span>
                     <span className="text-xl font-bold">
-                      {`${cartEstimate?.shipping * 100}%` || "-"}
+                      {`${cartEstimate?.shipping }` || "-"}
                     </span>
                   </div>
                   <div className="tax-section flex justify-between  my-2 mx-2">
@@ -69,7 +72,7 @@ const RightElement = () => {
                   <div className="discount-section flex justify-between  my-2 mx-2">
                     <span className="text-slate-500 ">Discount:</span>
                     <span className="text-xl font-bold">&#8377;
-                      {discountedSummary?.discountAmount || "-"}
+                      {discountedSummary?.discountAmount.toFixed(2) || "-"}
                     </span>
                   </div>
                   <div className="discount-section flex justify-between  my-2 mx-2">
@@ -81,7 +84,7 @@ const RightElement = () => {
                   <div className="discount-section flex justify-between  my-2 mx-2">
                     <span className="text-slate-500 ">GrandTotal:</span>
                     <span className="text-xl font-bold text-green-600">&#8377;
-                      {discountedSummary?.grandTotal || "-"}
+                      {discountedSummary?.grandTotal.toFixed(2) || "-"}
                     </span>
                   </div>
                 
@@ -98,7 +101,7 @@ const RightElement = () => {
             <div className="shipping-section flex justify-between  my-2 mx-2">
               <span className="text-slate-500 ">Shipping:</span>
               <span className="text-xl font-bold">
-                {`${cartEstimate?.shipping * 100}%` || "-"}
+                {`${cartEstimate?.shipping }` || "-"}
               </span>
             </div>
             <div className="tax-section flex justify-between  my-2 mx-2">
@@ -186,18 +189,21 @@ const VoucherContainer = ({ handelCntrClose }) => {
   const [display, setDisplay] = useState("main");
   const [loadings, setLoadings] = useState(false);
   const { orderDetails, setOrderDetails } = useOrders();
-  const { calculateDiscountedSummary } = useCart();
+  const { calculateDiscountedSummary,cartInfo} = useCart();
   const [success, setSuccess] = useState(false);
-  const [coupon, setCoupon] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9]);
-  const { coupons, loading, applyDiscount,findCoupon } = useCoupons();
+
+  const { coupons, loading, applyDiscount,findCoupon,fetchAllCoupons } = useCoupons();
   const [displayCoupon, setDisplayCoupon] = useState(
     Array(coupons.length).fill(false)
   );
-  const size = [...coupons];
-  const cuponsRef = coupon.map(() => useRef(null));
+  
+  const cuponsRef = useRef([]);
   const { handleMessage, getMessageComponents: messages } = useMessageHandler();
 
-  console.log(orderDetails);
+  useEffect(()=>{
+      fetchAllCoupons();
+  },[cartInfo])
+  
   const applyCoupon = async (couponId) => {
     setLoadings(true);
     const response = await applyDiscount(couponId);
@@ -307,7 +313,7 @@ const VoucherContainer = ({ handelCntrClose }) => {
         <p className="text-gray-600 mb-4">Code: <span className="text-lg text-black font-bold mb-2">{truncateString(item.couponCode, 20)}</span></p>
 
         <div className="flex w-full ml-auto space-x-2 items-center" onClick={() => handelClick(index)}>
-            <ArrowDropDownCircle />
+            <ArrowDropDownCircle/>
             <Typography variant="h6" fontSize={18} component="h6" className="text-gray-600">
                 View Details
             </Typography>

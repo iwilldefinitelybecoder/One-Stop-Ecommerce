@@ -7,7 +7,7 @@ import {
   orderedIcon,
 } from "../../../assets/icons/png/Rareicons/data";
 
-const ShipmentStatus = () => {
+const ShipmentStatus = ({orderDetail}) => {
   const [status, setStatus] = React.useState({
     ordered: false,
     packed: false,
@@ -16,10 +16,12 @@ const ShipmentStatus = () => {
     cancelled: false,
   });
 
+  console.log(orderDetail);
+
   useEffect(() => {
     const shipmentStatus = async (status) => {
       switch (status) {
-        case "ordered":
+        case "ORDERED":
           setStatus((prev) => ({
             ...prev,
             ordered: true,
@@ -29,7 +31,7 @@ const ShipmentStatus = () => {
             cancelled: false,
           }));
           break;
-        case "packed":
+        case "PACKED":
           setStatus((prev) => ({
             ...prev,
             ordered: true,
@@ -40,7 +42,7 @@ const ShipmentStatus = () => {
           }));
 
           break;
-        case "shipped":
+        case "SHIPPED":
           setStatus((prev) => ({
             ...prev,
             ordered: true,
@@ -50,7 +52,7 @@ const ShipmentStatus = () => {
             cancelled: false,
           }));
           break;
-        case "delivered":
+        case "DELIVERED":
           setStatus((prev) => ({
             ...prev,
             ordered: true,
@@ -60,7 +62,7 @@ const ShipmentStatus = () => {
             cancelled: false,
           }));
           break;
-        case "cancelled":
+        case "CANCELLED":
           setStatus((prev) => ({
             ...prev,
             ordered: false,
@@ -83,12 +85,12 @@ const ShipmentStatus = () => {
       }
     };
 
-    shipmentStatus("delivered");
+    shipmentStatus(orderDetail?.orderStatus);
   }, []);
 
   return (
     <div className=" bg-white rounded-lg shadow-md px-6 w-full pt-6 pb-16 my-7">
-      <EstimatedDelivery eta="Fri, 20 Aug - Mon, 23 Aug" />
+      <EstimatedDelivery eta={orderDetail?.expectedDeliveryDate} shippingMethod={orderDetail?.shippingMethod} />
       <dir className="shipmentStatus-cntr flex items-center">
         <div
           className={`${
@@ -208,13 +210,13 @@ const ShipmentStatus = () => {
           <div>
             <div className="text-2xl font-bold">Order Status</div>
             <div className="text-lg font-semibold text-gray-400">
-              {status.delivered ? "Delivered" : "Not Delivered"}
+              {orderDetail?.orderStatus}
             </div>
           </div>
           <div>
             <div className="text-2xl font-bold">Tracking Number</div>
             <div className="text-lg font-semibold text-gray-400">
-              1234567890
+              {orderDetail?.trackingId ? orderDetail.trackingId : "Not Available"}
             </div>
           </div>
         </div>
@@ -223,7 +225,7 @@ const ShipmentStatus = () => {
   );
 };
 
-const EstimatedDelivery = ({ eta }) => {
+const EstimatedDelivery = ({ eta,shippingMethod }) => {
   return (
     <div className="bg-white   px-6 w-full  mb-16">
       <div className="flex items-center justify-between w-auto">
@@ -236,7 +238,7 @@ const EstimatedDelivery = ({ eta }) => {
         <div className="">
           <div className="text-2xl font-bold">Shipping Method</div>
           <div className="text-lg font-semibold text-gray-400">
-            Standard Shipping
+            {shippingMethod ? shippingMethod : "Not Available"}
           </div>
         </div>
       </div>

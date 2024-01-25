@@ -13,10 +13,13 @@ import { isValidExpiryDate, } from "../../../utils/validateDate";
 import { json, useMatch, useNavigate, useParams } from "react-router";
 import useCard from "../../../CustomHooks/CardsHooks";
 import { data } from "autoprefixer";
+import { Collapse, FormControlLabel, Radio } from "@mui/material";
+import { useSearchParams } from "react-router-dom";
 
 const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
   const isEditing = useMatch("/user/edit-payment-method/:id")
   const cardId = useParams("id")
+  const page  = useMatch("/user/Payment-methods")
 
     const [userAddress, setUserAddress] = React.useState({
         card: "",
@@ -38,9 +41,13 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
       const [cardValidity, setCardValidity] = React.useState({});
       const [expDateValid, setExpDateValid] = React.useState({});
       const [isSubmit, setIsSubmit] = React.useState(false);
+      const [collapsvalue, setCollapsvalue] = React.useState(false);
+      const [searchParams, setSearchParams] = useSearchParams();
       const navigate = useNavigate();
     
       const forwardRef = React.useRef(null);
+      const paymentMethod1 = searchParams.get("paymentMethod");
+
 
       useEffect(() => {
         
@@ -101,6 +108,14 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
         }
       }, [isSubmit]);
     
+
+      useEffect(() => {
+        if (isEditing || page || paymentMethod1 === "DEBITCARD") {
+          setCollapsvalue(true);
+        }
+      }, [isEditing,page,paymentMethod1]);
+          
+
       const cardValidation = (e) => {
         const { value } = e.target;
         if (value.length === 0) return;
@@ -263,7 +278,7 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
         if(isEditing !==null){
           updateItem(cardData)
           timerId2 = setTimeout(()=>{
-            navigate('/user/Payment-methods')
+            navigate('/user/payment-methods')
           },2000)
         }else{
 
@@ -287,7 +302,7 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
               <div className="payment-body-header1 rounded-md bg-white px-6 pt-6 shadow-lg border-b-2 border-b-slate-200">
                 <div className=" font-bold flex justify-between border-b-2 border-b-slate-200  pb-4 pt-1 ">
                   <div className="option-cntr space-x-3">
-                    <input
+                    {/* <input
                       type="radio"
                       name="payment"
                       id="option"
@@ -297,7 +312,8 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
                         handelConteiner1(e, 0);
                         setPaymentMethod(e, 0);
                       }}
-                    />
+                    /> */}
+                    <FormControlLabel control={<Radio />} id="option" value="DEBITCARD" />
                     <label htmlFor="option">Credit or Debit Card</label>
                   </div>
                   <div className="option-img-icons flex items-center space-x-4">
@@ -308,7 +324,7 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
                     <img src={rupayIcon} className="h-9" />
                   </div>
                 </div>
-                {paymentMethod === 0 && (
+                <Collapse in={collapsvalue}>
                   <div className="payment-details-body ">
                     {Object.keys(errorList).length !== 0 && (
                       <MessagesBox newMessage="clear the issue in the form" />
@@ -316,7 +332,7 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
                     {isSubmit && (
                       <MessagesBox newMessage="CardDetails Saved successfully" />
                     )}
-                      <form onSubmit={handleSubmit}>
+                      <form onSubmit={e=>{e.preventDefault();handleSubmit(e)}}>
                     <div className={`${loading?"bg-slate-100":null} cntr1-sub  rounded-md`}>
                       <div className="details-header pb-5 pt-2">
                         <span className=" font-bold text-lg">Card Details</span>
@@ -424,7 +440,7 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
                     </div>
                     </form>
                   </div>
-                )}
+                </Collapse>
               </div>
               </div>
     

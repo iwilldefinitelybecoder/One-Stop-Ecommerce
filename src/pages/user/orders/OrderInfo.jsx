@@ -3,7 +3,7 @@ import useAddresses from "../../../CustomHooks/AddressHooks";
 
 const OrderInfo = ({ orderDetails }) => {
   const [orderSummary, setOrderSummary] = React.useState(
-    orderDetails[0]?.orderSummary
+    orderDetails?.orderSummary
   );
   const { getAddresses, loading } = useAddresses();
   const [address, setAddress] = React.useState({});
@@ -11,7 +11,7 @@ const OrderInfo = ({ orderDetails }) => {
 
   React.useEffect(() => {
     const getAddress = async () => {
-      const data = await getAddresses(orderDetails[0]?.shippingAddressId);
+      const data = await getAddresses(orderDetails?.shippingAddressId);
       const billingAddress = await getAddresses(
         orderDetails[0]?.billingAddressId
       );
@@ -36,7 +36,7 @@ const OrderInfo = ({ orderDetails }) => {
       }
   }
 
-  console.log(orderDetails);
+
   return (
     <div className=" flex my-8 items-start justify-between">
       <div className="">
@@ -46,19 +46,19 @@ const OrderInfo = ({ orderDetails }) => {
             className=" space-y-0.5 w-[300px]"
             style={{ display: "flex", flexDirection: "column",flexWrap:"wrap" }}
           >
-            <span className=" font-semibold text-lg">{address.name}</span>
-            <span className="font-semibold">{address.email}</span>
+            <span className=" font-semibold text-lg">{address?.name}</span>
+            <span className="font-semibold">{address?.email}</span>
             <span className=" font-semibold text-slate-600">
-              {address.area}
+              {address?.area}
             </span>
             <span className=" font-semibold text-slate-600">
-              {address.locality}
+              {address?.locality}
             </span>
             <span></span>
-            <span>{address.phone}</span>
+            <span>{address?.phone}</span>
             <span className=" font-semibold text-slate-500">
-              {address.city} {address.country}{" "}
-              <span className=" text-light-pink">{address.zipCode}</span>
+              {address?.city} {address?.country}{" "}
+              <span className=" text-light-pink">{address?.zipCode}</span>
             </span>
             <span></span>
           </div>

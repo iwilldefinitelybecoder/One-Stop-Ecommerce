@@ -12,3 +12,14 @@
     align-items: center;
     padding: 20px;
 }
+
+
+.simple-message-box span{
+    font-size: 500;
+    color:rgb(92, 198, 250);
+    font-style: italic;
+}
+
+.simple-message-box span:hover{
+    text-decoration: underline;
+}

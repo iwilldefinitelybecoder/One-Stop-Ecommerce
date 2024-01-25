@@ -64,9 +64,10 @@ export const searchProducts = async (keyword, category) => {
 };
 
 export const getProductsByCategory = async (category) => {
+    
     setToken(Cookies.get('JWT'));
         try {
-            const response = await instance.get('/productByCategory', {
+            const response = await instance.get('/getProductsByCategory', {
                 params: { category },
             });
             return response.data;
@@ -76,11 +77,11 @@ export const getProductsByCategory = async (category) => {
     }
 
 // Search results by keyword and/or category
-export const searchResults = async (keyword, category) => {
+export const searchResults = async (keyword, category,page) => {
   setToken(Cookies.get('JWT'));
     try {
         const response = await instance.get('/search-results', {
-            params: { keyword, category },
+            params: { keyword, category,page },
         });
         return response.data;
     } catch (error) {
@@ -112,8 +113,51 @@ export const addReview = async (request) => {
     }
 };
 
+export const validatePurchase = async (purchaseId) => {
+    setToken(Cookies.get('JWT'));
+    try {
+        const response = await instance.get('/validatePurchase', { params: { purchaseId } });
+        return response.data;
+    } catch (error) {
+        handleError(error);
+    }
+};
+
+// Verify Review Exists
+export const doesReviewExist = async (purchaseId) => {
+    setToken(Cookies.get('JWT'));
+    try {
+        const response = await instance.get('/verifyReviewExists', { params: { purchaseId } });
+        return response.data;
+    } catch (error) {
+        handleError(error);
+    }
+};
+
+// Get Write Review Meta Info
+export const getWriteReviewMetaInfo = async (purchaseId) => {
+    setToken(Cookies.get('JWT'));
+    try {
+        const response = await instance.get('/getWriteReviewMetaInfo', { params: { purchaseId } });
+        return response.data;
+    } catch (error) {
+        handleError(error);
+    }
+};
+
+// Get Review Data
+export const getReviewData = async (purchaseId) => {
+    setToken(Cookies.get('JWT'));
+    try {
+        const response = await instance.get('/getReviewData', { params: { purchaseId } });
+        return response.data;
+    } catch (error) {
+        handleError(error);
+    }
+};
+
 // Get product attributes by attribute
-export const getProductAttributes = async (attribute) => {
+export const getProductByAttributes = async (attribute) => {
   setToken(Cookies.get('JWT'));
     try {
         const response = await instance.get('/attributes', {
@@ -188,7 +232,8 @@ export const validateReviewExist  = async (purchaseId) =>{
             }
         }
 
-export const updateProductInfos  = async (data,productId) =>{
+export const updateProductInfos  = async (productId,data) =>{
+           
             
             setToken(Cookies.get('JWT'));
             try {
@@ -228,11 +273,25 @@ export const updateProductDetails  = async (data,productId) =>{
                     }
                 }   
                 
+export const getProductReviewDetails  = async (productId) =>{
+                    
+                    setToken(Cookies.get('JWT'));
+                    try {
+                        const response = await instance.get('/getProductDetailReview', 
+                        {params: {productId:productId}},
+        
+                        );
+                        return response.data;
+                    } catch (error) {
+                        handleError(error);
+                    }
+                }   
 
 
 // Handle API call errors
 const handleError = (error) => {
     console.error('API Error:', error);
+    console.error('API Error:', error.message)
     return error
 };
 
@@ -245,6 +304,6 @@ export default {
     searchResults,
     getAllProductReviews,
     addReview,
-    getProductAttributes,
+    getProductByAttributes,
     // Other API functions...
 };

@@ -15,9 +15,10 @@ const RatingSummary = ({ averageRating, totalRatings }) => (
   </Box>
 );
 
-const RatingBreakdown = ({ ratingData }) => (
+const RatingBreakdown = ({ ratingData ={'1':5,"2":4,"3":8,"4":10,"5":15} }) => (
   <List sx={{ padding: 0 }}>
-    {Object.entries(ratingData).map(([ratingLevel, percentage]) => (
+    {
+    Object?.entries(ratingData)?.map(([ratingLevel, percentage]) => (
       <ListItem
         key={ratingLevel}
         sx={{

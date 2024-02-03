@@ -9,6 +9,7 @@ const OrderInfo = ({ orderDetails }) => {
   const [address, setAddress] = React.useState({});
   const [billingAddress, setBillingAddress] = React.useState({});
 
+
   React.useEffect(() => {
     const getAddress = async () => {
       const data = await getAddresses(orderDetails?.shippingAddressId);
@@ -21,18 +22,27 @@ const OrderInfo = ({ orderDetails }) => {
     getAddress();
   }, []);
 
+
+  const rupee = "&#8377;";
+
   const paymentMethod = (method)=>{
       switch (method) {
-        case "cod":
-          return "Cash on Delivery";
-        case "card":
-          return "paid by Debit/Credit Card";
-        case "paypal":
-          return "paid by Paypal";
-        case "UPI":
-          return "paid using UPI";
+        case "COD":
+          return "Cash On Delivery"
+          break;
+        case "PAYPAL":
+          return "Payment Using Paypal"
+          break;
+          case "DEBITCARD":
+            return "paid using Debit Card"
+            break;  
+          case "CREDITCARD":
+            return "paid using Credit Card"
+            break;
+
         default:
-          return "Cash on Delivery";
+          return "Cash On Delivery"
+          break;
       }
   }
 
@@ -71,29 +81,33 @@ const OrderInfo = ({ orderDetails }) => {
           <div className="sub-total-section flex justify-between my-2 mx-2">
             <span className="text-slate-500 ">Subtotal:</span>
             <span className="text-xl font-bold">
-              {orderSummary?.itemsTotal}
+              &#8377;{orderSummary?.itemsTotal}
             </span>
           </div>
           <div className="shipping-section flex justify-between  my-2 mx-2">
             <span className="text-slate-500 ">Shipping:</span>
             <span className="text-xl font-bold">
-              {orderSummary?.shippingTotal}
+              &#8377;{orderSummary?.shippingTotal}
             </span>
           </div>
           <div className="tax-section flex justify-between  my-2 mx-2">
             <span className="text-slate-500 ">Tax:</span>
-            <span className="text-xl font-bold">{orderSummary?.taxTotal}</span>
+            <span className="text-xl font-bold">&#8377;{orderSummary?.taxTotal}</span>
           </div>
           <div className="discount-section flex justify-between  my-2 mx-2">
             <span className="text-slate-500 ">Discount:</span>
             <span className="text-xl font-bold">
-              {orderSummary?.couponDiscount || 0}
+              &#8377;{orderSummary?.discount || 0}
             </span>
           </div>
         </div>
 
         <div className="total-section flex justify-end">
-          <span className="text-3xl font-bold">{orderSummary?.grandTotal}</span>
+          <span className="text-3xl font-bold">&#8377;{orderSummary?.grandTotal}</span>
+        </div>
+        <div className="total-section flex justify-between mt-5">
+          <span className="text-slate-500 font-semibold">Payment Method:</span>
+          <span className="text-md font-bold">{paymentMethod(orderDetails?.paymentMethod)}</span>
         </div>
       </div>
     </div>

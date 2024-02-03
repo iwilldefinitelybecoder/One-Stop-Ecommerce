@@ -38,17 +38,27 @@ export const getCardProvider = (name) => {
 };
 
 function PaymentMethods() {
-  const { getCard, deleteItem, cards, setDefault, loading } = useCard();
+  const { getCard, deleteItem, cards, setDefault, loading,getAllCardsList } = useCard();
+
   const isEditing = useMatch("/user/edit-payment-method/:id");
   const [currnetPage, setCurrentPage] = React.useState(0);
   const [addNewCard, setAddnewCard] = useState(false);
   const [save, setSave] = useState();
   const [paymentType, setPaymentType] = useState(0);
-  const totalpages = Math.ceil(cards?.length / 5);
-  const startIndex = currnetPage * 5;
-  const endIndex = (currnetPage + 1) * 5;
-  const currentOrders = cards?.slice(startIndex, endIndex);
+  let totalpages = Math.ceil(cards?.length / 5);
+  let startIndex = currnetPage * 5;
+  let endIndex = (currnetPage + 1) * 5;
+  let currentOrders = cards?.slice(startIndex, endIndex);
 
+  useEffect(()=>{
+     totalpages = Math.ceil(cards?.length / 5);
+     startIndex = currnetPage * 5;
+     endIndex = (currnetPage + 1) * 5;
+     currentOrders = cards?.slice(startIndex, endIndex);
+
+  },[cards])
+
+  console.log("cards", cards);
   const handelPageChange = (page) => {
     if (page < 0 || page > totalpages - 1) return;
     setCurrentPage(page);
@@ -68,7 +78,6 @@ function PaymentMethods() {
     }
   };
 
-  console.log(cards);
 
   const handelDeleteCard = (e, cardId) => {
     e.preventDefault();
@@ -113,7 +122,9 @@ function PaymentMethods() {
           />
         </>
       ) : (
+        cards &&
         <>
+        
           <div className="orders-pg-header ">
             <img src={cardIcon} className=" h-10 mt-2 mr-2" />
             <span className=" font-semibold ">Payment Options</span>
@@ -123,8 +134,8 @@ function PaymentMethods() {
               <>
                 <div className="orders-top-cntr">
                   <div className="order-table-rows-cntr">
-                    {cards &&
-                      cards?.map((order, index) => (
+                    {currentOrders &&
+                      currentOrders?.map((order, index) => (
                         <Link
                           to={`/user/edit-payment-method/${order.cardId}`}
                           key={index}

@@ -73,6 +73,7 @@ const CardsListPanel = ({ setPaymentMethod }) => {
             </div>
           ))}
         </RadioGroup>
+        <button className="Btn3 float-right" onClick={()=>{setOrderDetails(prev=>({...prev,cardId:""}))}}>Clear</button>
       </div>
     </Collapse>
     </div>

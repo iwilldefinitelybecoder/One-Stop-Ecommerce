@@ -23,8 +23,8 @@ const BuyNowCard  = ({ open, setOpen, productDetails }) => {
             products: {
               ...prev.products,
               quantity:1,
-              productId:productDetails.productId,
-              price:productDetails.salePrice > 0 ? productDetails.salePrice : productDetails.regularPrice
+              productId:productDetails?.productId,
+              price:productDetails?.salePrice > 0 ? productDetails?.salePrice : productDetails?.regularPrice
             }
             ,buyNow:true,
           }));
@@ -33,6 +33,10 @@ const BuyNowCard  = ({ open, setOpen, productDetails }) => {
     const handelClose = () => {
       setOpen(false);
     };
+
+    console.log(orderDetails.buyNow);
+
+
   
   
     return (

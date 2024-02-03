@@ -24,10 +24,10 @@ const LeftComponent = ({
   paymentMethod,
   grantPermission,
 }) => {
-  const { ordersDetails, setOrderDetails } = useOrders();
+  const { orderDetails, setOrderDetails } = useOrders();
   const { cards } = useCard();
 const [searchParams, setSearchParams] = useSearchParams();
-const [save, setSave] = useState(false);
+const [save, setSave] = useState();
 const [paymentType, setPaymentType] = useState(0);
   const handelPaymentMethod = (e) => {
     const { name, value } = e.target;
@@ -35,16 +35,16 @@ const [paymentType, setPaymentType] = useState(0);
     setSearchParams(prevParams => ({ ...prevParams, [name]: value }));
   };
 
- 
 
 
   return (
-    <>
-      <form className="payment-body">
+
+  <>
+  
         <RadioGroup
           aria-label="paymentMethod"
           name="paymentMethod"
-          value={ordersDetails?.paymentMethod}
+          value={orderDetails.paymentMethod}
           onChange={handelPaymentMethod}
         >
         
@@ -73,7 +73,7 @@ const [paymentType, setPaymentType] = useState(0);
         <div className="payment-body-header"></div>
         <div className="payment-body-header"></div>
         </RadioGroup>
-      </form>
+   
     </>
   );
 };

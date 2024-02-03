@@ -198,8 +198,8 @@ const ProfileMenu = (props) => {
   );
 };
 
-export const ProfileIcon = ({image,edit}) => {
-  const [displayEditIcon, setDisplayEditIcon] = useState(edit || true);
+export const ProfileIcon = ({image,edit = true}) => {
+  const [displayEditIcon, setDisplayEditIcon] = useState(edit);
   const [editProfileIcon, setEditProfileIcon] = useState(false);
 
   return (

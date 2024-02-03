@@ -149,7 +149,7 @@ const validateForm = ()=>{
             />
           )}
           <div className="flex-column items-center space-y-3 justify-center mb-5">
-            <ProfileIcon image={account?.userIcon} />
+            <ProfileIcon image={account?.userIcon} edit={false} />
             <UserName
               firstName={account?.firstName}
               lastName={account?.lastName}

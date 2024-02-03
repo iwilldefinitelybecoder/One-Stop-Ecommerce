@@ -11,6 +11,7 @@ import {
 } from '../service/CustomerServices/wishListServices';
 import { AccountContext } from '../context/AccountProvider';
 import { sleep } from '../utils/utils';
+import { useCart } from './CartHook';
 
 const useWishlist = () => {
   const [loading, setLoading] = useState(false);
@@ -18,6 +19,7 @@ const useWishlist = () => {
   const [wishlistInfo, setWishlistInfo] = useState({});
   const [productId, setProductId] = useState([]);
   const {account} = useContext(AccountContext)
+  const {getAllCartItemss}  = useCart();
   
   
   useEffect(() => {
@@ -60,6 +62,7 @@ const useWishlist = () => {
     setLoading(true);
     await moveProductToCart(productId);
     await getWishlistItems(); // Refresh wishlist after moving to cart
+    await getAllCartItemss();
     setLoading(false);
   };
 

@@ -1,7 +1,7 @@
-import { Button } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import MagnifiedImg from "./MagnifiedImg";
-import { HeartBroken } from "@mui/icons-material";
+import { ArrowLeftOutlined, ChevronLeft, ChevronRight, HeartBroken } from "@mui/icons-material";
 import useWishlist from "../../CustomHooks/WishListHook";
 import { useMatch } from "react-router";
 import Lottie from "react-lottie-player";
@@ -9,12 +9,22 @@ import { heartMarkGif } from "../../assets/icons/json/data";
 import { wishListIcon2 } from "../../assets/icons/png/Rareicons/data";
 import { rightArrowIcon } from "../../assets/icons/png/toolbar-icons/data";
 import { Link } from "react-router-dom";
+import styled from "styled-components";
+
+
+const CarouselIcon = styled(IconButton)`
+  font-size: 30px;
+  cursor: pointer;
+  color: black;
+`;
+
 
 const ProductImage = ({ productDetails,viewCategory }) => {
  
   const [currentIndex, setCurrentIndex] = useState(0);
   const [mainImage, setMainImage] = useState(Array.isArray(productDetails?.imageURL) && productDetails?.imageURL[0]);
   const { productExistsInWishlist,addToWishlist,removeFromWishlist } = useWishlist();
+  const [sliderPosition, setSliderPosition] = useState(90);
   const productId = useMatch("/product/:id")?.params.id;
   useEffect(() => {
     setMainImage(productDetails?.imageURL && productDetails?.imageURL[currentIndex]);
@@ -35,6 +45,25 @@ const ProductImage = ({ productDetails,viewCategory }) => {
     }
   };
 
+  const handleCarouselClick = (e, direction) => {
+    e.stopPropagation();
+    if (direction === -1) {
+      if (currentIndex > 0) {
+        setCurrentIndex((prev) => prev - 2);
+        setSliderPosition((prev) => prev - 180);
+      }
+    } else {
+      if (currentIndex < productDetails?.imageURL?.length - 1) {
+        setCurrentIndex((prev) => prev + 2);
+        setSliderPosition((prev) => prev + 180);
+      }
+    }
+  }
+
+  const handelSepcialCharacters = (category) => {
+    return category?.replace(/&/g, "%26")?.replace(/ /g, "+");
+  }
+
   return (
     <div
       style={{ display: "flex", flexDirection: "column" }}
@@ -49,7 +78,7 @@ const ProductImage = ({ productDetails,viewCategory }) => {
         </Link>
 
         <img src={rightArrowIcon} className="h-3" />
-        <Link to="/search">
+        <Link to={`/search?category=${handelSepcialCharacters(productDetails?.category)}`}>
         <span className="text-lg font-semibold">{productDetails?.category}</span>
         </Link>
         <img src={rightArrowIcon} className="h-3" />
@@ -87,28 +116,52 @@ const ProductImage = ({ productDetails,viewCategory }) => {
       <div className="main-img-cntr w-[350px] h-[340px] ">
         {mainImage && <MagnifiedImg image={mainImage} />}
       </div>
-      <div className="choose-img-cntr flex">
+      <div className="flex">
+      <div
+        className=" flex-column items-center justify-center mt-6 w-[40px] h-[40px] rounded-full bg-slate-100 hover:bg-slate-200 hover:cursor-pointer"
+            aria-disabled={currentIndex === 0}
+            color="inherit"
+            onClick={(e) => handleCarouselClick(e, -1)}
+
+          >
+            <ChevronLeft />
+          </div>
+      <div className="choose-img-cntr w-[270px] overflow-hidden h-[90px]  relative">
+        <div className=" flex absolute left-[90px] transition-all  top-0"
+        style={{transform:`translateX(-${sliderPosition}px)`}}
+        >
+          
         {productDetails?.imageURL?.map((image, index) => {
           return (
             <Button
-              onClick={() => setCurrentIndex(index)}
+              onClick={() => {setCurrentIndex(index);setSliderPosition(index*90)}}
               className="w-[90px] h-[90px] "
               key={index}
             >
               <div
-                className={`choose-img bg-white rounded-md mx-2 p-3 flex justify-center items-center w-[60px] h-[60px] ${
+                className={`choose-img bg-white shadow-lg rounded-md mx-2 p-3 flex justify-center items-center w-[60px] h-[60px] ${
                   index === currentIndex
-                    ? " ring-1 ring-light-pink"
-                    : "ring-1 ring-slate-300 hover:ring-black"
+                  ? " ring-1 ring-light-pink"
+                  : "ring-1 ring-slate-300 hover:ring-black"
                 }`}
                 key={index}
-              >
+                >
                 <img src={image} />
               </div>
             </Button>
           );
         })}
+        </div>
       </div>
+        <div
+        className=" flex-column items-center justify-center mt-6 w-[40px] h-[40px] rounded-full bg-slate-100 hover:bg-slate-200 hover:cursor-pointer"
+            color="inherit"
+            onClick={(e) => handleCarouselClick(e, 1)}
+            disabled={currentIndex === productDetails?.imageURL?.length - 1}
+          >
+            <ChevronRight />
+          </div>
+          </div>
     </div>
   );
 };

@@ -231,24 +231,32 @@
     animation: fillAnimation 1s ease-in-out forwards;
   }
 
+  
+  .stages-completed{
+    background: linear-gradient(to right, #e94560 50%, transparent 50%);
+    background-size: 200% 100%;
+    background-position: right;
+    animation: fillAnimation 1s ease-in-out forwards;
+  }
+
   .stage-completed:nth-child(1) {
     animation-delay: 0s; /* Delay for the first stage */
   }
   
-  .stage-completed:nth-child(2) {
+  .stage-completed-2 {
     animation-delay: 1s; /* Delay for the second stage */
   }
   
   .stage-completed:nth-child(3) {
     animation-delay: 2s; /* Delay for the third stage */
   }
-  .stage-completed:nth-child(4) {
+  .stage-completed-4 {
     animation-delay: 3s; /* Delay for the third stage */
   }
   .stage-completed:nth-child(5) {
     animation-delay: 4s; /* Delay for the third stage */
   }
-  .stage-completed:nth-child(6) {
+  .stage-completed-6 {
     animation-delay: 5s; /* Delay for the third stage */
   }
   .stage-completed:nth-child(7) {
@@ -298,6 +306,25 @@
   .order-product-cntr{
     max-height: 700px;
     
+  }
+
+  .circle {
+
+    border-radius: 50%;
+    box-shadow: 0px 0px 1px 1px #0000001a;
+  }
+
+  .pulse {
+    animation: pulse-animation 2s infinite
+  }
+  
+  @keyframes pulse-animation {
+    0% {
+      box-shadow: 0 0 0 0px rgba(0, 0, 0, 0.2);
+    }
+    100% {
+      box-shadow: 0 0 0 20px rgba(0, 0, 0, 0);
+    }
   }
   
 

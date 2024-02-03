@@ -74,7 +74,7 @@ function ReviewSubmission() {
   }, []);
 
  
-console.log(productDetails)
+
   const handleSubmit = (event) => {
     event.preventDefault();
   };
@@ -84,7 +84,7 @@ console.log(productDetails)
     if (errorFields[name] !== undefined) {
       setErrorFields((prev) => ({ ...prev, [name]: "" }));
     }
-    console.log(name, value);
+
     setReviewData((prev) => ({
       ...prev,
       [name]: value,
@@ -141,7 +141,7 @@ console.log(productDetails)
         :
       <div className=" ">
         <div style={{ backgroundColor: "white", padding: "20px" }}>
-          <h1 className="h1-text">Create Review</h1>
+          <h1 className="h1-text">{reviewSubmit?"Your Review":"Create Review"}</h1>
           <div className="border-b-2 pb-4">
 
           <div className="product-detail flex items-center space-x-3 m-4  py-4">

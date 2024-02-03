@@ -72,3 +72,16 @@ export const categoryTagMapping = {
   "Children & Infant": ["Baby Clothing", "Toys & Games", "Nursery Decor", "Parenting Tips", "Kids Fashion", "Children's Books", "Educational Toys", "Kids Activities"],
   "Electronic Goods": ["Gadgets", "Tech Trends", "Smart Devices", "Home Appliances", "Audio & Headphones", "Cameras & Photography", "Gaming"]
 };
+
+export const categorys2 = [
+
+  
+"Apparel & Accessories",
+"style & Fashion",
+"home & Gardening",
+"Health & Wellness",
+"medical Health",
+"Children & Infant",
+"Electronic Goods",
+];
+  

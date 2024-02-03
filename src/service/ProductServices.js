@@ -41,7 +41,8 @@ export const addProduct = async (data) => {
 
 // Get all products
 export const getAllProducts = async () => {
-  setToken(Cookies.get('JWT'));
+    clearToken();
+//   setToken(Cookies.get('JWT'));
     try {
         const response = await instance.get('/getproducts');
         return response.data;
@@ -52,7 +53,8 @@ export const getAllProducts = async () => {
 
 // Search products by keyword and/or category
 export const searchProducts = async (keyword, category) => {
-  setToken(Cookies.get('JWT'));
+    clearToken();
+//   setToken(Cookies.get('JWT'));
     try {
         const response = await instance.get('/search', {
             params: { keyword, category },
@@ -64,8 +66,8 @@ export const searchProducts = async (keyword, category) => {
 };
 
 export const getProductsByCategory = async (category) => {
-    
-    setToken(Cookies.get('JWT'));
+    clearToken();
+    // setToken(Cookies.get('JWT'));
         try {
             const response = await instance.get('/getProductsByCategory', {
                 params: { category },
@@ -77,12 +79,11 @@ export const getProductsByCategory = async (category) => {
     }
 
 // Search results by keyword and/or category
-export const searchResults = async (keyword, category,page) => {
-  setToken(Cookies.get('JWT'));
+export const searchResults = async (data) => {
+    clearToken();
+//   setToken(Cookies.get('JWT'));
     try {
-        const response = await instance.get('/search-results', {
-            params: { keyword, category,page },
-        });
+        const response = await instance.post('/search-results',data);
         return response.data;
     } catch (error) {
         handleError(error);
@@ -91,7 +92,8 @@ export const searchResults = async (keyword, category,page) => {
 
 // Get all product reviews by productId
 export const getAllProductReviews = async (productId) => {
-  setToken(Cookies.get('JWT'));
+    clearToken();
+//   setToken(Cookies.get('JWT'));
     try {
         const response = await instance.get('/allProductReviews', {
             params: { productId },
@@ -158,7 +160,8 @@ export const getReviewData = async (purchaseId) => {
 
 // Get product attributes by attribute
 export const getProductByAttributes = async (attribute) => {
-  setToken(Cookies.get('JWT'));
+    clearToken();
+//   setToken(Cookies.get('JWT'));
     try {
         const response = await instance.get('/attributes', {
             params: { attribute },
@@ -183,8 +186,8 @@ export const publishProducts  = async (productId) =>{
 }
 
 export const getProductDetails  = async (productId) =>{
-        
-        setToken(Cookies.get('JWT'));
+    clearToken();
+        // setToken(Cookies.get('JWT'));
         try {
             const response = await instance.get('/getProduct', {
                 params: {productId:productId},
@@ -194,6 +197,19 @@ export const getProductDetails  = async (productId) =>{
             handleError(error);
         }
     }
+
+    export const getEditProductData  = async (productId) =>{
+        console.log(productId)
+            setToken(Cookies.get('JWT'));
+            try {
+                const response = await instance.get('/getEditProductDetails', {
+                    params: {productId},
+                });
+                return response.data;
+            } catch (error) {
+                handleError(error);
+            }
+        }
 
     export const getProductMajorDetails  = async (productId) =>{
         
@@ -249,8 +265,8 @@ export const updateProductInfos  = async (productId,data) =>{
 
 
 export const getAttributes = async () =>{
-                
-                setToken(Cookies.get('JWT'));
+                  clearToken();
+                // setToken(Cookies.get('JWT'));
                 try {
                     const response = await instance.get('/getAddributes');
                     return response.data;
@@ -259,13 +275,15 @@ export const getAttributes = async () =>{
                 }
             }
 
-export const updateProductDetails  = async (data,productId) =>{
+export const updateProductDetails  = async (productId,data) =>{
                     
                     setToken(Cookies.get('JWT'));
                     try {
-                        const response = await instance.post('/updateDetails',data, 
-                        {params: {productId:productId}},
-        
+                        const response = await instance.post('/updateProductDetails',data, 
+                        {params: {productId:productId},
+                        withCredentials: true
+                    },
+                        
                         );
                         return response.data;
                     } catch (error) {
@@ -286,6 +304,7 @@ export const getProductReviewDetails  = async (productId) =>{
                         handleError(error);
                     }
                 }   
+                
 
 
 // Handle API call errors

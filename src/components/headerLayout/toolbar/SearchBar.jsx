@@ -116,6 +116,7 @@ function SearchBar() {
 
     for (let i = 0; i < inputString.length; i++) {
       if (inputString[i] === sequence[currentIndex]) {
+        
         result += `<strong className=" tex-semibold tracking-wide">${inputString[i]}</strong>`;
         currentIndex++;
 
@@ -161,7 +162,8 @@ function SearchBar() {
     } else if (event.key === "Enter") {
       event.preventDefault();
       if (focusedIndex === -1) {
-        return;
+        if(matchingText === "") return;
+        searchResultSelectHandler(matchingText);
       }
       if (focusedIndex === 0) {
         searchResultSelectHandler(matchingText);

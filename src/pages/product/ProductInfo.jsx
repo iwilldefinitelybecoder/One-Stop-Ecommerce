@@ -1,6 +1,6 @@
 import { Rating } from "@mui/material";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useCart } from "../../CustomHooks/CartHook";
 import { useParams } from "react-router";
 import useWishlist from "../../CustomHooks/WishListHook";
@@ -18,6 +18,7 @@ import useMessageHandler from "../../components/body/Messages/NewMessagingCompon
 import QuantityBtn from "../../components/body/productCards/QuantityBtn";
 import { useOrders } from "../../context/OrderContext";
 import { Link } from "react-router-dom";
+import { AccountContext } from "../../context/AccountProvider";
 
 const ProductInfo = ({ ProductInfo, detailedReview, setOpen,
   feature = {
@@ -28,12 +29,13 @@ const ProductInfo = ({ ProductInfo, detailedReview, setOpen,
   }
 
 }) => {
-console.log(ProductInfo)
+
   const { addItemToCart, itemExist } = useCart();
   const { moveItemToWishlist } = useWishlist();
   const [itemDetail, setItemDetail] = useState({});
   const { handleMessage, getMessageComponents } = useMessageHandler();
-  const productId = useParams().id;
+  const productId = useParams().id || ProductInfo?.productId;
+  const {setShowLoginButton,showLoginButton,account} = useContext(AccountContext)
   const [productRating, setProductRating] = useState(detailedReview);
   const ratingData = productRating?.ratingData;
   const totalRatings = productRating?.totalRating;
@@ -173,7 +175,7 @@ console.log(ProductInfo)
               {ProductInfo?.stock > 0 ?
                 feature?.addToCartBtn &&
                 <>
-                  <button className="Btn2" onClick={() => { setOpen(true) }}>Buy Now</button>
+                  <button className="Btn2" onClick={() => {account?setOpen(true):setShowLoginButton(true) }}>Buy Now</button>
                   <br />
                   <div>
                     {exists !== undefined ? (
@@ -183,7 +185,7 @@ console.log(ProductInfo)
                         setItemDetail={setItemDetail}
                       />
                     ) : (
-                      <button className="Btn3" onClick={handleAddToCart}>
+                      <button className="Btn3" onClick={(e)=>{account?handleAddToCart(e):setShowLoginButton(true)}}>
                         Add To Cart
                       </button>
                     )}
@@ -313,6 +315,7 @@ const BuyNowCardQuantity = ({ stock }) => {
 
   const buttonDisableRef = useRef(null);
   const { orderDetails, setOrderDetails } = useOrders();
+
   const [itemDetail, setItemDetail] = useState({
     productQuantity: orderDetails?.products?.quantity
   })

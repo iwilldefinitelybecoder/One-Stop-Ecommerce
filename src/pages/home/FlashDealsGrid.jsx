@@ -76,7 +76,7 @@ function FlashDealsGrid({ gridName, type, typeIcon = flashIcon }) {
             navigation={true}
             className="flash-deals-grid-swiper"
             virtual
-            initialSlide={3}
+            initialSlide={1}
           >
 
 

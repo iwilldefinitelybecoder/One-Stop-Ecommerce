@@ -1,16 +1,32 @@
-import { Collapse, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
-import React, { useState } from 'react';
+import { Checkbox, Collapse, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import { useOrders } from '../../../context/OrderContext';
-import { CheckBox } from '@mui/icons-material';
+import { useCart } from '../../../CustomHooks/CartHook';
+
 
 
 const ReviewFacet = () => {
 
-  const [batchOrders,setBatchOrders] = useState(false);
-  const {orderDetails,setOrderDetails} = useOrders();
+  const [batchOrders,setBatchOrders] = useState(true);
+  const {estimatedCosts} = useCart();
+  const [estimatedCost,setEstimatedCosts] = useState();
+  const {orderDetails,setOrderDetails,orderSummary} = useOrders();
   const [errors,setErrors] = useState({})
 
- 
+  useEffect(() => {
+    setOrderDetails(prev=>({...prev,shippingType:"STANDARD"}))
+  }, [])
+
+  useEffect(()=>{
+
+    if(orderDetails.buyNow){
+     setEstimatedCosts(orderSummary)
+    }else{
+
+      setEstimatedCosts(estimatedCosts());
+    }
+    
+  },[])
 
   const handelOrderDetailsChange = (e) => {
     const { value ,name} = e.target;
@@ -34,7 +50,7 @@ const ReviewFacet = () => {
         <RadioGroup
           aria-label="shipping"
           name="shippingType"
-          defaultChecked="standard"
+          defaultValue="STANDARD"
           value={orderDetails.shippingType}
           onChange={handelOrderDetailsChange}
         >
@@ -42,25 +58,25 @@ const ReviewFacet = () => {
           <FormControlLabel
             control={
               <Radio
-                value="standard"
+                value="STANDARD"
                 className="mr-2"
               />
               
             }
             labelPlacement='end'
-            label="Standard Shipping"
+            label="Standard Shipping  &nbsp;&nbsp;&nbsp; + &#8377;100"
           />
 
           <FormControlLabel
             control={
               <Radio
 
-                value="express"
+                value="EXPRESS"
                 className="mr-2"
               />
             }
             labelPlacement='end'
-            label="Express Shipping"
+            label="Express Shipping &nbsp;&nbsp;&nbsp; + &#8377;300"
           />
 
         </RadioGroup>
@@ -69,19 +85,19 @@ const ReviewFacet = () => {
           <span></span>
         }
       </div>
-   <Collapse in={orderDetails.shippingType === "express"}>
+   <Collapse in={orderDetails.shippingType === "EXPRESS"}>
       <div className=" ml-10 mb-4">
-        <FormControlLabel
+      <FormControlLabel 
+        labelPlacement="end"
         control={
-          <CheckBox
-          checked={batchOrders}
-          onChange={(e)=>{setBatchOrders(e.target.checked)}}
-          color="primary"
-          inputProps={{ 'aria-label': 'controlled-checkbox' }}
-          />
+        <Checkbox
+        checked={batchOrders}  // Controlled by state
+        onChange={(e)=>{setBatchOrders(e.target.checked)}}  // Controlled by handler function
+        color="primary"
+        inputProps={{ 'aria-label': 'controlled-checkbox' }}
+      />
         }
-        labelPlacement='end'
-        label="Batch Multiple Orders Together"
+        label="Batch multiple orders into single shipment"
         />
       </div>
         </Collapse>

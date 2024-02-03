@@ -7,7 +7,7 @@ const ProductGrid = ({ products }) => {
   return (
 <Grid container columnGap={12} rowGap={5} sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
   {products?.map((product, index) => (
-    <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
+    <Grid item key={index} xs={12} sm={6} md={4} lg={3} className="search-result-cards hover:shadow-2xl ">
       <div
         key={product.productId}
         className="w-72 swiper-slide swiper-slide-visible swiper-slide-fully-visible swiper-slide-active flash-grid-cards flex-col justify-start items-start px-4 py-4 rounded-xl shadow-md transition-all"

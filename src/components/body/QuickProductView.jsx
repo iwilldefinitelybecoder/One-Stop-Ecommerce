@@ -1,9 +1,10 @@
-import { Dialog,DialogContent,makeStyles } from "@mui/material";
+import { Dialog,DialogContent,IconButton,makeStyles } from "@mui/material";
 import React, { useState } from "react";
 import ProductImage from "../../pages/product/ProductImage";
 import ProductInfo from "../../pages/product/ProductInfo";
 import "./quickViewProduct.css";
 import { productInfoFeatures } from "../../pages/product/ProductDetail";
+import { Close } from "@mui/icons-material";
 
 
 const QuickProductView = ({ open, handelClose, productDetails }) => {
@@ -27,6 +28,11 @@ const QuickProductView = ({ open, handelClose, productDetails }) => {
             }}
       >
         <DialogContent sx={{ padding: '0px', margin: '0px',display:"flex",justifyContent:'center',alignItems:'start' }}>
+          <div className="close-dialouge-btn  ">
+            <IconButton onClick={handelClose} sx={{ position: "absolute", top: "0", right: "0" }}>
+            <Close />
+            </IconButton>
+          </div>
           <div className="product-img w-[650px]">
             <ProductImage productDetails={productDetails} viewCategory={false} />
           </div>

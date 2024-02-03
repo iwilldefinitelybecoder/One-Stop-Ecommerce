@@ -62,11 +62,14 @@ const EditProfile = () => {
 
   const validateForm= ()=>{
     const errors = {}
+    const isValidPhoneNumber = /^[6-9]\d{9}$/;
     if(formData.firstName === "") errors.firstName = "firstName Can't be empty"
     if(formData.lastName === "") errors.lastName = "lastName Can't be empty"
     if(formData.phoneNumber === "") errors.phoneNumber = "phone Number Can't be empty"
     if(formData.dob === "") errors.dob = "date of birth Can't be empty"
+    if(!isValidPhoneNumber.test(formData.phoneNumber)) errors.phoneNumber = "phone Number is not valid"
     setErrorFields(errors);
+    console.log(  )
     return Object.keys(errors).length > 0
   }
 
@@ -99,8 +102,8 @@ const charPattern = /^09[a-zA-Z]*$/;
 
   const handelFormSubmit = async ()=>{
     const formDate = {...formData}
-    const timeStamp = Date.parse(formDate.dob) /1000;
-    formDate["dob"] = timeStamp
+    const timeStamp = new Date(formDate.dob).getTime() ;
+    formDate.dob = timeStamp
     console.log(formDate)
     const response =await updateUserInfo(formDate);
     if(response ==="success"){

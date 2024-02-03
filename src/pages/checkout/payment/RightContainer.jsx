@@ -103,7 +103,7 @@ const RightContainer = () => {
             )
   }
   </div>
-       
+{/*        wallet code
       <div>
       <div className="discount-section flex justify-between items-center  my-2 mx-2">
         <div>
@@ -117,15 +117,14 @@ const RightContainer = () => {
         checked={orderDetails?.useWallet}  // Controlled by state
         onChange={handelUseWallet}  // Controlled by handler function
         color="primary"
-        
         inputProps={{ 'aria-label': 'controlled-checkbox' }}
       />
         }
         label="Use Wallet"
         />
-            {/* <span className="text-xl font-bold">{estimatedCost?.discount}</span> */}
+          
           </div>
-      </div>
+      </div> */}
        
       </div>
     </>

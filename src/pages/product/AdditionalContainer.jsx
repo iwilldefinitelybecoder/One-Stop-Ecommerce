@@ -14,17 +14,23 @@ import { Link } from 'react-router-dom';
 
 
 const AdditionalContainer = ({productDetails}) => {
-  const {fetchProductsByCategory,loading,products} = useProducts()
+  const {fetchProductsByCategory,loading,products,getProductList} = useProducts()
+  const [productinfo, setProductinfo] = useState([]);
   const [swiperRef, setSwiperRef] = useState(null);
   const id = useParams().id
     
+  useEffect(() => {
+    setProductinfo(getProductList())
+  }
+    , [products,loading])
 
   useEffect(()=>{
     
-    fetchProductsByCategory(productDetails.category,productDetails?.productId)
+    fetchProductsByCategory(productDetails?.category,productDetails?.productId)
+      
     
-    
-  },[productDetails,id])
+
+  },[productDetails?.category,productDetails?.productId])
 
 
   
@@ -50,6 +56,13 @@ const AdditionalContainer = ({productDetails}) => {
         </div>
         </Link>
       </div>
+      {
+        productinfo?.length === 0?
+        <div className="flex justify-center items-center h-96">
+          <h3 className="text-2xl font-semibold">No Similar product Found</h3>
+        </div>
+        :
+      
     <Swiper
     modules={[Virtual, Navigation, Pagination]}
     onSwiper={setSwiperRef}
@@ -67,12 +80,13 @@ const AdditionalContainer = ({productDetails}) => {
     virtual
     initialSlide={1}
   >
-    {products?.map((product, index) => (
-      <SwiperSlide key={product} virtualIndex={index} className="flash-grid-cards flex-col justify-start items-start px-4 py-4 rounded-xl shadow-lg hover:shadow-2xl  transition-all">
-        <FlashDealsGridCards key={index}  productInfo={product}/>
+    {productinfo?.map((product, index) => (
+      <SwiperSlide key={index} virtualIndex={index} className="flash-grid-cards flex-col justify-start items-start px-4 py-4 rounded-xl shadow-lg hover:shadow-2xl  transition-all">
+        <FlashDealsGridCards  productInfo={product}/>
       </SwiperSlide>
     ))}
   </Swiper>
+}
     </>
   )
 }

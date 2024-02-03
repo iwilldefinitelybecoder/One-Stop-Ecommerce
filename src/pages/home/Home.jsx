@@ -16,8 +16,8 @@ const Home = () => {
          
         </div>
       </div>
-      <div className="home-main-cntr home-body flex-column ">
-        <div className="home-pos-cntr">
+      <div className="home-main-cntr home-body flex-column items-center ">
+        <div className="home-pos-cntr ">
        
           <div className="flash-Deals-grid">
             <FlashDealsGrid gridName={"New Arrivals"} typeIcon={flashIcon} type={productTypes.NEW_PRODUCT} />

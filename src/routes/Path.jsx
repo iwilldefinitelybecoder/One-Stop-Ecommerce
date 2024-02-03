@@ -76,6 +76,7 @@ function Path() {
         </Route>
         </Route>
 
+          <Route path="/reset-password" element={<ForgotPassword />} />
     <Route path="/playground" element={<Playground />} />
 
         <Route element={<RequireAuth3 unAllowedRoutes={routes.exit} />}>
@@ -85,7 +86,6 @@ function Path() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/request-reset" element={<PasswordResetRequest />} />
-          <Route path="/reset-password" element={<ForgotPassword />} />
         </Route>
         <Route element={<RequireAuth allowedRoles={roles.USER} />}>
           <Route path="/register-vendor" element={<UpgradeToVendor />} />

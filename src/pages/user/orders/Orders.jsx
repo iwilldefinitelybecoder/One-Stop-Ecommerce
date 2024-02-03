@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import "./orders.css";
 import {
   ShoppingBag3Icon,
@@ -10,21 +10,29 @@ import { noOrderIcon } from "../../../assets/icons/img/randoms/data";
 import { Link, Outlet, useSearchParams } from "react-router-dom";
 import { useOrders } from "../../../context/OrderContext";
 import { formatDateFromTimestamp } from "../../../utils/DisplayFormatters";
+
 function Orders() {
-  // const [orders, setOrders] = React.useState(ordersList);
+
   const {orders,setOrders,get} = useOrders();
   const [currnetPage, setCurrentPage] = React.useState(0);
-  const totalpages = Math.ceil(orders?.length / 5);
+  const sortedOrders = useMemo(()=>{
+    return orders?.sort((a, b) => {
+      return new Date(b.orderDate) - new Date(a.orderDate);
+    });
+  },[orders])
+  const totalpages = Math.ceil(sortedOrders?.length / 5);
     const startIndex = currnetPage * 5;
     const endIndex = (currnetPage + 1) * 5;
-    const currentOrders = orders?.slice(startIndex, endIndex);
+    const currentOrders = sortedOrders?.slice(startIndex, endIndex);
 
   const handelPageChange = (page) => {
     if (page < 0 || page > totalpages - 1) return;
     setCurrentPage(page);
   };
 
-  console.log(orders)
+ 
+
+ 
   const getOrderStatusClass = (status) => {
     status = status?.toLowerCase();
     switch (status) {

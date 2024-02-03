@@ -42,6 +42,7 @@ const PlaceOrder = () => {
       timer = setTimeout(() => {
       setMessage({ type: "", message: "" });
       getAllCartItemss();
+      resetOrderDetails();
       navigate("/user/orders");
     }, 3000);
     }else if(message.type === "error")
@@ -62,7 +63,6 @@ const PlaceOrder = () => {
       setOrderDetails((prevOrderItems) => ({
         ...prevOrderItems,
         paymentDetails: { status: "PENDING" },
-        products: cart,
         customerId: account?.email,
       }));
       } else if (['DEBITCARD', 'UPI'].includes(orderDetails?.paymentMethod)) {

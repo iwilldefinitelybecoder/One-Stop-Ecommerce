@@ -18,11 +18,12 @@ import { char0ToUpper, formatNumber } from "../../utils/utils";
 const MIddleContainer = ({ productInfo }) => {
   const [activeTab, setActiveTab] = useState("description");
   const { reviews, loading,getAllproductsReview } = useProducts();
-  console.log("working")
 
   useEffect(() => {
     getAllproductsReview(productInfo?.productId);
   }, [productInfo]);
+
+  console.log(productInfo);
 
   return (
     <div>
@@ -83,8 +84,8 @@ const MIddleContainer = ({ productInfo }) => {
                 >
                   <Table aria-label="simple table">
                     <TableBody>
-                      { productInfo?.specifications && 
-                      Object.entries(productInfo?.specifications)?.map(
+                      { productInfo?.extraAttributes && 
+                      Object.entries(productInfo?.extraAttributes)?.map(
                         ([key, value], index) => {
                           return (
                             <TableRow key={index}>

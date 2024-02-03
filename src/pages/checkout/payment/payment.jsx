@@ -26,9 +26,7 @@ const Payment = () => {
     }
   }, [paymentMethod1]);
 
-  const goBack = () => {
-    navigate(-1);
-  }
+ 
   
   return (
     <>
@@ -41,10 +39,12 @@ const Payment = () => {
         </div>
         <div className=" flex px-7 w-full justify-between">
          
+            <Link to="/checkout/details" >
           <div className="Btn2 flex space-x-2 items-center ">
             <img src={rightArrowIcon2} className="h-5 rotate-180"/>
-            <button onClick={goBack}>Back to Addresses</button>
+            <button >Back to Addresses</button>
           </div>
+            </Link>
           
         {
           paymentMethod !== undefined ? 

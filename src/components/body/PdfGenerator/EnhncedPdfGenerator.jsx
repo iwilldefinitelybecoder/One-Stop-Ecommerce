@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     subHeader: {
-        fontSize: 14,
+        fontSize: 20,
         marginBottom: 5,
         color: '#114175',
     },
@@ -83,6 +83,12 @@ const styles = StyleSheet.create({
         margin: 10,
         lineHeight: 1.5,
     },
+    section2:{
+        margin: 10,
+        lineHeight: 1.5,
+        width: "200px",
+        flexWrap: "wrap",
+    }
 });
 
 const EnhancedInvoiceGenerator = ({ generatePdfRef, orderDetails }) => {
@@ -148,7 +154,7 @@ const EnhancedInvoiceGenerator = ({ generatePdfRef, orderDetails }) => {
                                     <Text>{product?.totalPrice}</Text>
                                 </View>
                             ))}
-                            {/* Total row */}
+    
                             <View style={styles.tableRow}>
                                 <Text style={styles.bold}>Shipping Charges</Text>
                                 <Text style={styles.bold}>{orderDetail?.orderSummary?.shippingTotal}</Text>
@@ -170,14 +176,27 @@ const EnhancedInvoiceGenerator = ({ generatePdfRef, orderDetails }) => {
                         </View>
                     </View>
                     <View style={styles.bodyRow}>
-                        <View style={styles.section}>
+                        <View style={styles.section2}>
+                            {
+                                orderDetail?.paymentId !== null ?
+                                <>
                             <Text style={styles.subHeader}>Payment Information:</Text>
                             <Text>Card Name: {card?.cardHolderName}</Text>
                             <Text>Card Type: {card?.cardType}</Text>
                             <Text>{card?.cardNumber}</Text>
                             <Text>Expiration Date: {card?.expireDate}</Text>
+                            </>
+                                :
+                                <>
+                                 
+                                <Text style={styles.subHeader}>Payment Information:</Text>
+                                 <Text>Payment Method: Cash On Delivery</Text>
+                                </>
+                                
+
+                        }
                         </View>
-                        <View style={styles.section} >
+                        <View style={styles.section2} >
                             <Text style={styles.subHeader}>Shipping Address:</Text>
                             <Text>{address?.name}</Text>
                             <Text>{address?.locality}</Text>

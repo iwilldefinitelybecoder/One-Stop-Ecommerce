@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { addReview, getAllProductReviews, getAllProducts, getProductDetails, getProductMajorDetails, getProductReviewDetails, getProductsByCategory, publishProducts, updateProductInfos } from '../service/ProductServices';
+import { addReview, getAllProductReviews, getAllProducts, getProductDetails, getProductMajorDetails, getProductReviewDetails, getProductsByCategory, publishProducts, searchResults, updateProductInfos } from '../service/ProductServices';
 import { sleep } from '../utils/utils';
 
 const useProducts = () => {
@@ -7,7 +7,7 @@ const useProducts = () => {
     const [loading, setLoading] = useState(false);
     const [reviews, setReviews] = useState([]);
     const [reviewData, setReviewData] = useState({})
-
+   
     useEffect(()=>{
         async function fetchProducts(){
             setLoading(true)
@@ -17,6 +17,10 @@ const useProducts = () => {
         }
         fetchProducts();
     },[])
+
+    const getProductList =  () => {
+        return products;
+    }
 
   
     const getProducts = async () => {
@@ -88,14 +92,19 @@ const useProducts = () => {
         if (loading) return;
         setLoading(true);
         const response = await getProductsByCategory(category);
-        if(response?.length === 0){
-            getAllProducts()}
-            else{
-                if(id === undefined){
-                    setProducts(response);
-                    return;
-                }
-                setProducts(response?.filter(res=>  res.productId !== id));
+        if(response?.length > 0){
+            
+            console.log("if",response)
+            if(id === undefined){ 
+                setProducts(response);
+                return;
+            }
+            setProducts(response?.filter(res=>  res?.productId !== id));
+        }
+        else{
+            console.log("else")
+                getProducts();
+               
             }
         await sleep(500)
         setLoading(false);
@@ -126,14 +135,16 @@ const useProducts = () => {
         setReviewData(response);
     }
 
-    const searchResults = async (keyword,category,page)=>{
+    const searchResultss= async (data)=>{
         if (loading) return;
         setLoading(true);
-        const response = await searchResults(keyword,category,page);
-        setLoading(false);
+        const response = await searchResults(data);
         await sleep(300);
-        setReviewData(response);
+        setLoading(false);
+        setProducts(response);
     }
+
+    
 
 
     return {
@@ -153,7 +164,8 @@ const useProducts = () => {
         fetchProductsByCategory,
         getProductMajorDetailss,
         updateProductInfo,
-        searchResults,
+        searchResultss,
+        getProductList,
     }
 
 

@@ -33,9 +33,18 @@ export const getAllOrders = async () => {
 export const cancelOrder = async (request) => {
     setToken(Cookies.get('JWT'))
     try {
-        // Implement the cancellation logic if available in the backend
-        // Replace the 'return null;' line with the cancellation logic
+
         return null;
+    } catch (error) {
+        handleError(error);
+    }
+};
+
+export const getOrderItemTrackingData = async (trackingId) => {
+    setToken(Cookies.get('JWT'))
+    try {
+        const response = await instance.get('/getTrackingData',{params:{trackingId}});
+        return response.data;
     } catch (error) {
         handleError(error);
     }

@@ -138,6 +138,7 @@ const LoginUI = () => {
 
 const LoginInput = ({ isPending, setIsPending,gLoginRef,fbLoginRef }) => {
   const inputRef = React.useRef(null);
+  const passwordRef = React.useRef(null);
   const submitRef = React.useRef(null);
   const [errorFields, setErrorFields] = useState({});
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -184,6 +185,15 @@ const LoginInput = ({ isPending, setIsPending,gLoginRef,fbLoginRef }) => {
     inputRef.current.focus();
   }, []);
 
+  useEffect(() => {
+    if (errorFields.type === "email") {
+      inputRef.current.focus();
+    } else if (errorFields.type === "password") {
+      passwordRef.current.focus();
+    }
+  }, [errorFields]);
+  
+
   async function LoginUser() {
     setIsPending(true);
     const formsData = new FormData();
@@ -203,7 +213,7 @@ const LoginInput = ({ isPending, setIsPending,gLoginRef,fbLoginRef }) => {
         setShowLoginButton(false);
       }, 2000);
     } else {
-      setErrorFields({ ...errorFields, response: auth?.message });
+      setErrorFields({ ...errorFields,type:auth.type, response: auth?.message });
       setIsPending(false);
       setFormSubmitted(false);
       console.log(auth)
@@ -261,6 +271,7 @@ const LoginInput = ({ isPending, setIsPending,gLoginRef,fbLoginRef }) => {
               <input
                 type="email"
                 name="email"
+                className={` ${errorFields.email  || errorFields.type ==='email'  ? "error-text":""}`}
                 placeholder="Example@mail.com"
                 onChange={handelformChange}
                 value={formData.email}
@@ -283,7 +294,9 @@ const LoginInput = ({ isPending, setIsPending,gLoginRef,fbLoginRef }) => {
                 <input
                   type={passwordVisible ? "text" : "password"}
                   name="password"
+                  className={` ${errorFields.password || errorFields.type==="password" ? "error-text":""}`}
                   placeholder="********"
+                  ref={passwordRef}
                   value={formData.password}
                   onChange={handelformChange}
                 />

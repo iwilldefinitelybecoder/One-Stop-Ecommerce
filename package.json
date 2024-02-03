@@ -1,7 +1,7 @@
 {
   "name": "onestop-fronted",
   "private": true,
-  "version": "0.1.8",
+  "version": "1.4.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -16,6 +16,7 @@
     "@mui/lab": "^5.0.0-alpha.158",
     "@mui/material": "^5.15.2",
     "@mui/styled-engine-sc": "^6.0.0-alpha.4",
+    "@mui/system": "^5.15.6",
     "@react-oauth/google": "^0.11.1",
     "@react-pdf/renderer": "^3.3.2",
     "@stripe/react-stripe-js": "^2.3.2",

@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { ordersListIcon } from "../../../assets/icons/png/user-page-icons/data";
 import "./addproduct.css";
 import { trashbinIcon } from "../../../assets/icons/png/toolbar1/data";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import MessagesBox from "../../../components/body/Messages/MessagesBox";
 import {
   addProduct,
+  getEditProductData,
   getProductDetails,
   updateProductDetails,
 } from "../../../service/ProductServices";
@@ -20,7 +21,6 @@ import {
 import { getAllWarehouses } from "../../../service/LogisticServices/wareHouseService";
 import ExtraAttributes from "./ExtraAttributes";
 import { categoryTagMapping } from "../../../data/cartproducts";
-
 
 const AddProducts = () => {
   const inputRef = React.useRef(null);
@@ -40,9 +40,10 @@ const AddProducts = () => {
   const [submitform, setSubmitForm] = useState(false);
   const [wareHouse, setWareHouse] = useState([]);
   const [extraAttributes, setExtraAttributes] = useState([{}]);
-  const [productTagsList,setProductTagsList] = useState([]);
+  const [productTagsList, setProductTagsList] = useState([]);
+  const [oldImages, setOldImages] = useState([]);
+  const navigate = useNavigate();
 
-  
   const [formData, setFormData] = useState({
     name: "",
     category: "",
@@ -57,16 +58,18 @@ const AddProducts = () => {
     wareHouse: "",
     thumbnail: "",
   });
+  
+  useEffect(() => {
+    setProductTagsList(categoryTagMapping[formData.category]);
+    setFormData((prev) => ({ ...prev, tags: [] }));
+  }, [formData.category]);
 
-  useEffect(()=>{
-      setProductTagsList(categoryTagMapping[formData.category])
-      setFormData(prev=>({...prev,tags:[]}))
-  },[formData.category])
-
-  useEffect(()=>{
-    const newArr = categoryTagMapping[formData.category]?.filter(tag=>!formData?.tags?.includes(tag))
-    setProductTagsList(newArr)
-  },[formData.tags])
+  useEffect(() => {
+    const newArr = categoryTagMapping[formData.category]?.filter(
+      (tag) => !formData?.tags?.includes(tag)
+    );
+    setProductTagsList(newArr);
+  }, [formData.tags]);
 
   useEffect(() => {
     if (params !== undefined) {
@@ -90,15 +93,6 @@ const AddProducts = () => {
 
   useEffect(() => {
     if (Object.keys(errorFields).length === 0) {
-      const newProduct = {
-        name: formData.name,
-        category: formData.category,
-        description: formData.description,
-        stock: formData.stock,
-        tags: formData.tags,
-        regularPrice: formData.regularPrice,
-        // ...
-      };
       postFormData();
 
       setFormData({
@@ -123,7 +117,7 @@ const AddProducts = () => {
   }, [submitform]);
 
   const fetchProductDetails = async (params) => {
-    return await getProductDetails(params);
+    return await getEditProductData(params);
   };
 
   const feedDataToForm = (product) => {
@@ -134,15 +128,16 @@ const AddProducts = () => {
       stock: product?.stock,
       regularPrice: product?.regularPrice,
       salePrice: product?.salePrice || 0,
-      wareHouse: product?.wareHouse,
+      wareHouse: product?.wareHouseId,
       brand: product?.brand,
       thumbnail: product?.thumbnail,
+      tags: product?.tags,
     });
 
     setExtraAttributes(
       Array.isArray(product?.extraAttributes) ? product?.extraAttributes : [{}]
     );
-    setImage(product?.imagesURL);
+    setOldImages(product?.image);
 
     setTag({ name: "tags", value: product?.tags });
     setSalePriceActive(product?.salePrice !== 0);
@@ -168,6 +163,11 @@ const AddProducts = () => {
     setImagePreview(URL.createObjectURL(image[index]));
   };
 
+  const handelOldImageOpen = (e, index) => {
+    setViewImage(true);
+    setImagePreview(oldImages[index]);
+  };
+
   const closeImageViewer = () => {
     setViewImage(false);
     setImagePreview([]);
@@ -177,7 +177,7 @@ const AddProducts = () => {
     e.preventDefault();
     let timerId;
     clearTimeout(timerId);
-    if (image.length > 4) {
+    if (image.length > 4 || image.length + oldImages.length > 4) {
       setErrorFields((prev) => ({
         ...prev,
         imageLimit: "You can upload only 5 images",
@@ -207,6 +207,10 @@ const AddProducts = () => {
       ...prev,
       images: prev.images.filter((img, i) => i !== index),
     }));
+  };
+
+  const handelOldImageDelete = (index) => {
+    setOldImages((prev) => prev.filter((img, i) => i !== index));
   };
 
   const handelFormImgChange = (file) => {
@@ -258,7 +262,7 @@ const AddProducts = () => {
 
   const handelTagsAdd = (e) => {
     e.preventDefault();
-    const {name,value} = e.target;
+    const { name, value } = e.target;
     if (value === "") {
       setErrorFields((prev) => ({ ...prev, tags: "Please enter a tag" }));
       return;
@@ -268,9 +272,7 @@ const AddProducts = () => {
     }
     setFormData((prev) => ({
       ...prev,
-      [name]: Array.isArray(prev.tags)
-        ? [...prev.tags, value]
-        : [value],
+      [name]: Array.isArray(prev.tags) ? [...prev.tags, value] : [value],
     }));
     // setTag((prev) => ({
     //   ...prev,
@@ -280,7 +282,7 @@ const AddProducts = () => {
 
   const handelTagsDelete = (e, index) => {
     e.preventDefault();
-    
+
     setFormData((prev) => ({
       ...prev,
       tags: prev.tags.filter((_, i) => i !== index),
@@ -297,7 +299,6 @@ const AddProducts = () => {
 
     return combinedObject;
   };
-  console.log(wareHouse);
 
   async function postFormData() {
     const formsData = new FormData();
@@ -312,21 +313,35 @@ const AddProducts = () => {
     formsData.append("wareHouseId", formData.wareHouse);
     formsData.append("brand", formData.brand);
     formsData.append("extraAttributes", fillExtraAttributes());
-    const imageData = new FormData();
+    if (
+      typeof formData.thumbnail === "string" &&
+      formData.thumbnail.length > 1
+    ) {
+      formsData.append("thumbnail", formData.thumbnail);
+    } else if (formData.thumbnail !== null) {
+      formsData.append(
+        "thumbnailFile",
+        formData.images[parseInt(formData.thumbnail)]
+      );
+    }
 
-    formData.images.forEach((img, index) => {
-      formsData.append(`images`, img);
-    });
+  
 
     let response;
 
     if (editProduct) {
+      formsData.append("existingImages", oldImages);
+
       response = await updateProductDetails(params, formsData);
     } else {
+    
       response = await addProduct(formsData);
     }
     if (response) {
       setResponseMessage("successfully added product");
+      setTimeout(() => {
+        navigate("/vendor/products");
+      }, 3000);
       setFormSubmitted(true);
       let timerId;
       timerId !== null && clearTimeout(timerId);
@@ -349,19 +364,22 @@ const AddProducts = () => {
     if (formData.description === null || formData.category === "") {
       errorList.description = "Please enter a description";
     }
-    if (formData.stock === 0) {
+    if (formData.stock === 0 || formData.stock === "") {
       errorList.stock = "Please enter a stock";
     }
     if (formData.tags === null || formData.category === "") {
       errorList.tags = "Please enter a tags";
     }
-    if (formData.regularPrice === 0) {
+    if (formData.regularPrice === 0 || formData.regularPrice === "") {
       errorList.regularPrice = "Please enter a regular price";
     }
     if (formData.images?.length === 0) {
       errorList.images = "Please upload a image";
     }
-    if (salePriceActive && !formData.salePrice === 0) {
+    if (
+      (salePriceActive && formData.salePrice === 0) ||
+      formData.salePrice === ""
+    ) {
       errorList.salePrice = "Please enter a sale price";
     }
     if (
@@ -377,7 +395,7 @@ const AddProducts = () => {
       errorList.wareHouse = "Please select a warehouse";
     }
     if (
-      wareHouse?.find((item) => item.wareHouseId === formData.wareHouse)
+      wareHouse?.find((item) => item.warehouseId === formData.wareHouse)
         ?.storageLeft < formData.stock
     ) {
       errorList.stock = "Stock cannot be greater than warehouse storage";
@@ -513,74 +531,128 @@ const AddProducts = () => {
                       accept="image/*"
                     />
                   </div>
-                  <div className="img-type-size">
+                  <div className="img-type-size ">
                     <span className="text-xs text-slate-400">
                       Upload 280 * 280 image
                     </span>
                   </div>
                 </div>
               </div>
-              {image?.length !== 0 && (
-                <div className="img-display-field space-y-2">
-                  <span className=" font-semibold">
-                    Select An Image for Thumbnail
-                  </span>
-                  <RadioGroup
-                    aria-labelledby="demo-radio-buttons-group-label"
-                    name="set-thumbnail"
-                    defaultValue={0}
-                    onChange={handelformChange}
-                    sx={{
-                      display: "flex",
-                      flexWrap: "wrap",
-                      flexDirection: "row",
-                    }}
-                  >
-                    {image?.map((img, index) => {
-                      return (
-                        <div
-                          className="img-cntr px-5 hover:bg-slate-100 hover:rounded-md flex-col py-2 h-24 w-40
-                         mx-3 mb-4 "
-                          key={index}
-                          onDoubleClick={(e) => {
-                            handelImageOpen(e, index);
-                          }}
-                        >
-                          <FormControlLabel
-                            value={index}
-                            control={
-                              <Radio
-                                sx={{
-                                  ":hover": { backgroundColor: "#FFF" },
-                                  padding: "0px",
-                                }}
-                              />
-                            }
-                            sx={{ position: "absolute", right: "-13px" }}
-                          />
-                          <div className=" flex justify-center">
-                            <img
-                              src={editProduct ? img : URL.createObjectURL(img)}
-                              alt=""
-                              className="uploaded-img h-16"
-                            />
-                          </div>
-                          <span>{trimFileName(img.name)}</span>
+              <RadioGroup
+                aria-labelledby="demo-radio-buttons-group-label"
+                name="thumbnail"
+                defaultValue={formData.thumbnail}
+                onChange={handelformChange}
+                sx={{
+                  display: "flex",
+                  flexWrap: "wrap",
+
+                  flexDirection: "column",
+                  margin: "0px 10px",
+                }}
+              >
+                {image?.length !== 0 && (
+                  <div className="img-display-field space-y-2 mb-5">
+                    <span className=" font-semibold">
+                      Select An Image for Thumbnail
+                    </span>
+                    <div className="flex flex-wrap">
+                      {image?.map((img, index) => {
+                        return (
                           <div
-                            className="delete-img-icon"
-                            title="delete-img"
-                            onClick={(e) => {
-                              handelDelete(index);
+                            className="img-cntr px-5 hover:bg-slate-100 hover:rounded-md flex-col py-2 h-24 w-40
+                        mx-3 mb-4 "
+                            key={index}
+                            onDoubleClick={(e) => {
+                              handelImageOpen(e, index);
                             }}
                           >
-                            <img src={trashbinIcon} className="h-4" />
+                            <FormControlLabel
+                              value={index}
+                              control={
+                                <Radio
+                                  sx={{
+                                    ":hover": { backgroundColor: "#FFF" },
+                                    padding: "0px",
+                                  }}
+                                />
+                              }
+                              sx={{ position: "absolute", right: "-13px" }}
+                            />
+                            <div className=" flex justify-center">
+                              <img
+                                src={URL.createObjectURL(img)}
+                                alt=""
+                                className="uploaded-img h-16"
+                              />
+                            </div>
+                            <span>{trimFileName(img.name)}</span>
+                            <div
+                              className="delete-img-icon"
+                              title="delete-img"
+                              onClick={(e) => {
+                                handelDelete(index);
+                              }}
+                            >
+                              <img src={trashbinIcon} className="h-4" />
+                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
-                  </RadioGroup>
-                </div>
-              )}
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+                {oldImages?.length !== 0 && (
+                  <div className="img-display-field space-y-2">
+                    <span className=" font-semibold">Existing Images</span>
+                    <div className="flex flex-wrap">
+                      {oldImages?.map((img, index) => {
+                        return (
+                          <div
+                            className="img-cntr px-5 hover:bg-slate-100 hover:rounded-md flex-col py-2 h-24 w-40
+                         mx-3 mb-4 "
+                            key={index}
+                            onDoubleClick={(e) => {
+                              handelOldImageOpen(e, index);
+                            }}
+                          >
+                            <FormControlLabel
+                              value={img}
+                              control={
+                                <Radio
+                                  sx={{
+                                    ":hover": { backgroundColor: "#FFF" },
+                                    padding: "0px",
+                                  }}
+                                />
+                              }
+                              sx={{ position: "absolute", right: "-13px" }}
+                            />
+                            <div className=" flex justify-center">
+                              <img
+                                src={img}
+                                alt=""
+                                className="uploaded-img h-16"
+                              />
+                            </div>
+
+                            <div
+                              className="delete-img-icon"
+                              title="delete-img"
+                              onClick={(e) => {
+                                handelOldImageDelete(index);
+                              }}
+                            >
+                              <img src={trashbinIcon} className="h-4" />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </RadioGroup>
+
               {errorFields.images && (
                 <span className=" ml-4 text-red-500 font-semibold">
                   *Upload atleast one Image
@@ -625,7 +697,7 @@ const AddProducts = () => {
                 </div>
                 {errorFields.stock && (
                   <span className=" ml-4 text-red-500 font-semibold">
-                    *the Stock cannot be empty
+                    {errorFields.stock}
                   </span>
                 )}
               </div>
@@ -733,7 +805,7 @@ const AddProducts = () => {
                     <label htmlFor="sale-price">WareHouse</label>
                   </div>
                   <Select
-                   disabled={editProduct}
+                    disabled={editProduct}
                     sx={{
                       marginBottom: 2,
                       maxWidth: 408,
@@ -763,7 +835,7 @@ const AddProducts = () => {
                           (item) => item.warehouseId === formData.wareHouse
                         )?.storageLeft
                       }
-                      &nbsp;Storage Left
+                      &nbsp;Storage Space Left
                     </span>
                   )}
                 </div>
@@ -775,10 +847,8 @@ const AddProducts = () => {
               </div>
               <div className="tag-div relative">
                 <div className="tag-div">
-                  
                   <label htmlFor="tag">Tags</label>
-                <Select
-                   disabled={editProduct}
+                  <Select
                     sx={{
                       marginBottom: 2,
                       maxWidth: 408,
@@ -801,8 +871,6 @@ const AddProducts = () => {
                       );
                     })}
                   </Select>
-                 
-                  
                 </div>
                 {errorFields.tags && (
                   <span className=" ml-4 text-red-500 font-semibold">
@@ -819,7 +887,10 @@ const AddProducts = () => {
                   {Array.isArray(formData.tags) &&
                     formData.tags.map((tag, index) => {
                       return (
-                        <div className="actual-tags shadow-md flex items-center " key={index}>
+                        <div
+                          className="actual-tags shadow-md flex items-center "
+                          key={index}
+                        >
                           <div className="tag-dot">
                             <div className="dot"></div>
                           </div>

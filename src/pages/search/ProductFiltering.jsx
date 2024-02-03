@@ -3,14 +3,15 @@ import Rating from "@mui/material/Rating";
 import Slider from "@mui/material/Slider";
 import Chip from "@mui/material/Chip";
 import PriceSlider from "./PriceRangeSlider";
-import { productCategories } from "../../data/cartproducts";
+import { categorys2, productCategories } from "../../data/cartproducts";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 
 const ProductFilter = () => {
   // State for selected filters
   const [selectedCategories, setSelectedCategories] = React.useState([]);
-  const [productCategory, setProductCategory] = React.useState(productCategories)
+  const [selectedCategory, setSelectedCategory] = React.useState(null);
+  const [productCategory, setProductCategory] = React.useState(categorys2)
   const [filterList, setFilterList] = React.useState({
     rating: 0,
     range: [0, 700000],
@@ -47,14 +48,24 @@ const ProductFilter = () => {
     // Perform filtering based on categories
   };
 
+  // const handleChange = (event) => {
+  //   const {
+  //     target: { value },
+  //   } = event;
+  //   const arr = [...filterList.categories];
+  //   arr.push(value);
+  //   setFilterList(prevFilterList => ({...prevFilterList, categories: arr}))
+  //   searchParams.set('category', arr);
+  //   setSearchParams(searchParams);
+  // }
+
   const handleChange = (event) => {
     const {
       target: { value },
     } = event;
-    const arr = [...filterList.categories];
-    arr.push(value);
-    setFilterList(prevFilterList => ({...prevFilterList, categories: arr}))
-    searchParams.set('category', arr);
+    setSelectedCategory(value);
+  
+    searchParams.set('category', value);
     setSearchParams(searchParams);
   }
 
@@ -98,7 +109,7 @@ const ProductFilter = () => {
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={selectedCategories[selectedCategories.length - 1]}
+              value={selectedCategory}
               label="productCategories"
               onChange={handleChange}
             >
@@ -111,7 +122,7 @@ const ProductFilter = () => {
             </Select>
           </FormControl>
         </div>
-        <div className="flex flex-wrap gap-2 max-h-[250px] overflow-scroll">
+        {/* <div className="flex flex-wrap gap-2 max-h-[250px] overflow-scroll">
           {filterList.categories?.map((category) => (
             <Chip
               key={category}
@@ -119,7 +130,7 @@ const ProductFilter = () => {
               onDelete={() => handleCategoryDelete(category)}
             />
           ))}
-        </div>
+        </div> */}
       </div>
 
       {/* Clear Filters Button */}

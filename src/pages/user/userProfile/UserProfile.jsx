@@ -7,7 +7,7 @@ import { EditProfileIcon, ProfileIcon } from "../../../components/headerLayout/t
 import NumberCount from "../../../components/body/UtilsComponent/NumberCount";
 import { formatNumber } from "../../../utils/utils";
 import { rightArrowIcon2 } from "../../../assets/icons/png/user-page-icons/data";
-import { convertToTimestamp, formatDateFromTimestamp } from "../../../utils/DisplayFormatters";
+import { convertToTimestamp, formatDateFromTimestamp, formatOrderedDate } from "../../../utils/DisplayFormatters";
 import AccountProvider, { AccountContext } from "../../../context/AccountProvider";
 import { fetchUserIcon } from "../../../service/AuthenticateServices";
 import { cameraIcon } from "../../../assets/icons/png/toolbar-icons/data";
@@ -30,7 +30,7 @@ function UserProfile() {
     }
     fetchOrdersInfo();
   },[])
-
+console.log(userInfo)
   useEffect(()=>{
     async function fetchUserDetails(){
       setLoading(true);
@@ -119,7 +119,7 @@ function UserProfile() {
                 </div>
                 <div className="order-table-row">
                 <span className=" text-sm text-slate-400">DOB</span><br />
-                  <span>{convertToTimestamp(userInfo?.dob)}</span>
+                  <span>{formatOrderedDate(userInfo?.dob || 0)}</span>
                 </div>
               </div>
               <div className=" w-full flex justify-end space-x-3 px-5 py-8 ">

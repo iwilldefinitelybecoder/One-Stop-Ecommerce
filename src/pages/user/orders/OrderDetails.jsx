@@ -14,7 +14,7 @@ const OrderDetails = () => {
   const [orderDetails, setOrderDetails] = React.useState({});
   const orderId = useParams().id;
 
-
+console.log("orderDetails", orderDetails)
 
   React.useEffect(() => {
     async function fetchOrderDetaisl() {

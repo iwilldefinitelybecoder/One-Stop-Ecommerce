@@ -21,7 +21,7 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
   const cardId = useParams("id")
   const page  = useMatch("/user/Payment-methods")
 
-    const [userAddress, setUserAddress] = React.useState({
+    const [cardData, setCardData] = React.useState({
         card: "",
         expireDate: "",
         name: "",
@@ -32,10 +32,10 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
       const {updateItem,addItem,loading,getCard} = useCard();
     
       const [cards, setCards] = React.useState([
-        mastercardIcon,
         visaIcon,
-        rupayIcon,
+        mastercardIcon,
         americanExpressIcon,
+        rupayIcon,
       ]);
       const [errorList, setErrorList] = React.useState({});
       const [cardValidity, setCardValidity] = React.useState({});
@@ -51,7 +51,7 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
 
       useEffect(() => {
         
-        if(userAddress.card && userAddress.expireDate && userAddress.name && userAddress.cvv){
+        if(cardData.card && cardData.expireDate && cardData.name && cardData.cvv){
             grantPermission(true);
         }else{
             grantPermission(false);
@@ -63,7 +63,7 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
           if(isEditing){
           async function fetchData(){
             const response = await getCard(cardId.id)
-            setUserAddress({
+            setCardData({
               card: response?.cardNumber,
               expireDate: response?.expireDate,
               name: response?.cardHolderName,
@@ -91,16 +91,14 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
     
       useEffect(() => {
         if (isSubmit) {
-          const addressStored = JSON.parse(localStorage.getItem("userAddress"));
-          if (Array.isArray(addressStored) && addressStored.length !== 0) {
-            const arr = [...addressStored];
-            arr.push(userAddress);
-            localStorage.setItem("userPayments", JSON.stringify(arr));
-          } else {
-            const arr = [];
-            arr.push(userAddress);
-            localStorage.setItem("userPa", JSON.stringify(arr));
-          }
+          setCardData({
+            card: "",
+            expireDate: "",
+            name: "",
+            cvv: "",
+            cardcompany: "",
+            payMethod:paymentMethod,
+          });
     
           setErrorList({});
           setIsSubmit(false);
@@ -112,6 +110,8 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
       useEffect(() => {
         if (isEditing || page || paymentMethod1 === "DEBITCARD") {
           setCollapsvalue(true);
+        }else{
+          setCollapsvalue(false);
         }
       }, [isEditing,page,paymentMethod1]);
           
@@ -219,33 +219,33 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
           value = handelCvvInput(e);
         }
         if (errorList[name]) setErrorList((prev) => ({ ...prev, [name]: "" }));
-        setUserAddress((prev) => ({ ...prev, [name]: value }));
+        setCardData((prev) => ({ ...prev, [name]: value }));
       };
     
       const cardType = (e) => {
         const { name, value } = e.target;
         if (value.length >= 2 && name === "card") {
           if (value[0] === "4") {
-            setUserAddress((prev) => ({ ...prev, cardcompany: 1 }));
+            setCardData((prev) => ({ ...prev, cardcompany: 0 }));
           } else if (value[0] === "5") {
-            setUserAddress((prev) => ({ ...prev, cardcompany: 0 }));
+            setCardData((prev) => ({ ...prev, cardcompany: 1 }));
           } else if (value[0] === "3") {
-            setUserAddress((prev) => ({ ...prev, cardcompany: 3 }));
+            setCardData((prev) => ({ ...prev, cardcompany: 2 }));
           } else if (
             (value[0] === "6" && value[1] === "0") ||
             (value[0] === "6" && value[1] === "5") ||
             (value[0] === "8" && value[1] === "1") ||
             (value[0] === "8" && value[1] === "2")
           ) {
-            setUserAddress((prev) => ({ ...prev, cardcompany: 2 }));
+            setCardData((prev) => ({ ...prev, cardcompany: 3 }));
           } else {
-            setUserAddress((prev) => ({ ...prev, cardcompany: "" }));
+            setCardData((prev) => ({ ...prev, cardcompany: "" }));
           }
         } else {
-          setUserAddress((prev) => ({ ...prev, cardcompany: "" }));
+          setCardData((prev) => ({ ...prev, cardcompany: "" }));
         }
       };
-    
+      
       const handleSubmit = (e) => {
         e.preventDefault();
         let timerId;
@@ -253,10 +253,10 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
         clearTimeout(timerId);
         clearTimeout(timerId2);
         const errors = {};
-        if (!userAddress.card) errors.card = "Card Number is required";
-        if (!userAddress.expireDate) errors.expireDate = "Expire Date is required";
-        if (!userAddress.name) errors.name = "Name is required";
-        if (!userAddress.cvv) errors.cvv = "Cvv is required";
+        if (!cardData.card) errors.card = "Card Number is required";
+        if (!cardData.expireDate) errors.expireDate = "Expire Date is required";
+        if (!cardData.name) errors.name = "Name is required";
+        if (!cardData.cvv) errors.cvv = "Cvv is required";
     
         setErrorList(errors);
         timerId = setTimeout(() => {
@@ -267,33 +267,30 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
           setIsSubmit(true);
         
         
-        const cardData = {
-          cardNumber:userAddress.card,
-          cardHolderName:userAddress.name,
-          expireDate:userAddress.expireDate,
-          cvc:userAddress.cvv,
-          cardType:userAddress.cardcompany,
+        const cardData2 = {
+          cardNumber:cardData.card,
+          cardHolderName:cardData.name,
+          expireDate:cardData.expireDate,
+          cvc:cardData.cvv,
+          cardType:cardData.cardcompany,
           cardId:cardId.id
         }
         if(isEditing !==null){
-          updateItem(cardData)
+          updateItem(cardData2)
           timerId2 = setTimeout(()=>{
             navigate('/user/payment-methods')
           },2000)
         }else{
-
-          addItem(cardData)
+          addItem(cardData2)
         }
       }
-      };
+    };
     
       const handlesubmitBtn = () => {
         forwardRef.current.click();
       };
     
       
-    
-      const handelConteiner1 = (e, index) => {};
     
       return (
         <>
@@ -302,17 +299,7 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
               <div className="payment-body-header1 rounded-md bg-white px-6 pt-6 shadow-lg border-b-2 border-b-slate-200">
                 <div className=" font-bold flex justify-between border-b-2 border-b-slate-200  pb-4 pt-1 ">
                   <div className="option-cntr space-x-3">
-                    {/* <input
-                      type="radio"
-                      name="payment"
-                      id="option"
-                      className=""
-                      disabled={paymentMethod===0?true:false}
-                      onClick={(e) => {
-                        handelConteiner1(e, 0);
-                        setPaymentMethod(e, 0);
-                      }}
-                    /> */}
+      
                     <FormControlLabel control={<Radio />} id="option" value="DEBITCARD" />
                     <label htmlFor="option">Credit or Debit Card</label>
                   </div>
@@ -332,7 +319,7 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
                     {isSubmit && (
                       <MessagesBox newMessage="CardDetails Saved successfully" />
                     )}
-                      <form onSubmit={e=>{e.preventDefault();handleSubmit(e)}}>
+                      <form onSubmit={handleSubmit}>
                     <div className={`${loading?"bg-slate-100":null} cntr1-sub  rounded-md`}>
                       <div className="details-header pb-5 pt-2">
                         <span className=" font-bold text-lg">Card Details</span>
@@ -345,7 +332,7 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
                                 type="text"
                                 className="card-input-box"
                                 name="card"
-                                value={userAddress.card}
+                                value={cardData.card}
                                 placeholder="0000 0000 0000 0000"
                                 maxLength={19}
                                 onChange={handleChange}
@@ -355,7 +342,7 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
                               />
                               <img
                                 src={
-                                  cards[userAddress.cardcompany] || creditCardIcon
+                                  cards[cardData.cardcompany] || creditCardIcon
                                 }
                                 className="card-image"
                               />
@@ -374,7 +361,7 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
                             <input
                               type="text"
                               placeholder="MM/YY"
-                              value={userAddress.expireDate}
+                              value={cardData.expireDate}
                               name="expireDate"
                               onChange={handleChange}
                               maxLength={5}
@@ -396,7 +383,7 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
                             <input
                               type="text"
                               placeholder="Name"
-                              value={userAddress.name}
+                              value={cardData.name}
                               name="name"
                               onChange={handleChange}
                             />
@@ -410,7 +397,7 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
                               <input
                                 type="text"
                                 placeholder="CVV"
-                                value={userAddress.cvv}
+                                value={cardData.cvv}
                                 name="cvv"
                                 onChange={handleChange}
                                 maxLength={3}
@@ -425,14 +412,16 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
                         </div>
     
                         <div className="flex justify-end">
-                          <input
+                          {/* <input
                             type="submit"
                             ref={forwardRef}
-                            style={{ display: "none" }}
-                          />
+                           hidden
+                          /> */}
                           <button className="Btn2"
+                          type="submit"
                           disabled={loading}
-                          onClick={handlesubmitBtn}>
+                          // onClick={handlesubmitBtn}
+                          >
                             Save
                           </button>
                         </div>

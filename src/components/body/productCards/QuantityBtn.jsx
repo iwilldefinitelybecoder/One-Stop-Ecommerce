@@ -1,7 +1,11 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { minusIcon, plusIcon } from '../../../assets/icons/img/products/data';
+import { AccountContext } from '../../../context/AccountProvider';
+
 
 const QuantityBtn = ({handelAddQuantity,handelMinusQuantity,handleChange,buttonDisableRef,itemDetail}) => {
+  const {setShowLoginButton,showLoginButton,account} = useContext(AccountContext)
+
   return (
     <div className="cart-quantity space-x-4 mt-4">
     <button
@@ -25,7 +29,7 @@ const QuantityBtn = ({handelAddQuantity,handelMinusQuantity,handleChange,buttonD
     />
     <button
       className="quantity-btn  ring-1 ring-light-pink rounded-md p-3 hover:bg-light-pink hover:text-white transition-colors"
-      onClick={handelAddQuantity}
+      onClick={(e)=>{account?handelAddQuantity(e):setShowLoginButton(true)}}
     >
       <img src={plusIcon} alt="" className="quantity-icon" />
     </button>

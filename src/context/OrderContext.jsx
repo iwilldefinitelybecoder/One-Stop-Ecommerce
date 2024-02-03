@@ -133,8 +133,6 @@ const OrderProvider = ({children}) => {
         getOrders()
         setMessage
         ({type: 'success', message: 'Order Placed Successfully'})
-        await sleep(3000);
-        resetOrderDetails()
         }
         else{
           setMessage

@@ -8,6 +8,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { rightArrowIcon2 } from "../../../assets/icons/png/user-page-icons/data";
 import useAddresses from "../../../CustomHooks/AddressHooks";
 import SelectAddress from "./SelectAddress.jsx";
+import { useOrders } from "../../../context/OrderContext.jsx";
 
 
 const Details = () => {
@@ -19,6 +20,7 @@ const Details = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [addNewCard, setAddnewCard] = useState(false);
   const forwardRef = useRef();
+  const {orderDetails} = useOrders();
   const [save, setSave] = useState();
 
   const handelPushBtn = () => {
@@ -26,11 +28,14 @@ const Details = () => {
 
   }
 
-  const shippingAddress1 = searchParams.get("shippingAddressId");
-  const billingAddress = searchParams.get("billingAddressId");
+  const shippingAddress1 = searchParams.get("shippingAddressId") || orderDetails?.shippingAddressId;
+  const billingAddress = searchParams.get("billingAddressId") || orderDetails?.billingAddressId;
   useEffect(() => {
     if (shippingAddress1 && billingAddress) {
       setMoveToNextPage(true);
+      searchParams.set("shippingAddressId", shippingAddress1);
+      searchParams.set("billingAddressId", billingAddress);
+      setSearchParams(searchParams);
     }
 
   }

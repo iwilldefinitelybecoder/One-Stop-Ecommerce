@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 
 const URI = "http://localhost:8000/api/v1";
 const host = window.location.protocol+"//"+window.location.hostname+":"+window.location.port;
-console.log(host)
+
 
 export const login = async (data) => {
   try {
@@ -15,19 +15,22 @@ export const login = async (data) => {
     );
     return { success: true, response };
   } catch (error) {
-    console.log(error)
+    console.log(error.response)
     if (!error?.response) {
       return { success: false, message: "No Server Response" };
     } else if (error?.response.status === 400) {
       return { success: false, message: "Missing Username or Password" };
     } else if (error?.response.data === "Bad credentials") {
-      return { success: false, message: "Invalid Username or Password" };
+      return { success: false,type:'password', message: "Invalid Username or Password" };
     } else if (error?.response.status === 403) {
       return { success: false, message: "Email or Password is incorrect" };
     }else if(error?.response.status === 404){
         if(error?.response.data === "NOT_VERIFIED"){
           return { success: false, message: "User Email Not Verified" };
     }
+    if(error?.response.data === "User not found"){
+      return { success: false,type:'email', message: "Email Not Found" };
+}
   }
     else  {
       return { success: false, message: "Login Failed" };

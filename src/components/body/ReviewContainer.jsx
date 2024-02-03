@@ -4,6 +4,7 @@ import { LinearProgress } from "@mui/material";
 import { Rating } from "@mui/material";
 import { getTimeDifference } from "../../utils/validateDate";
 import { fetchUserIcon } from "../../service/AuthenticateServices";
+import ImageGallery from "../../pages/product/ImageGallery";
 
 const ReviewContainer = ({ review }) => {
   let [userIcon, setUserIcon] = useState(null);
@@ -20,7 +21,7 @@ const ReviewContainer = ({ review }) => {
     fetchUserIconn();
   }, []);
   
-
+console.log(review)
   return (
     <div
       className=" review-cntr  bg-white px-3 pt-5 pb-5 h-auto rounded-md ring-light-pink ring-1 items-start justify-center "
@@ -46,9 +47,16 @@ const ReviewContainer = ({ review }) => {
           </div>
         </div>
       </div>
-      <div className="review-description mt-5">
+      <div className="review-description flex justify-between w-full mt-5">
+        <div>
+
         <span className=" pb-2 font-semibold ">{review?.headline}</span><br />
         <p className=" text-slate-600 pt-1">{review?.review}</p>
+        </div>
+        <div>
+          <span></span>
+          <ImageGallery images={review?.images} />
+        </div>
       </div>
     </div>
   );

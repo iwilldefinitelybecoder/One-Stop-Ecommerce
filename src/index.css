@@ -190,10 +190,10 @@ input[type='radio']:checked:after {
     @apply  bg-light-pink-100 font-semibold shadow-md text-text-pink rounded-8 px-6 py-1  hover:bg-hover-light-pink hover:text-light-pink transition-colors leading-7 tracking-wider;
   }
   .Btn2 {
-    @apply  bg-white font-semibold  text-light-pink rounded-8 px-6 py-1.5  hover:bg-light-pink hover:text-white transition-colors leading-7 tracking-wider ring-1 ring-light-pink my-2;
+    @apply  bg-white font-semibold shadow-xl  text-light-pink rounded-8 px-6 py-1.5  hover:bg-light-pink hover:text-white transition-colors leading-7 tracking-wider ring-1 ring-light-pink my-2;
   }
   .Btn3 {
-    @apply  bg-light-pink  font-semibold  text-white rounded-8 px-6 py-1.5  hover:bg-dark-pink hover:text-white transition-colors leading-7 tracking-wider ring-1 ring-light-pink my-2;
+    @apply  bg-light-pink  font-semibold shadow-lg  text-white rounded-8 px-6 py-1.5  hover:bg-dark-pink hover:text-white transition-colors leading-7 tracking-wider ring-1 ring-light-pink my-2;
   }
   .Btndisabled{
     @apply  bg-slate-300 font-semibold shadow-md text-slate-600 rounded-8 px-6 py-1  leading-7 tracking-wider cursor-not-allowed;

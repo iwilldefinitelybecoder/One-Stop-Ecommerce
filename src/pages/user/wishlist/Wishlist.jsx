@@ -7,6 +7,7 @@ import './wishlist.css'
 import { noDataImg } from '../../../assets/icons/img/Illistrations/data';
 import { useMatch, useNavigate } from 'react-router';
 import Loader from '../../../components/body/Loader';
+import { wishlistIcon } from '../../../assets/icons/png/user-page-icons/data';
 
 const CustomGridItem = styled(Grid)(({ theme }) => ({
   border: '1px solid transparent', // Initial border
@@ -38,6 +39,10 @@ function Wishlist() {
 
   return (
     <>
+     <div className="orders-pg-header ">
+            <img src={wishlistIcon} className=" h-6 mt-2 mr-2" />
+            <span className=" font-semibold ">My Wishlist</span>
+          </div>
     {
       loading?
       <Loader/>

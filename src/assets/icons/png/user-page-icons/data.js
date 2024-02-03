@@ -13,6 +13,7 @@ import uploadImg from './upload-img.png';
 import list from './list.png';
 import shoppingCart from './shopping-cart.png'; 
 import emptyCart2 from './empty-cart.png';
+import wishlist from './wishlist.png';
 
 export const creditcardIcon = creditcard;
 export const likeIcon = like;
@@ -29,3 +30,4 @@ export const uploadImgIcon = uploadImg;
 export const listIcon = list;
 export const shoppingCartIcon = shoppingCart;
 export const emptyCartIcon2= emptyCart2;
+ export const wishlistIcon = wishlist;

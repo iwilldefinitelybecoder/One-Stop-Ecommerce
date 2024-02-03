@@ -4,31 +4,68 @@ import useProducts from "../../CustomHooks/ProductsHook";
 import { OrderPaging } from "../user/orders/Orders";
 import { CircularProgress } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
+import { useDebounce } from "use-debounce";
 
 const SearchResults = () => {
     const [searchParams, setSearchParams] = useSearchParams();
-  const { searchResults, products,loading } = useProducts();
+    const [loadings, setLoadings] = React.useState(false);
+  const { searchResultss, products,loading } = useProducts();
   const [currnetPage, setCurrentPage] = React.useState(searchParams.get("page") || 0);
+  const category = searchParams.get("category");
+  const rating = searchParams.get("rating");
+  const priceRange = searchParams.get("range");
+  const query = searchParams.get("q");
   let totalpages = Math.ceil(products?.length / 10);
   let startIndex = currnetPage * 10;
   let endIndex = (currnetPage + 1) * 10;
   let currentOrders = products?.slice(startIndex, endIndex);
-
+  console.log(category)
   useEffect(() => {
     // fetch results 
     const keyword = searchParams.get('q');
     
     async function fetchProducts() {
-      await searchResults(keyword,null,currnetPage);
-       totalpages = Math.ceil(products?.length / 10);
+    
+      const range = priceRange ? priceRange.split(",") : [0, 100000];
+      range[0] = parseFloat(range[0]);
+      range[1] = parseFloat(range[1]);
+      const data = {
+        keyword,
+        category,
+        averageRating: rating,
+        priceRange: range,
+        page: currnetPage,
+      }
+      await searchResultss(data);
+      let product = products.filter((product) => {
+        if(product?.salePrice > 0){
+        if (product?.salePrice >= range[0] && product?.salePrice <= range[1]) {
+          console.log("product",product)
+          return product;
+        }
+      }else{
+        if(product?.regularPrice >= range[0] && product?.regularPrice <= range[1]){
+          return product;
+        }
+      }
+      });
+       totalpages = Math.ceil(product?.length / 10);
       startIndex = currnetPage * 10;
       endIndex = (currnetPage + 1) * 10;
-      currentOrders = products?.slice(startIndex, endIndex);
+      currentOrders = product?.slice(startIndex, endIndex);
+      setLoadings(false);
     }
-    fetchProducts();
+    setLoadings(true);
+    const debounceFetch = setTimeout(() => {
+      fetchProducts();
+    }, 500);
     searchParams.set("page", currnetPage);
     setSearchParams(searchParams);
-  }, []);
+
+    return () => {
+      clearTimeout(debounceFetch);
+    };
+  }, [currnetPage,query,category,rating,priceRange]);
 
   const handelPageChange = (page) => {
     if (page < 0 || page > totalpages - 1) return;
@@ -46,13 +83,13 @@ const SearchResults = () => {
             <span className='text-lg font-semibold'>Showing 1-{products?.length} of {products?.length} results</span>
         </div>
         {
-            loading ? (
-                <div className='text-center h-full text-lg flex justify-center items-center bg-white font-semibold my-5 rounded-lg shadow-lg'>
+            loading || loadings ? (
+                <div className='text-center h-[60vh] text-lg flex justify-center items-center bg-white font-semibold my-5 rounded-lg shadow-lg'>
                     <span className=" italic font-semibold text-slate-500"><CircularProgress/></span>
                 </div>
             ) :
 
-        currentOrders?.length !== 0 ? (
+        currentOrders?.length !== 0 && products !== undefined ? (
            
       <div className=" h-auto my-5 ">
         <ProductGrid products={products} />

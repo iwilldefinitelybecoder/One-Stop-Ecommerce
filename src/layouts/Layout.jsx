@@ -23,7 +23,7 @@ function Layout({ children }) {
 
   const navigate = useNavigate();
   const page  = useMatch('/checkout/*');
-  console.log(page)
+  const page2  = useMatch('/product/:id');
 
   const token = Cookies.get("JWT");
 
@@ -59,9 +59,10 @@ function Layout({ children }) {
   }
     , [pathname,search]);
 
-  useEffect(()=>{
-    resetOrderDetails();
-  },[page?.pathnameBase])
+  // useEffect(()=>{
+  //   if(page2?.pathnameBase === "/product")return;
+  //   resetOrderDetails();
+  // },[page?.pathnameBase,page2?.pathnameBase])
 
 
  

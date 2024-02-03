@@ -23,17 +23,19 @@ import useWishlist from "../../../../CustomHooks/WishListHook";
 import Lottie from "react-lottie-player";
 import { heartMarkGif } from "../../../../assets/icons/json/data";
 import QuickProductView from "../../QuickProductView";
+import useMessageHandler from "../../Messages/NewMessagingComponent";
 
 
 const FlashDealsGridCards = ({ productInfo }) => {
   const {cart,itemExist,updateItem,addItemToCart,removeItem} = useCart()
   const {setShowLoginButton,showLoginButton,account} = useContext(AccountContext)
   const {productId,addToWishlist,removeFromWishlist,moveToCart} = useWishlist();
+  const {handleMessage,getMessageComponents} =useMessageHandler();
   
   const productExist =productId!==0? productId?.includes(productInfo?.productId):false
   const page = useMatch('/user/Wishlist')
 
-  
+
 
   const [quickView, setQuickView] = useState(false);
 
@@ -41,9 +43,9 @@ const FlashDealsGridCards = ({ productInfo }) => {
   
 
   const offerPercentage = useMemo(()=>{return productInfo?.salePrice? (
-        ((productInfo.regularPrice - productInfo?.salePrice) / productInfo?.regularPrice) *
+       ((productInfo.regularPrice - productInfo?.salePrice) / productInfo?.regularPrice) *
         100
-      )?.toFixed(0)
+      )?.toFixed(1)
       : 0;
   },[productInfo])
       
@@ -99,6 +101,10 @@ const handelQuickViewClose=()=>{
   const handelAddQuantity = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    if(page && itemDetail?.productQuantity === 0){
+    moveToCart(itemDetail?.productId)
+    return;
+    }
     const total = itemDetail.productQuantity + 1;
     setItemDetail({
       ...itemDetail,
@@ -110,7 +116,7 @@ const handelQuickViewClose=()=>{
   const handelMinusQuantity = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (itemDetail.itemQuantity > 1) {
+    if (itemDetail.productQuantity > 1) {
       // buttonDisableRef.current.disabled = true;
       const total = itemDetail.productQuantity - 1;
       setItemDetail({
@@ -143,11 +149,12 @@ const handelQuickViewClose=()=>{
       } else {
         data.quantity = total
         if(page){
-          moveToCart(itemDetail?.productId)
+          
       
         }else{
 
           setAddNewItem(data);
+          
         }
 
       }
@@ -194,6 +201,7 @@ const handelQuickViewClose=()=>{
 
   return (
     <>
+    {getMessageComponents()}
       <div
         className="flash-grid-body  justify-between w-full h-full  "
         onMouseEnter={handelMouseEnter}
@@ -214,6 +222,7 @@ const handelQuickViewClose=()=>{
           <ItemImageSlider
             productImages={productInfo?.imageURL}
             mouseHover={mouseHover}
+            thumbNail={productInfo?.thumbnail}
           />
         </div>
 
@@ -271,6 +280,7 @@ const handelQuickViewClose=()=>{
                         className="quantity-input w-7 py-1 rounded-lg font-semibold text-center text-sm focus:ring-1 focus:ring-light-pink  "
                         pattern="[0-9]{0,1}"
                         maxLength={1}
+                        onClick={(e) => e.stopPropagation()}
                         value={itemDetail?.productQuantity}
                         onChange={(e) => {
                           handleChange(e, itemDetail?.productQuantity);
@@ -325,12 +335,12 @@ const handelQuickViewClose=()=>{
           <div className="view-hover-icon " role="button" title="view-product" onClick={(e)=>{
             e.preventDefault()
             e.stopPropagation()
-            setQuickView(true)}}>
+            setQuickView(!quickView)}}>
             <img src={viewIcon} className=" h-5" />
-            <QuickProductView open={quickView} handelClose={handelQuickViewClose} productDetails={productInfo} />
           </div>
         </div>
       </Link>
+            <QuickProductView open={quickView} handelClose={handelQuickViewClose} productDetails={productInfo} />
       </div>
     </>
   );
@@ -340,7 +350,7 @@ const reduxCart = (state) => ({
   itemsDetails: state.cartItems,
 });
 
-const ItemImageSlider = ({ productImages, mouseHover }) => {
+const ItemImageSlider = ({ productImages, mouseHover,thumbNail }) => {
 
   return !mouseHover ? (
     <div
@@ -348,7 +358,7 @@ const ItemImageSlider = ({ productImages, mouseHover }) => {
     >
       <div className="flash-grid-img h-40 w-40">
         <img
-          src={ productImages && productImages[0]}
+          src={thumbNail?thumbNail: productImages && productImages[0]}
           
           style={{ objectFit: "cover" }}
         />

@@ -9,12 +9,16 @@ const useCard = () => {
     useEffect(() => {
       fetchAllCards();
     }, []); 
-  
+    console.log("cards", cards)
     const fetchAllCards = async () => {
       if(!account)return
       const data = await getAllCards();
       setCards(data);
     };
+
+    const getAllCardsList = () => {
+      return cards;
+    }
   
     const updateItem = async (request) => {
       if(loading)return
@@ -62,7 +66,8 @@ const useCard = () => {
       addItem,
       setDefault,
       getCard,
-      loading
+      loading,
+      getAllCardsList
     };
   };
   

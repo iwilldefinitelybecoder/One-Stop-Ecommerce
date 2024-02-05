@@ -27,6 +27,9 @@ export const addProduct = async (data) => {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
+            timeout:60000,
+            
+
         });
 
         if (response.status === 200 ) {
@@ -36,6 +39,7 @@ export const addProduct = async (data) => {
         }
     } catch (error) {
         handleError(error);
+        return error.response.data;
     }
 };
 
@@ -281,7 +285,8 @@ export const updateProductDetails  = async (productId,data) =>{
                     try {
                         const response = await instance.post('/updateProductDetails',data, 
                         {params: {productId:productId},
-                        withCredentials: true
+                        withCredentials: true,
+                        timeout:60000,
                     },
                         
                         );

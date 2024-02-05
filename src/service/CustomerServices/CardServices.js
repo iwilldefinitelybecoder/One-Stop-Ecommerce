@@ -57,7 +57,7 @@ export const addCardItem = async (request) => {
     try {
         const response = await instance.post('/addItem', request);
         return response.data;
-    } catch (error) {
+    } catch (error) { 
         handleError(error);
     }
 };

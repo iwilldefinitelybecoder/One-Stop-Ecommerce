@@ -81,29 +81,29 @@ const OrderInfo = ({ orderDetails }) => {
           <div className="sub-total-section flex justify-between my-2 mx-2">
             <span className="text-slate-500 ">Subtotal:</span>
             <span className="text-xl font-bold">
-              &#8377;{orderSummary?.itemsTotal}
+              &#8377;{orderSummary?.itemsTotal.toFixed(2)}
             </span>
           </div>
           <div className="shipping-section flex justify-between  my-2 mx-2">
             <span className="text-slate-500 ">Shipping:</span>
             <span className="text-xl font-bold">
-              &#8377;{orderSummary?.shippingTotal}
+              &#8377;{orderSummary?.shippingTotal.toFixed(2)}
             </span>
           </div>
           <div className="tax-section flex justify-between  my-2 mx-2">
             <span className="text-slate-500 ">Tax:</span>
-            <span className="text-xl font-bold">&#8377;{orderSummary?.taxTotal}</span>
+            <span className="text-xl font-bold">&#8377;{orderSummary?.taxTotal.toFixed(2)}</span>
           </div>
           <div className="discount-section flex justify-between  my-2 mx-2">
             <span className="text-slate-500 ">Discount:</span>
             <span className="text-xl font-bold">
-              &#8377;{orderSummary?.discount || 0}
+              &#8377;{orderSummary?.discount.toFixed(2) || 0}
             </span>
           </div>
         </div>
 
         <div className="total-section flex justify-end">
-          <span className="text-3xl font-bold">&#8377;{orderSummary?.grandTotal}</span>
+          <span className="text-3xl font-bold">&#8377;{orderSummary?.grandTotal.toFixed(2)}</span>
         </div>
         <div className="total-section flex justify-between mt-5">
           <span className="text-slate-500 font-semibold">Payment Method:</span>

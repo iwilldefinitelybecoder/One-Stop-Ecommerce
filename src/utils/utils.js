@@ -1,7 +1,7 @@
 export const sleep = async (ms) =>{return new Promise(resolve => setTimeout(resolve, ms))}
 
 export const char0ToUpper = (str) => {
-    return str?.charAt(0).toLocaleUpperCase() + str?.slice(1);
+    return str?.charAt(0)?.toLocaleUpperCase() + str?.slice(1);
 }
 
 // Function to get the stock status message

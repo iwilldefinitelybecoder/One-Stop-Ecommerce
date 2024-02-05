@@ -34,7 +34,7 @@ const BuyNowCard  = ({ open, setOpen, productDetails }) => {
       setOpen(false);
     };
 
-    console.log(orderDetails.buyNow);
+    console.log(orderDetails);
 
 
   

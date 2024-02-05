@@ -159,7 +159,7 @@ function ReviewSubmission() {
               </Link>
             </div>
           </div>
-          <span className=" text-slate-400 italic font-semibold">Purchased On</span><span className="font-semibold">&nbsp;{formatOrderedDate(11231209831)}</span>
+          <span className=" text-slate-400 italic font-semibold">Purchased On</span><span className="font-semibold">&nbsp;{formatOrderedDate(11231209831 || 0)}</span>
           </div>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>

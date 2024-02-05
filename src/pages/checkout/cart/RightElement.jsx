@@ -54,19 +54,19 @@ useEffect(()=>{
                   <div className="sub-total-section flex justify-between my-2 mx-2">
                     <span className="text-slate-500 ">Subtotal:</span>
                     <span className="text-xl font-bold">&#8377;
-                      {cartEstimate?.cartTotal}
+                      {cartEstimate?.cartTotal.toFixed(2)}
                     </span>
                   </div>
                   <div className="shipping-section flex justify-between  my-2 mx-2">
                     <span className="text-slate-500 ">Shipping:</span>
                     <span className="text-xl font-bold">
-                      {`${cartEstimate?.shipping }` || "-"}
+                      {`${cartEstimate?.shipping.toFixed(2) }` || "-"}
                     </span>
                   </div>
                   <div className="tax-section flex justify-between  my-2 mx-2">
                     <span className="text-slate-500 ">Tax:</span>
                     <span className="text-xl font-bold">
-                      {cartEstimate?.tax || "-"}
+                      {cartEstimate?.tax.toFixed(2) || "-"}
                     </span>
                   </div>
                   <div className="discount-section flex justify-between  my-2 mx-2">
@@ -95,25 +95,25 @@ useEffect(()=>{
             <div className="sub-total-section flex justify-between my-2 mx-2">
               <span className="text-slate-500 ">Subtotal:</span>
               <span className="text-xl font-bold">&#8377;
-                {cartEstimate?.cartTotal}
+                {cartEstimate?.cartTotal.toFixed(2)}
               </span>
             </div>
             <div className="shipping-section flex justify-between  my-2 mx-2">
               <span className="text-slate-500 ">Shipping:</span>
               <span className="text-xl font-bold">
-                {`${cartEstimate?.shipping }` || "-"}
+                {`${cartEstimate?.shipping.toFixed(2) }` || "-"}
               </span>
             </div>
             <div className="tax-section flex justify-between  my-2 mx-2">
               <span className="text-slate-500 ">Tax:</span>
               <span className="text-xl font-bold">
-                {cartEstimate?.tax || "-"}
+                {cartEstimate?.tax.toFixed(2) || "-"}
               </span>
             </div>
             <div className="discount-section flex justify-between  my-2 mx-2">
               <span className="text-slate-500 ">Discount:</span>
               <span className="text-xl font-bold">
-                {cartEstimate?.discount || "-"}
+                {cartEstimate?.discount.toFixed(2) || "-"}
               </span>
             </div>
             <div className="discount-section flex justify-between  my-2 mx-2">

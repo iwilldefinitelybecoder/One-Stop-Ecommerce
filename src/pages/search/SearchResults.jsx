@@ -19,7 +19,7 @@ const SearchResults = () => {
   let startIndex = currnetPage * 10;
   let endIndex = (currnetPage + 1) * 10;
   let currentOrders = products?.slice(startIndex, endIndex);
-  console.log(category)
+
   useEffect(() => {
     // fetch results 
     const keyword = searchParams.get('q');
@@ -82,24 +82,11 @@ const SearchResults = () => {
       <div className='search-result-subheader'>
             <span className='text-lg font-semibold'>Showing 1-{products?.length} of {products?.length} results</span>
         </div>
-        {
-            loading || loadings ? (
-                <div className='text-center h-[60vh] text-lg flex justify-center items-center bg-white font-semibold my-5 rounded-lg shadow-lg'>
-                    <span className=" italic font-semibold text-slate-500"><CircularProgress/></span>
-                </div>
-            ) :
-
-        currentOrders?.length !== 0 && products !== undefined ? (
-           
+        
       <div className=" h-auto my-5 ">
-        <ProductGrid products={products} />
+        <ProductGrid products={currentOrders} loading1={loading} loading2={loading} />
       </div>
-        ) : (
-            <div className='text-center h-[60vh] text-lg flex justify-center items-center bg-white font-semibold my-5 rounded-lg shadow-lg'>
-                <span className=" italic font-semibold text-slate-500">No Products Found</span>
-            </div>
-        )
-        }
+       
         
       <div className=" mt-auto">
         <OrderPaging

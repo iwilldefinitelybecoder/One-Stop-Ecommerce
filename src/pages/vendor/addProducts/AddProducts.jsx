@@ -12,6 +12,7 @@ import {
 } from "../../../service/ProductServices";
 import {
   Checkbox,
+  CircularProgress,
   FormControlLabel,
   MenuItem,
   Radio,
@@ -21,6 +22,7 @@ import {
 import { getAllWarehouses } from "../../../service/LogisticServices/wareHouseService";
 import ExtraAttributes from "./ExtraAttributes";
 import { categoryTagMapping } from "../../../data/cartproducts";
+import { useComponent } from "../../../context/ComponentProvider";
 
 const AddProducts = () => {
   const inputRef = React.useRef(null);
@@ -43,6 +45,8 @@ const AddProducts = () => {
   const [productTagsList, setProductTagsList] = useState([]);
   const [oldImages, setOldImages] = useState([]);
   const navigate = useNavigate();
+  const {loadProgress, setLoadProgress} = useComponent();
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -56,8 +60,12 @@ const AddProducts = () => {
     brand: "",
     extraAttributes: {},
     wareHouse: "",
-    thumbnail: "",
+    thumbnail: null,
   });
+
+  useEffect(() => {
+    clearForm();
+  }, [params]);
   
   useEffect(() => {
     setProductTagsList(categoryTagMapping[formData.category]);
@@ -91,35 +99,36 @@ const AddProducts = () => {
     getWareHouse();
   }, []);
 
-  useEffect(() => {
-    if (Object.keys(errorFields).length === 0) {
-      postFormData();
 
-      setFormData({
-        name: "",
-        category: "",
-        description: "",
-        stock: "",
-        tags: "",
-        regularPrice: "",
-        images: [],
-        salePrice: 0.0,
-        extraAttributes: {},
-        wareHouse: "",
-        brand: "",
-        thumbnail: "",
-      });
-      setExtraAttributes([{}]);
-      setImage([]);
-      handeDragClose();
-      setSalePriceActive(false);
-    }
-  }, [submitform]);
 
   const fetchProductDetails = async (params) => {
     return await getEditProductData(params);
   };
 
+  const clearForm = () => {
+    setFormData({
+      name: "",
+      category: "",
+      description: "",
+      stock: "",
+      tags: "",
+      regularPrice: "",
+      images: [],
+      salePrice: 0.0,
+      extraAttributes: {},
+      wareHouse: "",
+      brand: "",
+      thumbnail: null,
+    });
+    setExtraAttributes([{}]);
+    setImage([]);
+    handeDragClose();
+    setOldImages([]);
+    setEditProduct(false);
+    setSalePriceActive(false);
+  };
+
+ 
   const feedDataToForm = (product) => {
     setFormData({
       name: product?.name,
@@ -133,10 +142,10 @@ const AddProducts = () => {
       thumbnail: product?.thumbnail,
       tags: product?.tags,
     });
-
     setExtraAttributes(
-      Array.isArray(product?.extraAttributes) ? product?.extraAttributes : [{}]
+      product?.extraObjects !== null? extraAttributeToFields(product?.extraObjects) : [{}]
     );
+    
     setOldImages(product?.image);
 
     setTag({ name: "tags", value: product?.tags });
@@ -162,6 +171,20 @@ const AddProducts = () => {
     setViewImage(true);
     setImagePreview(URL.createObjectURL(image[index]));
   };
+
+  const extraAttributeToFields = ( attributes) =>{
+    let arr = [{}];
+    Object.entries(attributes).forEach(([key,value],index)=>{
+        if(Object.keys(arr[arr.length -1]).length >1){
+            const newObj = { [key]:value}
+            arr.push(newObj);
+        }else{
+            const newObj = { [key]:value}
+            arr[arr.length-1] = {...arr[arr.length-1],...newObj};
+        }
+    })
+        return arr;
+};
 
   const handelOldImageOpen = (e, index) => {
     setViewImage(true);
@@ -274,10 +297,7 @@ const AddProducts = () => {
       ...prev,
       [name]: Array.isArray(prev.tags) ? [...prev.tags, value] : [value],
     }));
-    // setTag((prev) => ({
-    //   ...prev,
-    //   value: "",
-    // }));
+   
   };
 
   const handelTagsDelete = (e, index) => {
@@ -297,10 +317,11 @@ const AddProducts = () => {
       }
     });
 
-    return combinedObject;
+    return JSON.stringify(combinedObject);
   };
 
   async function postFormData() {
+  
     const formsData = new FormData();
     formsData.append("name", formData.name);
     formsData.append("category", formData.category);
@@ -308,7 +329,6 @@ const AddProducts = () => {
     formsData.append("stock", formData.stock);
     formsData.append("tags", formData.tags);
     formsData.append("regularPrice", formData.regularPrice);
-    formsData.append("extraAttributes", formData.extraAttributes);
     formsData.append("salePrice", formData.salePrice);
     formsData.append("wareHouseId", formData.wareHouse);
     formsData.append("brand", formData.brand);
@@ -317,29 +337,39 @@ const AddProducts = () => {
       typeof formData.thumbnail === "string" &&
       formData.thumbnail.length > 1
     ) {
-      formsData.append("thumbnail", formData.thumbnail);
+      formsData.append("thumbnail", formData?.thumbnail);
     } else if (formData.thumbnail !== null) {
       formsData.append(
         "thumbnailFile",
-        formData.images[parseInt(formData.thumbnail)]
+        formData.images[parseInt(formData?.thumbnail)]
       );
     }
-
-  
+    if(formData?.images?.length > 0){
+    formData.images.forEach((img) => {
+      formsData.append("images", img);
+    });
+  }
 
     let response;
 
     if (editProduct) {
       formsData.append("existingImages", oldImages);
-
+      // handleLoadProgress(true);
+      setLoading(true);
       response = await updateProductDetails(params, formsData);
+      setLoading(false);
+      // setLoadProgress(100);
     } else {
-    
+      // handleLoadProgress(true);
+      setLoading(true);
       response = await addProduct(formsData);
+      setLoading(false);
+      // setLoadProgress(100);
     }
-    if (response) {
+    if (response ==="SUCCESS" ) {
       setResponseMessage("successfully added product");
       setTimeout(() => {
+        clearForm();
         navigate("/vendor/products");
       }, 3000);
       setFormSubmitted(true);
@@ -348,7 +378,11 @@ const AddProducts = () => {
       timerId = setTimeout(() => {
         setFormSubmitted(false);
       }, 10000);
+    }else{
+      setResponseMessage("Something went wrong");
+      setFormSubmitted(false);    
     }
+  
   }
 
   const formErrorHandelling = (e) => {
@@ -400,9 +434,13 @@ const AddProducts = () => {
     ) {
       errorList.stock = "Stock cannot be greater than warehouse storage";
     }
+    if(editProduct && [...oldImages,...image].length === 0){
+      errorList.images = "Please upload a image";
+    }
     setErrorFields(errorList);
     return errorList;
   };
+  
 
   const handelFormSumbit = (e) => {
     e.preventDefault();
@@ -411,9 +449,37 @@ const AddProducts = () => {
 
     if (Object.keys(errorList).length === 0) {
       setSubmitForm(true);
+      postFormData();
+      
     }
   };
 
+  const handleLoadProgress = (load) => {
+    let timerId;
+  
+    const updateProgress = () => {
+      setLoadProgress((prev) => prev + 1);
+    };
+  
+    const stopTimer = (timerId) => {
+      clearInterval(timerId);
+      setLoadProgress(100);
+    };
+  
+    if (load) {
+      timerId = setInterval(updateProgress, 1000);
+  
+      // Stop the timer when progress reaches 70
+      if (loadProgress === 70) {
+        console.log("stopping");
+        stopTimer(timerId);
+      }
+    } else {
+      stopTimer(timerId);
+    }
+  };
+
+ 
   const handelSubmitButton = () => {
     submitRef.current.click();
   };
@@ -452,7 +518,13 @@ const AddProducts = () => {
             </Link>
           </div>
         </div>
-        <div className="ad-prdct-body">
+        <div className="ad-prdct-body relative">
+          {
+            loading &&
+          <div className=" absolute flex justify-center items-center bg-white z-[2] opacity-40 inset-0">
+            <CircularProgress/>
+          </div>
+          }
           <form onSubmit={handelFormSumbit}>
             <div className="name-cat-div">
               <div className="name-div">

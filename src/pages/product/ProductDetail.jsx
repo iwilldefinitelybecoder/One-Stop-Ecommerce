@@ -15,13 +15,14 @@ export const productInfoFeatures = {
   buyNow:false,
   ratingPanel:true,
   checkoutBtn:false,
+  buyNowBtn:true,
 }
 
 
 const ProductDetail = () => {
 
   const productId = useMatch('/product/:id').params.id;
-  const {getProductDetailss ,getProductReviewDetail,reviewData}= useProducts();
+  const {getProductDetailss ,getProductReviewDetail,reviewData,loading}= useProducts();
   const [productDetails, setProductDetails] = useState({});
   const [open,setOpen] = useState();
   const Navigate = useNavigate();
@@ -45,16 +46,19 @@ const ProductDetail = () => {
     <div>
       
         <div className='product-cntr h-[680px]  flex mb-20'>
+          {
+            open &&
           <BuyNowCard open={open} setOpen={setOpen} productDetails={productDetails}/>
+          }
           <div className='product-img w-[556px]'>
-            <ProductImage productDetails={productDetails} viewCategory={true} />
+            <ProductImage productDetails={productDetails} viewCategory={true} loading={loading} />
           </div>
           <div className='product-info w-[556px]'>
-            <ProductInfo ProductInfo={productDetails} setOpen={setOpen} detailedReview={reviewData}  feature={productInfoFeatures}/>
+            <ProductInfo ProductInfo={productDetails} loading={loading} setOpen={setOpen} detailedReview={reviewData}  feature={productInfoFeatures}/>
           </div>
         </div>
         <div className='facet'>
-          <MIddleContainer productInfo={productDetails}/>
+          <MIddleContainer productInfo={productDetails} loadings={loading}/>
         </div>
         <div className='extra-cntr max-w-[1220px]'>
           <AdditionalContainer productDetails={productDetails}/>

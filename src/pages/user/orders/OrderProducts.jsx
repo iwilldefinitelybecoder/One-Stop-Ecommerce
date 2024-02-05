@@ -125,16 +125,24 @@ const OrderedProductList = ({ data, fetchProducts, fetchTrackingData }) => {
   return (
     <div className="product-List-Cntr flex items-center justify-between my-6 border-b-2 py-8 px-8  bg-white rounded-md shadow-md ">
       <div className="product-detail flex items-center space-x-3">
-        <div className="product-img p-3 w-40 h-40  flex items-center justify-center ">
-          <img
-            src={
-              productDetails?.thumbnail ||
-              (Array.isArray(productDetails?.imageURL) &&
-                productDetails?.imageURL[0])
-            }
-            alt={data.productName}
-            className="object-cover"
-          />
+        <div className="product-img p-3 w-40 h-40 rounded-md  flex items-center justify-center "
+         style={{backgroundImage: `url(${productDetails?.thumbnail?.imagePreview || productDetails.imageURL && productDetails?.imageURL[0]?.imagePreview || flashIcon})`,
+         backgroundSize: "cover",
+         backgroundPosition: "center",
+ }} 
+        >
+         <img src={productDetails?.thumbnail?.imageURL || productDetails.imageURL && productDetails?.imageURL[0]?.imageURL || flashIcon} 
+                
+                onLoad={(e) => {
+                  e.target.style.opacity = 1;
+                }}
+                style={{ objectFit: "cover",
+                objectPosition: "center",
+                overflow: "hidden",
+                opacity: 0,
+                transition: "opacity 0.5s ease-in-out",
+              }}
+                 />
         </div>
         <div className="max-w-[150px]">
           <Link to={`/product/${data.productId}`}>

@@ -49,9 +49,10 @@ function Address() {
   return (
     <>
       {loading ? (
-        <div className="w-full h-full flex justify-center items-center">
-        <CircularProgress/>
-      </div>
+       <div className="flex justify-center items-center h-96 w-full bg-white bg-opacity-50 absolute top-0 left-0 z-50" 
+       >
+       <CircularProgress />
+       </div>
       ) : isEditing ? (
         <>
           <div className="orders-pg-header flex justify-between ">

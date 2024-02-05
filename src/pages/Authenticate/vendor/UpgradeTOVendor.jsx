@@ -140,7 +140,7 @@ const UpgradeToVendor = () => {
       const formsData = new FormData();
       formsData.append("userEmail",account?.email);
       formsData.append("vendorEmail", formData.email);
-      formsData.append("vendorName", formData.vendorName);
+      formsData.append("VendorCompanyName", formData.vendorName);
       const auth = await upgradeToVendor(formsData);
       if (auth?.success === true) {
         const response = await AuthVendor()

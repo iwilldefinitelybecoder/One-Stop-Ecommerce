@@ -18,13 +18,15 @@ import FlashDealsGridCards from "../../components/body/productCards/flashDealsCa
 
 import useProducts from "../../CustomHooks/ProductsHook";
 import { getProductByAttributes } from "../../service/ProductServices";
+import { Skeleton } from "@mui/material";
+import ProductCardLoading from "../../components/body/loading/ProductCardLoading";
 
 
 function FlashDealsGrid({ gridName, type, typeIcon = flashIcon }) {
   const [swiperRef, setSwiperRef] = useState(null);
   const [productinfo, setProductinfo] = useState([]);
 
-  const { products } = useProducts();
+  const { products, loading } = useProducts();
   useEffect(() => {
     async function fetchProducts() {
       const response = await getProductByAttributes(type);
@@ -59,41 +61,46 @@ function FlashDealsGrid({ gridName, type, typeIcon = flashIcon }) {
           </div>
         </Link>
       </div>
-      {
-        productinfo?.length > 0 ?
-
-          <Swiper
-            modules={[Virtual, Navigation, Pagination]}
-            onSwiper={setSwiperRef}
-            slidesPerView={4}
-            centeredSlides={true}
-            spaceBetween={30}
-            pagination={{
-              el: ".swiper-pagination-1",
-              type: "fraction",
-
-            }}
-            navigation={true}
-            className="flash-deals-grid-swiper"
-            virtual
-            initialSlide={1}
-          >
 
 
-            {
-              productinfo?.map((product, index) => (
-                <SwiperSlide key={product} virtualIndex={index} className="flash-grid-cards flex-col justify-start items-start px-4 py-4 rounded-xl shadow-lg hover:shadow-2xl  transition-all">
-                  <FlashDealsGridCards key={index} productInfo={product} />
-                </SwiperSlide>
-              ))
 
 
-            }
 
-          </Swiper>
+      <Swiper
+        modules={[Virtual, Navigation, Pagination]}
+        onSwiper={setSwiperRef}
+        slidesPerView={4}
+        centeredSlides={true}
+        spaceBetween={30}
+        pagination={{
+          el: ".swiper-pagination-1",
+          type: "fraction",
+
+        }}
+        navigation={true}
+        className="flash-deals-grid-swiper"
+        virtual
+        initialSlide={2} 
+      >
+        {loading?
+        Array.from({ length: 6 }).map((_, index) => (
+          <SwiperSlide key={index} className=" flex justify-center items-center rounded-xl shadow-lg hover:shadow-2xl font-semibold text-2xl">
+            <ProductCardLoading/>
+          </SwiperSlide>
+        ))
           :
-          <div className="h-full w-full flex justify-center items-center font-semibold text-2xl">No Products To Show </div>
-      }
+          productinfo.length > 0 ?
+
+            productinfo?.map((product, index) => (
+              <SwiperSlide key={product} virtualIndex={index} className="flash-grid-cards flex-col justify-start items-start px-4 py-4 rounded-xl shadow-lg hover:shadow-2xl  transition-all">
+                <FlashDealsGridCards key={index} productInfo={product} />
+              </SwiperSlide>
+            ))
+            :
+            <SwiperSlide className="no-prdt-cntr flex justify-center items-center font-semibold text-2xl">No Products To Show </SwiperSlide>
+            
+        }
+      </Swiper>
     </>
   );
 }

@@ -97,3 +97,17 @@
 .flash-deals-grid-swiper .swiper-button-prev::after {
   content: "";
 }
+
+.home-pos-cntr .swiper{
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.flash-deals-grid-swiper .swiper-slide .no-prdt-cntr{
+ 
+  width: 500px !important;
+  height: 300px !important;
+  border-radius: 10px !important;
+  
+}

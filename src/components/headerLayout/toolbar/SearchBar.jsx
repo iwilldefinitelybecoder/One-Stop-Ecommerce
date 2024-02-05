@@ -3,7 +3,7 @@ import { searchIcon } from "../../../assets/icons/png/toolbar1/data";
 import "./toolbar.css";
 import { downArrowIcon } from "../../../assets/icons/png/toolbar-icons/data";
 import { searchProducts } from "../../../service/ProductServices";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Skeleton } from "@mui/material";
 import { Link, useMatch, useNavigate, useSearchParams } from "react-router-dom";
 import { useDebounce } from "use-debounce";
 import { truncateString } from "../../../utils/DisplayFormatters";
@@ -19,7 +19,7 @@ function SearchBar() {
   const inputRef = createRef();
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [suggestions, setSuggestions] = useState(false);
-  const [query] = useDebounce(searchValue, 500);
+  const [query] = useDebounce(searchValue, 300);
 
   const [searchResults, setSearchResults] = useState([]);
 
@@ -263,8 +263,16 @@ function SearchBar() {
       {suggestions && searchValue !== "" && (
         <div className="search-results shadow-xl">
           {loading ? (
-            <div className="  bg-white top-20 flex py-4 w-full justify-center">
-              <CircularProgress />
+            <div className="  bg-white top-20 flec-column py-4 w-full justify-start px-6 space-y-3">
+              {
+                Array.from({ length: 5 }).map((_, index) => (
+                  <div key={index} className="flex w-full space-x-3 ">
+                    <Skeleton animation="wave" variant="circular" width={30} height={30} />
+                    <Skeleton animation="wave" variant="text" width={330} height={30} />
+                  </div>
+                ))
+              }
+              
             </div>
           ) : searchResults.length > 0 ? (
             searchResults?.map((result, index) => {

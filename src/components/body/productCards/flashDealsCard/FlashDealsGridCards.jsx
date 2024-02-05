@@ -35,8 +35,6 @@ const FlashDealsGridCards = ({ productInfo }) => {
   const productExist =productId!==0? productId?.includes(productInfo?.productId):false
   const page = useMatch('/user/Wishlist')
 
-
-
   const [quickView, setQuickView] = useState(false);
 
   const buttonDisableRef = useRef(null);
@@ -223,6 +221,7 @@ const handelQuickViewClose=()=>{
             productImages={productInfo?.imageURL}
             mouseHover={mouseHover}
             thumbNail={productInfo?.thumbnail}
+            imagePreview={productInfo?.imagePreview}
           />
         </div>
 
@@ -350,17 +349,28 @@ const reduxCart = (state) => ({
   itemsDetails: state.cartItems,
 });
 
-const ItemImageSlider = ({ productImages, mouseHover,thumbNail }) => {
+const ItemImageSlider = ({ productImages, mouseHover,thumbNail,imagePreview }) => {
 
   return !mouseHover ? (
     <div
       className="flash-grd-img-cntr-non-hover w-full h-[180px] items-center flex justify-center mt-10 mb-5"
     >
-      <div className="flash-grid-img h-40 w-40">
+      <div className="flash-grid-img h-40 w-40 rounded-md overflow-hidden"
+        style={{backgroundImage: `url(${thumbNail?thumbNail?.imagePreview: productImages && productImages[0]?.imagePreview})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",            
+      }}
+      >
         <img
-          src={thumbNail?thumbNail: productImages && productImages[0]}
-          
-          style={{ objectFit: "cover" }}
+          src={thumbNail?thumbNail?.imageURL: productImages && productImages[0]?.imageURL}
+          onLoad={(e) => {
+            e.target.style.opacity = 1;
+          }}
+          style={{ objectFit: "cover",
+          objectPosition: "center",
+          opacity: 0,
+          transition: "opacity 0.5s ease-in-out",
+        }}
         />
       </div>
     </div>
@@ -384,13 +394,30 @@ const ItemImageSlider = ({ productImages, mouseHover,thumbNail }) => {
       {
         productImages?.map((image, index) => (
        
-          <SwiperSlide key={index}  style={{height:'150px',maxWidth:'252px',padding:'0'}} className=" mt-7 mb-5">
+
+          <SwiperSlide key={index}  style={{height:'150px',maxWidth:'252px',padding:'0'}} className="rounded-md mt-7 mb-5">
             <div
-              className="flash-grd-img-cntr w-full flex justify-center mt-4"
+              className="flash-grd-img-cntr w-full rounded-md flex justify-center mt-4"
               key={index}
             >
-              <div className="flash-grid-img h-40 w-40">
-                <img src={image} alt="" style={{ objectFit: "cover" }} />
+              <div className="flash-grid-img h-40 w-40"
+               style={{backgroundImage: `url(${image.imagePreview})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+        }} 
+              >
+                <img src={image.imageURL} 
+                
+                onLoad={(e) => {
+                  e.target.style.opacity = 1;
+                }}
+                style={{ objectFit: "cover",
+                objectPosition: "center",
+                overflow: "hidden",
+                opacity: 0,
+                transition: "opacity 0.5s ease-in-out",
+              }}
+                 />
               </div>
             </div>
           </SwiperSlide>

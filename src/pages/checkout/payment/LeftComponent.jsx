@@ -28,6 +28,8 @@ const LeftComponent = ({
   const { cards } = useCard();
 const [searchParams, setSearchParams] = useSearchParams();
 const [save, setSave] = useState();
+const {fetchAllCardsList} = useCard();
+const [open,setOpen] = useState(false);
 const [paymentType, setPaymentType] = useState(0);
   const handelPaymentMethod = (e) => {
     const { name, value } = e.target;
@@ -35,6 +37,9 @@ const [paymentType, setPaymentType] = useState(0);
     setSearchParams(prevParams => ({ ...prevParams, [name]: value }));
   };
 
+  const handelCardDetailsClose  = () => {
+    setOpen(false);
+  }
 
 
   return (
@@ -59,6 +64,9 @@ const [paymentType, setPaymentType] = useState(0);
           setPaymentMethod={setPaymentType}
           paymentMethod={paymentType}
           grantPermission={setSave}
+          fetchAllCardsList={fetchAllCardsList}
+          onClose={handelCardDetailsClose}
+
         />
       
         )}

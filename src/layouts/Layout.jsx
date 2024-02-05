@@ -59,10 +59,10 @@ function Layout({ children }) {
   }
     , [pathname,search]);
 
-  // useEffect(()=>{
-  //   if(page2?.pathnameBase === "/product")return;
-  //   resetOrderDetails();
-  // },[page?.pathnameBase,page2?.pathnameBase])
+  useEffect(()=>{
+    if(page2?.pathnameBase === "/product"||page?.pathnameBase ==="/checkout")return;
+    resetOrderDetails();
+  },[page?.pathnameBase,page2?.pathnameBase])
 
 
  

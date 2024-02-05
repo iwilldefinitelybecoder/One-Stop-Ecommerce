@@ -144,7 +144,7 @@ const ImageGallery = ({ images }) => {
           ))}
         </PreviewContainer>
       )}
-
+      
       {/* Carousel Overlay */}
       {selectedImage && (
         <CarouselOverlay onClick={handleCloseCarousel}>

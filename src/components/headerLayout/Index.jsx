@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import InfoBar from "./infobar/InfoBar";
 import Toolbar from "./toolbar/Toolbar";
 import NavBar from "./navbar/NavBar";
@@ -6,9 +6,20 @@ import "./index.css";
 import CartContainer from "./SideBar/CartContainer";
 import LoginUI from "../body/login/loginUI";
 import { AccountContext } from "../../context/AccountProvider";
+import { LinearProgress } from "@mui/material";
+import { useComponent } from "../../context/ComponentProvider";
 
 const Index = () => {
+
+  const {loadProgress,setLoadProgress} = useComponent();
   const{account,showLoginButton,setShowLoginButton} = useContext(AccountContext);
+
+  useEffect(() => {
+    if(loadProgress >= 100){
+      setLoadProgress(0);
+      }
+  }
+  , [loadProgress]);
   return (
     <>
       <div className=" toolbar-main-cntr shadow-md bg-white ">
@@ -27,6 +38,13 @@ const Index = () => {
           <LoginUI />
         </div>
         }
+      </div>
+      <div>
+        {
+          loadProgress > 0 && 
+          <LinearProgress variant="determinate"  value={loadProgress} className="h-1 bg-light-pink" />
+        }
+      
       </div>
     </>
   );

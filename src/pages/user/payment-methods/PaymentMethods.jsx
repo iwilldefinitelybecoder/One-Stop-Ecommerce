@@ -21,6 +21,7 @@ import {
 import { trashbinIcon } from "../../../assets/icons/png/toolbar1/data";
 import { plusBlackIcon } from "../../../assets/icons/png/Rareicons/data";
 import { CircularProgress, Collapse } from "@mui/material";
+import useMessageHandler from "../../../components/body/Messages/NewMessagingComponent";
 
 export const getCardProvider = (name) => {
   switch (name) {
@@ -38,13 +39,14 @@ export const getCardProvider = (name) => {
 };
 
 function PaymentMethods() {
-  const { getCard, deleteItem, cards, setDefault, loading,getAllCardsList } = useCard();
+  const { getCard, deleteItem, cards, setDefault, loading,fetchAllCardsList } = useCard();
 
   const isEditing = useMatch("/user/edit-payment-method/:id");
   const [currnetPage, setCurrentPage] = React.useState(0);
   const [addNewCard, setAddnewCard] = useState(false);
   const [save, setSave] = useState();
   const [paymentType, setPaymentType] = useState(0);
+  const {handleMessage,getMessageComponents} = useMessageHandler();
   let totalpages = Math.ceil(cards?.length / 5);
   let startIndex = currnetPage * 5;
   let endIndex = (currnetPage + 1) * 5;
@@ -58,7 +60,11 @@ function PaymentMethods() {
 
   },[cards])
 
-  console.log("cards", cards);
+  const hanelAddNewCard = () => {
+    setAddnewCard(!addNewCard);
+  };
+
+  
   const handelPageChange = (page) => {
     if (page < 0 || page > totalpages - 1) return;
     setCurrentPage(page);
@@ -79,10 +85,17 @@ function PaymentMethods() {
   };
 
 
-  const handelDeleteCard = (e, cardId) => {
+  const handelDeleteCard = async (e, cardId) => {
     e.preventDefault();
     e.stopPropagation();
-    deleteItem(cardId);
+    const response = await deleteItem(cardId);
+    console.log(response);
+    if(response === "SUCCESS"){
+      handleMessage("Card Deleted Successfully", "success");
+    }
+    else{
+      handleMessage(response, "error");
+    }
   };
 
   const handelSetDefault = (e, cardId,index) => {
@@ -101,9 +114,13 @@ function PaymentMethods() {
   return (
     <>
       {loading ? (
+        <div className="flex justify-center items-center h-96 w-full bg-white bg-opacity-50 absolute top-0 left-0 z-50" 
+        >
         <CircularProgress />
+        </div>
       ) : isEditing ? (
         <>
+        {getMessageComponents()}
           <div className="orders-pg-header flex justify-between ">
             <div className="flex">
               <img src={cardIcon} className=" h-10 mt-2 mr-2" />
@@ -119,6 +136,8 @@ function PaymentMethods() {
             setPaymentMethod={setPaymentType}
             paymentMethod={paymentType}
             grantPermission={setSave}
+            handelClose={hanelAddNewCard}
+            fetchAllCardsList={fetchAllCardsList}
           />
         </>
       ) : (
@@ -213,6 +232,8 @@ function PaymentMethods() {
                         setPaymentMethod={setPaymentType}
                         paymentMethod={paymentType}
                         grantPermission={setSave}
+                        handelClose={hanelAddNewCard}
+                        fetchAllCardsList={fetchAllCardsList}
                       />
                       <div className="add-new-method flex justify-end items-center mt-3">
                         <div
@@ -253,6 +274,8 @@ function PaymentMethods() {
                 setPaymentMethod={setPaymentType}
                 paymentMethod={paymentType}
                 grantPermission={setSave}
+                handelClose={hanelAddNewCard}
+                fetchAllCardsList={fetchAllCardsList}
               />
             )}
           </div>

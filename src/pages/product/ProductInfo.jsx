@@ -1,4 +1,4 @@
-import { Rating } from "@mui/material";
+import { Rating, Skeleton } from "@mui/material";
 
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useCart } from "../../CustomHooks/CartHook";
@@ -20,12 +20,13 @@ import { useOrders } from "../../context/OrderContext";
 import { Link } from "react-router-dom";
 import { AccountContext } from "../../context/AccountProvider";
 
-const ProductInfo = ({ ProductInfo, detailedReview, setOpen,
+const ProductInfo = ({ ProductInfo, detailedReview, setOpen,loading,
   feature = {
     addToCartBtn: false,
     buyNow: false,
     ratingPanel: false,
     checkoutBtn: false,
+    buyNowBtn: false
   }
 
 }) => {
@@ -35,7 +36,7 @@ const ProductInfo = ({ ProductInfo, detailedReview, setOpen,
   const [itemDetail, setItemDetail] = useState({});
   const { handleMessage, getMessageComponents } = useMessageHandler();
   const productId = useParams().id || ProductInfo?.productId;
-  const {setShowLoginButton,showLoginButton,account} = useContext(AccountContext)
+  const { setShowLoginButton, showLoginButton, account } = useContext(AccountContext)
   const [productRating, setProductRating] = useState(detailedReview);
   const ratingData = productRating?.ratingData;
   const totalRatings = productRating?.totalRating;
@@ -87,6 +88,10 @@ const ProductInfo = ({ ProductInfo, detailedReview, setOpen,
       {
         getMessageComponents()
       }
+{
+        loading ? <LoadingProductInfo /> 
+        :
+
       <div className="space-y-4 ml-10 mt-10">
         <div className="product-title text-3xl font-semibold ">
           <span>{char0ToUpper(ProductInfo?.name)}</span>
@@ -175,7 +180,10 @@ const ProductInfo = ({ ProductInfo, detailedReview, setOpen,
               {ProductInfo?.stock > 0 ?
                 feature?.addToCartBtn &&
                 <>
-                  <button className="Btn2" onClick={() => {account?setOpen(true):setShowLoginButton(true) }}>Buy Now</button>
+                {
+                    feature?.buyNowBtn&&
+                  <button className="Btn2" onClick={() => { account ? setOpen(true) : setShowLoginButton(true) }}>Buy Now</button>
+                }
                   <br />
                   <div>
                     {exists !== undefined ? (
@@ -185,7 +193,7 @@ const ProductInfo = ({ ProductInfo, detailedReview, setOpen,
                         setItemDetail={setItemDetail}
                       />
                     ) : (
-                      <button className="Btn3" onClick={(e)=>{account?handleAddToCart(e):setShowLoginButton(true)}}>
+                      <button className="Btn3" onClick={(e) => { account ? handleAddToCart(e) : setShowLoginButton(true) }}>
                         Add To Cart
                       </button>
                     )}
@@ -194,8 +202,8 @@ const ProductInfo = ({ ProductInfo, detailedReview, setOpen,
                 :
                 (
                   <div className="text-2xl font-semibold text-red-500">
-                  <span>We Don't know When The Product Will Be Back In Stock!!</span>
-                </div>
+                    <span>We Don't know When The Product Will Be Back In Stock!!</span>
+                  </div>
                 )
               }
               {
@@ -230,6 +238,7 @@ const ProductInfo = ({ ProductInfo, detailedReview, setOpen,
           </div>
         }
       </div>
+      }
     </>
   );
 };
@@ -387,6 +396,71 @@ const BuyNowCardQuantity = ({ stock }) => {
         itemDetail={itemDetail}
         buttonDisableRef={buttonDisableRef}
       />
+    </>
+  )
+}
+
+const LoadingProductInfo = () => {
+  return (
+    <>
+      <div className="space-y-4 ml-10 mt-10">
+        <div className="product-title text-3xl font-semibold ">
+          <Skeleton variant="text" width={250} height={50} />
+        </div>
+        <div className="">
+          <span className=" text-slate-500">Brand:</span>
+          <span className=" font-semibold"><Skeleton variant="text" width={140} height={30} animation="wave" /> </span>
+        </div>
+        <div className="review-main-cntr  items-center space-x-1 relative">
+          <span className=" text-slate-500">Rated: </span>
+          <div className="flex space-x-2">
+
+          <Skeleton variant="text" width={90} height={30} animation="wave" />
+          <span className=" font-semibold">
+            <Skeleton variant="text" width={20} height={30} animation="wave" />
+          </span>
+          </div>
+
+
+
+        <div className=" space-x-3 items-center">
+          <span className="text-slate-500">Price:</span>
+          <span className="product-title text-2xl text-light-pink font-bold ">
+            <Skeleton variant="text" width={120} height={30} animation="wave" />
+          </span>
+        </div>
+
+
+
+
+      </div>
+
+      <div className="h-[115px] flex-column w-36 ">
+
+
+        <button className="Btn2" >
+          BuyNow
+        </button>
+        <button className="Btn3">
+          Add To Cart
+        </button>
+
+      </div>
+
+
+      <div className=" className= font-semibold">
+        <span className="text-slate-500">sold By:</span>
+        <span className=" font-semibold"><Skeleton variant="text" width={140} height={30} animation="wave" /> </span>
+      </div>
+      <div>
+        <span className="text-slate-500 ">Description:</span>
+    
+          <Skeleton variant="text" width={400} height={200} animation="wave" />
+        
+      </div>
+        </div>
+
+
     </>
   )
 }

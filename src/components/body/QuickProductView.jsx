@@ -3,12 +3,19 @@ import React, { useState } from "react";
 import ProductImage from "../../pages/product/ProductImage";
 import ProductInfo from "../../pages/product/ProductInfo";
 import "./quickViewProduct.css";
-import { productInfoFeatures } from "../../pages/product/ProductDetail";
 import { Close } from "@mui/icons-material";
 
 
+const productInfoFeatures = {
+  addToCartBtn:true,
+  buyNow:false,
+  ratingPanel:true,
+  checkoutBtn:false
+  ,buyNowBtn:false,
+}
 const QuickProductView = ({ open, handelClose, productDetails }) => {
     
+  
 
 
 

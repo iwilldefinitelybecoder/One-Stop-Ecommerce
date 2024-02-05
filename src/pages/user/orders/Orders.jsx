@@ -93,7 +93,7 @@ function Orders() {
                   <span>{formatDateFromTimestamp(order?.orderDate)}</span>
                 </div>
                 <div className="order-table-row">
-                  <span>&#8377;{order?.grandTotal}</span>
+                  <span>&#8377;{order?.grandTotal.toFixed(2)}</span>
                 </div>
                 <div className="order-table-row-btn">
                   <img src={rightArrowIcon2} className="order-tbl-ar-icon h-5" />

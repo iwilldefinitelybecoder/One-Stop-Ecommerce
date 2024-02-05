@@ -23,7 +23,7 @@ const MIddleContainer = ({ productInfo }) => {
     getAllproductsReview(productInfo?.productId);
   }, [productInfo]);
 
-  console.log(productInfo);
+
 
   return (
     <div>
@@ -89,14 +89,24 @@ const MIddleContainer = ({ productInfo }) => {
                         ([key, value], index) => {
                           return (
                             <TableRow key={index}>
-                              <TableCell className="bg-slate-100" align="left">
-                                <span className=" text-slate-500">
+                              <TableCell className="bg-light-pink" width={210}  align="left">
+                                <span className="  font-semibold">
                                   {char0ToUpper(key)}
                                 </span>
                               </TableCell>
                               <TableCell align="left">
                                 <span className=" font-semibold">
-                                  {char0ToUpper(value)}
+                                  {Array.isArray(value) ? ( value.map((val, index) => {
+                                    return (
+                                      <span key={index}>
+                                        {val}
+                                        {index !== value.length - 1 ? ", " : ""}
+                                      </span>
+                                    );
+                                    
+                                  })) : value}
+
+
                                 </span>
                               </TableCell>
                             </TableRow>

@@ -15,8 +15,9 @@ import useCard from "../../../CustomHooks/CardsHooks";
 import { data } from "autoprefixer";
 import { Collapse, FormControlLabel, Radio } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
+import useMessageHandler from "../../../components/body/Messages/NewMessagingComponent";
 
-const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
+const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission,handelClose,fetchAllCardsList}) => {
   const isEditing = useMatch("/user/edit-payment-method/:id")
   const cardId = useParams("id")
   const page  = useMatch("/user/Payment-methods")
@@ -43,6 +44,7 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
       const [isSubmit, setIsSubmit] = React.useState(false);
       const [collapsvalue, setCollapsvalue] = React.useState(false);
       const [searchParams, setSearchParams] = useSearchParams();
+      const {getMessageComponents,handleMessage} = useMessageHandler();
       const navigate = useNavigate();
     
       const forwardRef = React.useRef(null);
@@ -89,7 +91,18 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
         return () => clearTimeout(timerId);
       }, [expDateValid]);
     
+
+    
+
       useEffect(() => {
+        if (isEditing || page || paymentMethod1 === "DEBITCARD") {
+          setCollapsvalue(true);
+        }else{
+          setCollapsvalue(false);
+        }
+      }, [isEditing,page,paymentMethod1]);
+
+      const clerForm = ()=>{
         if (isSubmit) {
           setCardData({
             card: "",
@@ -104,16 +117,7 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
           setIsSubmit(false);
           grantPermission(true);
         }
-      }, [isSubmit]);
-    
-
-      useEffect(() => {
-        if (isEditing || page || paymentMethod1 === "DEBITCARD") {
-          setCollapsvalue(true);
-        }else{
-          setCollapsvalue(false);
-        }
-      }, [isEditing,page,paymentMethod1]);
+      }
           
 
       const cardValidation = (e) => {
@@ -246,7 +250,7 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
         }
       };
       
-      const handleSubmit = (e) => {
+      const handleSubmit = async (e) => {
         e.preventDefault();
         let timerId;
         let timerId2
@@ -276,15 +280,37 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
           cardId:cardId.id
         }
         if(isEditing !==null){
-          updateItem(cardData2)
-          timerId2 = setTimeout(()=>{
-            navigate('/user/payment-methods')
-          },2000)
+          const response  =await updateItem(cardData2)
+          if(response ==="SUCCESS"){
+            handleMessage("CardDetails Saved successfully","success")
+            clerForm();
+            timerId2 = setTimeout(()=>{
+              fetchAllCardsList();
+              handelClose();
+              navigate('/user/payment-methods')
+            },2000)
+          }else{
+            handleMessage(response,"error")
+          }
         }else{
-          addItem(cardData2)
+          const response = await addItem(cardData2)
+          
+          if(response ==="SUCCESS"){
+            handleMessage("CardDetails Saved successfully","success")
+            clerForm();
+            
+            timerId2 = setTimeout(()=>{
+              fetchAllCardsList();
+              handelClose();
+              navigate('/user/payment-methods')
+            },2000)
+
+        }else{
+          handleMessage(response,"error")
         }
       }
     };
+  }
     
       const handlesubmitBtn = () => {
         forwardRef.current.click();
@@ -294,7 +320,7 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
     
       return (
         <>
-
+        {getMessageComponents()}
             <div className="payment-body">
               <div className="payment-body-header1 rounded-md bg-white px-6 pt-6 shadow-lg border-b-2 border-b-slate-200">
                 <div className=" font-bold flex justify-between border-b-2 border-b-slate-200  pb-4 pt-1 ">
@@ -316,9 +342,9 @@ const CardDetails = ({setPaymentMethod,paymentMethod,grantPermission}) => {
                     {Object.keys(errorList).length !== 0 && (
                       <MessagesBox newMessage="clear the issue in the form" />
                     )}
-                    {isSubmit && (
+                    {/* {isSubmit && (
                       <MessagesBox newMessage="CardDetails Saved successfully" />
-                    )}
+                    )} */}
                       <form onSubmit={handleSubmit}>
                     <div className={`${loading?"bg-slate-100":null} cntr1-sub  rounded-md`}>
                       <div className="details-header pb-5 pt-2">

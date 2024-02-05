@@ -206,8 +206,8 @@ const ProductList2 = ({ currentOrders }) => {
             <Link to={`/vendor/edit-product/${order.productId}`} key={index}>
               <div className="order-table-row-parent">
                 <div className={`product-table-rows  shadow-md py-7 pl-5  ${productContainerIndex[index]?"mb-0":"mb-5"}`} >
-                  <div className=" h-10 w-10 mt-2">
-                    <img src={userIcon} className="h-8" />
+                  <div className=" h-10 w-10 mt-2 rounded-full">
+                    <img src={order?.imageURL || userIcon} className="h-8" />
                   </div>
                   <div className="order-table-row flex space-x-2 ml-[-5px]">
                     {/* <img src={emptyCartIcon2} className=" h-8"  /> */}

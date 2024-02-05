@@ -1,12 +1,27 @@
-import React, { useRef, useEffect } from 'react';
+import { Skeleton } from '@mui/material';
+import React, { useRef, useEffect, useState } from 'react';
+import styled from 'styled-components';
 
-const MagnifiedImg = ({ image }) => {
+const MagnifiedImg = ({ image,loading }) => {
+
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+
+  const handleImageLoad = (event) => {
+    const { naturalWidth, naturalHeight } = event.target;
+    setDimensions({ width: naturalWidth, height: naturalHeight });
+  };
+
+  
+  const aspectRatio = (dimensions.height / dimensions.width) * 100;
+
+  
     
   const imgRef = useRef(null);
   const lensRef = useRef(null);
   const resultRef = useRef(null);
 
   useEffect(() => {
+    if(loading) return;
     const img = imgRef.current;
     const lens = lensRef.current;
     const result = resultRef.current;
@@ -70,17 +85,56 @@ const MagnifiedImg = ({ image }) => {
   }, []);
 
   return (
+    // <div
+    // style={{
+      
+    //   backgroundImage: `url(${image?.imagePreview})`,
+    //   backgroundSize: "cover",
+    //   backgroundPosition: "center",
+    //   width: `${dimensions.width/1.5}px`,
+    //   height: `${dimensions.height/1.5}px`,
+    //   padding:`${dimensions.height/15}px `,
+    //   maxHeight: "300px",
+    //   maxWidth: "300px",
+      
+    // }}
+    // >
+
+    
+
     <div className="img-zoom-container">
-      <img
+       <div className="  rounded-md overflow-hidden"
+        style={{backgroundImage: `url(${image?.imagePreview})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        height: "inherit",
+        width: "inherit",            
+      }}
+      >
+        {
+          loading?
+          <Skeleton variant="rect" animation="wave" width={300} height={300} />
+        :
+        <img
+        src={image?.imageURL}
+        onLoad={(e) => {
+            e.target.style.opacity = 1;
+            handleImageLoad(e);
+          }}
+          style={{ 
+          opacity: 0,
+          zIndex: 10,
+          transition: "opacity 0.5s ease-in-out",
+
+        }}
         ref={imgRef}
-        src={image}
-        width="300"
-        height="240"
-        alt="Zoomable Image"
-      />
+        />
+      }
+      </div>
       <div ref={lensRef} className="img-zoom-lens"></div>
       <div ref={resultRef} className="img-zoom-result"></div>
     </div> 
+        // </div>
   );
 };
 

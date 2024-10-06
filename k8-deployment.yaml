@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: onestop-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: onestop-frontend
+  template:
+    metadata:
+      labels:
+        app: onestop-frontend
+    spec:
+      containers:
+      - name: onestop-frontend
+        image: 0075841/onestop-frontend:latest
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: onestop-frontend
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 51200
+    targetPort: 8080
+  selector:
+    app: onestop-frontend

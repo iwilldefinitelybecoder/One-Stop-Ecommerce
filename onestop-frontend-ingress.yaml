@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: onestop-frontend-ingress
+  namespace: onestop
+spec:
+  rules:
+    - host: onestop.host
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: springboot
+                port:
+                  number: 51200

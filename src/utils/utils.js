@@ -41,3 +41,14 @@ export const getStockStatusMessage = (stockCount) => {
       return (num / 1000000).toFixed(0) + 'M';
     }
   };
+
+
+  export const serviceURL = ()=>{
+    if(import.meta.env.MODE === 'development'){
+      const port = "8080";
+      return `http://localhost:${port}`
+
+    }
+    return `https://service.onestop.host`;
+
+  }

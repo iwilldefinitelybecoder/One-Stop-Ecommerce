@@ -1,8 +1,14 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const URI = "http://localhost:8000/api/v1";
-const host = window.location.protocol+"//"+window.location.hostname+":"+window.location.port;
+const URI = `${serviceURL}/api/v1`;
+let host ;
+if(import.meta.env.MODE === "development"){
+  host = window.location.protocol+"//"+window.location.hostname+":"+window.location.port;
+
+}else{
+  host = `https://service.onestop.host`
+}
 
 
 export const login = async (data) => {

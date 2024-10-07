@@ -1,6 +1,6 @@
 import React from "react";
 import Grid from "@mui/material/Grid";
-import FlashDealsGridCards from "../../components/body/productCards/flashDealsCard/flashDealsGridCards";
+import FlashDealsGridCards from "../../components/body/productCards/flashDealsCard/FlashDealsGridCards";
 import ProductCardLoading from "../../components/body/loading/ProductCardLoading";
 // Replace 'ProductCard' with your actual product card component
 

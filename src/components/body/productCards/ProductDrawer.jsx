@@ -14,7 +14,7 @@ import React, { useEffect, useState } from "react";
 import useProducts from "../../../CustomHooks/ProductsHook";
 import CustomizedSwitch from "../../singularComponents/Switch";
 import { useSearchParams } from "react-router-dom";
-import CloseIcon from "@mui/icons-material/close";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   priceIcon,
   productSoldIcon,

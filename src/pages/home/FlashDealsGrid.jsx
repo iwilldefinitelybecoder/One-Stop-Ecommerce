@@ -13,7 +13,7 @@ import {
   rightTriangleArrowIcon,
 } from "../../assets/icons/png/Rareicons/data";
 import { Link } from "react-router-dom";
-import FlashDealsGridCards from "../../components/body/productCards/flashDealsCard/flashDealsGridCards";
+import FlashDealsGridCards from "../../components/body/productCards/flashDealsCard/FlashDealsGridCards";
 
 
 import useProducts from "../../CustomHooks/ProductsHook";

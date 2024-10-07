@@ -1,5 +1,5 @@
 import React from 'react'
-import './InfoBar.css'
+import './infoBar.css'
 import {telephoneIcon,emailIcon,usIcon,downArrowIcon} from '../../../assets/icons/png/toolbar-icons/data'
 
 function InfoBar() {

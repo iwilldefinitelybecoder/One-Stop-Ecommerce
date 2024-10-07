@@ -2,12 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useOutlet, useOutletContext } from "react-router";
 import "./cart.css";
 
-import CartItems from "./cartItems";
+import CartItems from "./CartItems";
 import { OrderPaging } from "../../user/orders/Orders";
 
 import { cartProducts } from "../../../data/cartproducts";
 import { connect, useDispatch } from "react-redux";
-import RightElement from "./rightElement";
+import RightElement from "./RightElement";
 import useCard from "../../../CustomHooks/CardsHooks";
 import { useCart } from "../../../CustomHooks/CartHook";
 import { noOrderIcon } from "../../../assets/icons/img/randoms/data";

@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { useNavigate, useOutletContext } from "react-router";
-import RightElement from "../cart/rightElement";
+import RightElement from "../cart/RightElement";
 import { Link, useSearchParams } from "react-router-dom";
 import { rightArrowIcon2 } from "../../../assets/icons/png/user-page-icons/data";
 import RightContainer from "./RightContainer";

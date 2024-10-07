@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import InfoBar from "./infobar/InfoBar";
 import Toolbar from "./toolbar/Toolbar";
-import NavBar from "./navbar/NavBar";
+import NavBar from "./Navbar/NavBar";
 import "./index.css";
 import CartContainer from "./SideBar/CartContainer";
 import LoginUI from "../body/login/loginUI";

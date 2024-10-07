@@ -1,7 +1,7 @@
 import checkMark from './checkMark.json';
 import crossMark from './crossMark.json';
 import heartMark from './heartMark.json';
-import checkMark2 from './checkMark2.json';
+import checkMark2 from './CheckMark2.json';
 import errorCheckMark from './errorCheckMark.json';
 
 export const checkMarkGif = checkMark;

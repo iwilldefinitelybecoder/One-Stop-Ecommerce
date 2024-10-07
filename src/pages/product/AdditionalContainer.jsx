@@ -8,7 +8,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import FlashDealsGridCards from '../../components/body/productCards/flashDealsCard/flashDealsGridCards';
+import FlashDealsGridCards from '../../components/body/productCards/flashDealsCard/FlashDealsGridCards';
 import { flashIcon, rightTriangleArrowIcon } from '../../assets/icons/png/Rareicons/data';
 import { Link } from 'react-router-dom';
 

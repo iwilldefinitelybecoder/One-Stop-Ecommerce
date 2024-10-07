@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import userReducer from "./userReducer.jsx";
+import userReducer from "./UserReducer.jsx";
 import cartToggleReducers from "./cartToggleReducers.jsx";
 import CartItemCountReducer from "./CartItemCountReducer.jsx";
 import items from "./items.jsx";

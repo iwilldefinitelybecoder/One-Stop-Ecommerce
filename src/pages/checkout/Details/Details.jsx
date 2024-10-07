@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { useOutletContext } from "react-router";
-import RightElement from "../cart/rightElement";
+import RightElement from "../cart/RightElement";
 import Container1 from "./Container1";
 import Conteiner2 from "./Conteiner2";
 import { Link, useSearchParams } from "react-router-dom";

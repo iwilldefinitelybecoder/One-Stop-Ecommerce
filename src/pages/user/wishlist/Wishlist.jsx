@@ -1,7 +1,7 @@
 import React from 'react'
 import useWishlist from '../../../CustomHooks/WishListHook'
 import { Box, Grid } from '@mui/material';
-import FlashDealsGridCards from '../../../components/body/productCards/flashDealsCard/flashDealsGridCards';
+import FlashDealsGridCards from '../../../components/body/productCards/flashDealsCard/FlashDealsGridCards';
 import styled from 'styled-components';
 import './wishlist.css'
 import { noDataImg } from '../../../assets/icons/img/Illistrations/data';

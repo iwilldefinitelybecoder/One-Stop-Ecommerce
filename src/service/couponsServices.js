@@ -3,7 +3,7 @@ import axiosRetry from 'axios-retry';
 import Cookies from 'js-cookie';
 import { serviceURL } from "../utils/utils";
 
-const baseURL = `${serviceURL}/api/v1/products/coupons`; // Your API base URL
+const baseURL = `${serviceURL()}/api/v1/products/coupons`; // Your API base URL
 
 const instance = axios.create({
     baseURL,

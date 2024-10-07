@@ -2,7 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { serviceURL } from '../../utils/utils';
 
-const baseURL = `${serviceURL}/api/v1/customer/cards`; // Your API base URL
+const baseURL = `${serviceURL()}/api/v1/customer/cards`; // Your API base URL
 
 const instance = axios.create({
     baseURL,

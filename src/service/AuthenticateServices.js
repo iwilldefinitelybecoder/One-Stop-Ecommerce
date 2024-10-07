@@ -2,7 +2,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { serviceURL } from "../utils/utils";
 
-const URI = `${serviceURL}/api/v1`;
+const URI = `${serviceURL()}/api/v1`;
 let host ;
 if(import.meta.env.MODE === "development"){
   host = window.location.protocol+"//"+window.location.hostname+":"+window.location.port;

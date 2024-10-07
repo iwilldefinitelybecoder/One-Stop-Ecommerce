@@ -24,39 +24,39 @@ const AccountProvider = ({children}) => {
     });
     const socketRef = useRef();
 
-    useEffect(() => {
-      const socket = new SockJS('http://localhost:8000/ws', null, {
-        transports: ['websocket'],
-        withCredentials: false
-      });
-      const stompClient = Stomp.over(socket);
+    // useEffect(() => {
+    //   const socket = new SockJS('http://localhost:8000/ws', null, {
+    //     transports: ['websocket'],
+    //     withCredentials: false
+    //   });
+    //   const stompClient = Stomp.over(socket);
     
-      stompClient.connect({}, function (frame) {
-        console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/messages', function (messageOutput) {
-          console.log(messageOutput);
-        });
+    //   stompClient.connect({}, function (frame) {
+    //     console.log('Connected: ' + frame);
+    //     stompClient.subscribe('/topic/messages', function (messageOutput) {
+    //       console.log(messageOutput);
+    //     });
     
-        const subscription = stompClient.subscribe("queue/notification", function (data) {
-           getAllMessages();
-           handelMessage("you have a new Notification", "success");
+    //     const subscription = stompClient.subscribe("queue/notification", function (data) {
+    //        getAllMessages();
+    //        handelMessage("you have a new Notification", "success");
            
-        });
+    //     });
     
-        socketRef.current = stompClient;
+    //     socketRef.current = stompClient;
     
-        return () => {
-          if (socketRef.current.connected) {
-            socketRef.current.disconnect();
-          }
-          if (subscription.id !== null && stompClient.connected) {
-            subscription.unsubscribe();
-          }
-        };
-      });
+    //     return () => {
+    //       if (socketRef.current.connected) {
+    //         socketRef.current.disconnect();
+    //       }
+    //       if (subscription.id !== null && stompClient.connected) {
+    //         subscription.unsubscribe();
+    //       }
+    //     };
+    //   });
 
        
-    }, []);
+    // }, []);
 
 
 

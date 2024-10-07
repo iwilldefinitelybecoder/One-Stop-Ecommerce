@@ -45,7 +45,7 @@ export const getStockStatusMessage = (stockCount) => {
 
   export const serviceURL = ()=>{
     if(import.meta.env.MODE === 'development'){
-      const port = "8080";
+      const port = "8000";
       return `http://localhost:${port}`
 
     }

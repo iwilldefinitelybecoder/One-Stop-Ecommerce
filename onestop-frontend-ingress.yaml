@@ -1,9 +1,12 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
   name: onestop-frontend-ingress
   namespace: onestop
 spec:
+  ingressClassName: nginx
   rules:
     - host: onestop.host
       http:

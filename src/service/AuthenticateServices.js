@@ -1,5 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
+import { serviceURL } from "../utils/utils";
 
 const URI = `${serviceURL}/api/v1`;
 let host ;

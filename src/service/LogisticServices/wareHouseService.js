@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { serviceURL } from '../../utils/utils';
 
 const baseURL = `${serviceURL}/api/v1/logistic/warehouse`; // Your API base URL
 

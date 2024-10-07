@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { serviceURL } from '../../utils/utils';
 
 const baseURL = `${serviceURL}/api/customer/wishlist`; // Your API base URL for Wishlist
 

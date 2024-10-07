@@ -10,7 +10,6 @@ import ComponentProvider from "./context/ComponentProvider";
 const Path = lazy(() => import("./routes/Path"));
 
 function App() {
-  console.log(import.meta.env.MODE)
   return (
     <>
       <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_REDIRECT_URI}>

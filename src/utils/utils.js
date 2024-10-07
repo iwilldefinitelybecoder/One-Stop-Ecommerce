@@ -44,11 +44,10 @@ export const getStockStatusMessage = (stockCount) => {
 
 
   export const serviceURL = ()=>{
-    if(import.meta.env.MODE === 'development'){
-      const port = "8000";
-      return `http://localhost:${port}`
-
+    if(import.meta.env.MODE === 'production'){
+      return "https://service.onestop.host";
     }
-    return `https://service.onestop.host`;
-
+    const port = "8000";
+    return `http://localhost:${port}`
+    
   }
